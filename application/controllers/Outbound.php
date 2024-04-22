@@ -285,4 +285,63 @@ class Outbound extends CI_Controller
         }
         echo json_encode($response);
     }
+
+    public function pickingList()
+    {
+        $data = array(
+            'picking_list' => $this->outbound_m->getAllPickingList()
+        );
+        $this->render('outbound/picking_list/index', $data);
+    }
+
+    public function createPickingList()
+    {
+        $post = $this->input->post();
+        $params = array(
+            'pl_no' => $post['pl_no'],
+            'sj_no' => $post['sj_no'],
+            'dest' => $post['dest'],
+            'tot_qty' => $post['tot_qty'],
+            'dealer_code' => $post['dealer_code'],
+            'dealer_det' => $post['dealer_det'],
+            'expedisi' => $post['expedisi'],
+            'dock' => $post['dock'],
+            'no_truck' => $post['no_truck'],
+            'adm_pl_date' => $post['rec_pl_date'],
+            'adm_pl_time' => $post['rec_pl_time'],
+            'created_at' => currentDateTime(),
+            'created_by' => userId()
+        );
+        $this->outbound_m->createPickingList($params);
+        if ($this->db->affected_rows() > 0) {
+            $response = array(
+                'success' => true,
+                'message' => 'Create picking list successfully'
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Failed create picking list'
+            );
+        }
+        echo json_encode($response);
+    }
+
+    public function getPickingListAdm()
+    {
+        $response = array(
+            'success' => true,
+            'picking_list' => $this->outbound_m->getAllPickingList()->result()
+        );
+        echo json_encode($response);
+    }
+
+    public function getPickingListAdmById()
+    {
+        $response = array(
+            'success' => true,
+            'picking_list' => $this->outbound_m->getAllPickingList($_POST['id'])->row_array()
+        );
+        echo json_encode($response);
+    }
 }

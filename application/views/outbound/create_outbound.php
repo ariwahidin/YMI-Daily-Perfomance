@@ -1,6 +1,14 @@
 <link href="<?= base_url() ?>myassets/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
 <script src="<?= base_url() ?>myassets/js/jquery-3.7.0.js"></script>
 <script src="<?= base_url() ?>myassets/js/jquery.dataTables.min.js"></script>
+
+<style>
+    .select2-container {
+        z-index: 1600;
+        /* Atur z-index sesuai kebutuhan */
+    }
+</style>
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -70,7 +78,9 @@
                     <div class="row g-4 mb-3">
                         <div class="col col-lg-4">
                             <label for="" class="form-label">No picking list</label>
-                            <input type="text" id="no_pl" name="no_pl" class="form-control" placeholder="" value="" required>
+                            <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;">
+                            </select>
+                            <!-- <input type="text" id="no_pl" name="no_pl" class="form-control" placeholder="" value="" required> -->
                         </div>
                         <div class="col col-lg-4">
                             <label for="" class="form-label">Picking list date</label>
@@ -132,6 +142,8 @@
     </div>
 </div>
 
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
 
@@ -139,14 +151,60 @@
         getAllRowTask();
         initWebSocket();
 
+
+
         // $('#createTask').modal('show');
 
         $('#btnCreate').on('click', function() {
-            $('#btnTask').text('Create');
-            $('#createTaskLabel').text('Create new');
-            $('#proses').val('new_task');
-            $('#createTask').modal('show');
+
+
+
+            $.get('getPickingListAdm', {}, function(response) {
+
+                if (response.success == true) {
+                    let selPL = $('#no_pl');
+                    selPL.empty();
+
+                    let opt = `<option value="">Choose Picking Listss </option>`;
+                    response.picking_list.forEach(function(elem) {
+                        opt += `<option value="${elem.id}">${elem.pl_no}</option>`;
+                    });
+                    selPL.html(opt);;
+
+                    // console.log(opt);
+                    // .select2();
+                    $('#no_pl').select2({
+                        tags: true,
+                        dropdownParent: $("#createTask")
+                    });
+
+                    $('#btnTask').text('Create');
+                    $('#createTaskLabel').text('Create new');
+                    $('#proses').val('new_task');
+                    $('#createTask').modal('show');
+
+                    // $('#createTask').on('shown.bs.modal', function() {
+                    //     // $('.js-example-basic-single').select2('open');
+                    //     $('.js-example-basic-single').focus();
+
+                    // });
+                }
+            }, 'json');
+
         });
+
+        $('#no_pl').on('change', function() {
+            let id = $(this).val();
+            if (id != '') {
+                $.post('getPickingListAdmById', {
+                    id: id
+                }, function(response) {
+                    let data = response.picking_list;
+                    $('#no_truck').val(data.no_truck);
+                    $('#qty').val(data.tot_qty);
+                }, 'json');
+            }
+        })
 
         function initWebSocket() {
             let hostname = window.location.hostname;

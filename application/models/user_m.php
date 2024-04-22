@@ -105,7 +105,7 @@ class User_m extends CI_Model
             'updated_at' => $created_at
         );
         if ($post['password'] != '') {
-            $params['password'] = $post['password'];
+            $data['password'] = $post['password'];
         }
 
 

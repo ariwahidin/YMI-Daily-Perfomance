@@ -87,6 +87,10 @@
                                 <div class="col-lg-6">
                                     <div class="p-lg-5 p-4">
                                         <div>
+                                            <div class="d-flex">
+                                                <h4 style="font-size: 40px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"><strong>YAMVAS</strong></h4>
+                                            </div>
+                                            <p>Yamaha Visual Aplication System</p>
                                             <img id="logo" src="<?= base_url('jar/html/default/') ?>assets/images/small/yusen-logistics.png" alt="" height="50">
                                             &nbsp;
                                             <img id="logo" src="<?= base_url('jar/html/default/') ?>assets/images/small/yamaha-indonesia.png" alt="" height="70">
@@ -129,7 +133,7 @@
                                         </div>
 
                                         <div class="mt-5 text-center">
-                                            <!-- <p class="mb-0">Don't have an account ? <a href="auth-signup-cover.html" class="fw-semibold text-primary text-decoration-underline"> Signup</a> </p> -->
+                                            <p class="mb-0"> Powered by PT. Puninar Yusen Logistics <a href="auth-signup-cover.html" class="fw-semibold text-primary text-decoration-underline"></a> </p>
                                         </div>
                                     </div>
                                 </div>

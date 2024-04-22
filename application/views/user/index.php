@@ -1,6 +1,3 @@
-<link href="<?= base_url() ?>myassets/css/jquery.dataTables.min.css" rel="stylesheet" />
-<script src="<?= base_url() ?>myassets/js/jquery-3.7.0.js"></script>
-<script src="<?= base_url() ?>myassets/js/jquery.dataTables.min.js"></script>
 <style>
     table tr th:first-child {
         max-width: 10px !important;
@@ -208,19 +205,20 @@
             $('#modalForm').modal('show');
         })
 
-        $('.btnEdit').on('click', function() {
+        $('#user-table').on('click', '.btnEdit', function() {
             $('#headerForm').text('Edit user');
             $('#form_proses').val('edit_user');
             $('#user_id').val($(this).data('id'));
             $('#fullname').val($(this).data('fullname'));
             $('#username').val($(this).data('username'));
             $('#username').attr('readonly', 'readonly');;
+            $('#password').val('');
             $('#password').removeAttr('required');
             $('#role').val($(this).data('role'));
             $('#modalForm').modal('show');
         })
 
-        $('.btnDelete').on('click', function() {
+        $('#user-table').on('click', '.btnDelete', function() {
             let id = $(this).data('id');
             $.post('deleteUser', {
                 id: id

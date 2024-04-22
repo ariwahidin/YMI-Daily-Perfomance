@@ -187,4 +187,21 @@ class Outbound_m extends CI_Model
         $this->db->where('id', $id);
         $this->db->update('tb_out', $params);
     }
+
+    public function createPickingList($params)
+    {
+        $this->db->insert('pl_h', $params);
+    }
+
+    public function getAllPickingList($id = null)
+    {
+        $sql = "SELECT * FROM pl_h";
+
+        if ($id != null) {
+            $sql .= " WHERE id = '$id'";
+        }
+        
+        $query = $this->db->query($sql);
+        return $query;
+    }
 }

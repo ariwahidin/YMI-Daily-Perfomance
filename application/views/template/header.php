@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="<?= ($this->uri->segment(1) == 'dashboard' && $this->uri->segment(2) == 'index') ? 'sm' : 'lg' ?>" data-sidebar-image="none" data-preloader="disable">
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="<?= ($this->uri->segment(1) == 'dashboardx' && $this->uri->segment(2) == 'index') ? 'sm' : 'lg' ?>" data-sidebar-image="none" data-preloader="disable">
 
 <head>
 
     <meta charset="utf-8" />
     <title>Yusen Logistics</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Yamaha Visual Application System" name="description" />
     <meta content="Themesbrand" name="author" />
 
     <!-- jsvectormap css -->
@@ -27,12 +27,20 @@
     <!-- custom Css-->
     <link href="<?= base_url('jar/html/default/') ?>assets/css/custom.min.css" rel="stylesheet" type="text/css" />
 
+    <link href="<?= base_url() ?>myassets/css/jquery.dataTables.min.css" rel="stylesheet" />
 
+
+    <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
     <!-- Sweet Alert css-->
     <link href="<?= base_url('jar/html/default/') ?>assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
-    <script src="<?= base_url() ?>myassets/js/jquery-3.7.0.js"></script>
+    <!-- <script src="<?= base_url() ?>myassets/js/jquery-3.7.0.js"></script> -->
     <script src="<?= base_url() ?>myassets/js/moment.js"></script>
     <script src="<?= base_url() ?>myassets/js/moment-time-zone.js"></script>
+    
+    <script src="<?= base_url() ?>myassets/js/jquery-3.7.0.js"></script>
+   
+    <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
+    <script src="<?= base_url() ?>myassets/js/jquery.dataTables.min.js"></script>
 
 
 
@@ -237,10 +245,10 @@
                         <div class="navbar-brand-box horizontal-logo">
                             <a href="index.html" class="logo logo-dark">
                                 <span class="logo-sm">
-                                    <img src="<?= base_url('jar/html/default/') ?>assets/images/yusen-logo.png" alt="" height="22">
+                                    <img src="<?= base_url('jar/html/default/') ?>assets/images/Yusen_Logistics_White.png" alt="" height="22">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="<?= base_url('jar/html/default/') ?>assets/images/yusen-logo.png" alt="" height="17">
+                                    <img src="<?= base_url('jar/html/default/') ?>assets/images/Yusen_Logistics_White.png" alt="" height="17">
                                 </span>
                             </a>
 
@@ -249,7 +257,7 @@
                                     <img src="<?= base_url('jar/html/default/') ?>assets/images/yusen-logo.png" alt="" height="22">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="<?= base_url('jar/html/default/') ?>assets/images/yusen-logo.png" alt="" height="17">
+                                    <img src="<?= base_url('jar/html/default/') ?>assets/images/Yusen_Logistics_White.png" alt="" height="17">
                                 </span>
                             </a>
                         </div>
@@ -315,11 +323,14 @@
                 <!-- Light Logo-->
                 <a href="#" class="logo logo-light">
                     <span class="logo-sm">
-                        <img style="border-radius: 10%;" src="<?= base_url('jar/html/default/') ?>assets/images/yusen-kotak.jpg" alt="" height="30">
+                        <img style="border-radius: 10%;" src="<?= base_url('jar/html/default/') ?>assets/images/Yusen_Logistics_White.png" alt="" height="30">
                     </span>
                     <span class="logo-lg">
-                        <img style="border-radius: 10%; margin-top: -5px;" src="<?= base_url('jar/html/default/') ?>assets/images/yusen-kotak.jpg" alt="" height="40">
-                        &nbsp;<span style="color: white; font-size: 16px;"><strong>Yamaha Motor</strong></span>
+                        <div class="">
+                            <img style="border-radius: 5%; margin-top: 5px;" src="<?= base_url('jar/html/default/') ?>assets/images/Yusen_Logistics_White.png" alt="" height="80">
+                            <br>
+                            <p style="margin-top:-30px !important; color: white; font-size: 25px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"><strong>YAMVAS</strong></p>
+                        </div>
                     </span>
                 </a>
                 <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
@@ -366,6 +377,12 @@
                         <?php
                         }
                         ?>
+                        <li class="menu-title"><span data-key="t-menu"></span></li>
+                        <li class="menu-title"><span data-key="t-menu"></span></li>
+                        <li class="menu-title"><span data-key="t-menu"></span></li>
+                        <li class="menu-title"><span data-key="t-menu"></span></li>
+                        <li class="menu-title"><span data-key="t-menu"></span></li>
+                        <li class="menu-title"><span data-key="t-menu"></span></li>
                     </ul>
                 </div>
             </div>

@@ -18,7 +18,8 @@
             $minute_unload = ($duration_unload != '') ? roundMinutes($duration_unload) : (($data->start_unload != null && $data->stop_unload == null) ? 'proccesing' : '');
             $minute_checking = ($duration_checking != '') ? roundMinutes($duration_checking) : (($data->start_checking != null && $data->stop_checking == null) ? 'proccesing' : '');
             $minute_putaway = ($duration_putaway != '') ? roundMinutes($duration_putaway) : (($data->start_putaway != null && $data->stop_putaway == null) ? 'proccesing' : '');
-            $status = ($minute_unload != 'proccesing' && $minute_checking != 'proccesing' && $minute_putaway != 'proccesing' ) ? 'DONE' : '';
+            $status = ($minute_unload != 'processing' && $minute_checking != 'processing' && $minute_putaway != '' && $minute_unload != '' && $minute_checking != '' && $minute_putaway != '') ? 'DONE' : '';
+
         ?>
 
             <tr>

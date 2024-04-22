@@ -273,6 +273,8 @@ class Inbound extends CI_Controller
     public function getDataExcel()
     {
         $rows = $this->inbound_m->getCompletedActivity($_POST)->result();
+        // var_dump($rows);
+        // die;
         $dataExcel = array();
         $no = 1;
         foreach ($rows as $val) {
@@ -285,6 +287,7 @@ class Inbound extends CI_Controller
             $row['SURAT JALAN'] = $val->no_sj;
             $row['NO TRUCK'] = $val->no_truck;
             $row['EXPEDISI'] = $val->ekspedisi_name;
+            $row['TIME ARIVAL'] = $val->time_arival;
             $row['NAMA SUPIR'] = $val->driver;
             $row['ALOCATION'] = $val->alloc_code;
             $row['PINTU UNLOADING'] = $val->pintu_unloading;
