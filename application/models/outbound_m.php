@@ -14,50 +14,91 @@ class Outbound_m extends CI_Model
 
     public function getTaskByUser($post = null)
     {
-        if (isset($post['search'])) {
-            if ($post['search'] != '') {
-                $search = $post['search'];
-                $this->db->like('no_pl', $search, 'both');
+        // var_dump($post);
+        // if (isset($post['search'])) {
+        //     if ($post['search'] != '') {
+        //         $search = $post['search'];
+        //         $this->db->like('no_pl', $search, 'both');
+        //     }
+        // }
+
+        // if (isset($post['id'])) {
+        //     if ($post['id'] != '') {
+        //         $id = $post['id'];
+        //         $this->db->where('a.id', $id);
+        //     }
+        // }
+
+        // $this->db->select('a.*, b.fullname as checker_name, c.name as ekspedisi_name, e.fullname as created_by_name');
+        // $this->db->from('tb_out_temp a');
+        // $this->db->join('master_user b', 'a.checker_id = b.id', 'left');
+        // $this->db->join('master_ekspedisi c', 'a.ekspedisi = c.id', 'left');
+        // $this->db->join('master_user e', 'a.created_by = e.id', 'left');
+
+
+        // if ($_SESSION['user_data']['role'] == 4) {
+        //     $this->db->where('checker_id', userId());
+        // }
+
+        // $this->db->get();
+
+        // var_dump($this->db->last_query());
+
+
+        $sql = "SELECT b.id, a.id as pl_id, a.pl_no as no_pl, a.adm_pl_date, a.adm_pl_time, a.no_truck, 
+        a.tot_qty as qty, a.sj_no, a.expedisi,
+        a.sj_time, a.dest, a.dealer_code, a.dealer_det, a.remarks,
+        b.start_picking, b.stop_picking,
+        b.start_checking, b.stop_checking,
+        b.start_scanning, b.stop_scanning,
+        CONVERT(DATE, b.created_date) AS activity_date
+        FROM pl_h a
+        INNER JOIN tb_out_temp b ON a.id = b.no_pl";
+
+        if (isset($post['pl_id'])) {
+            if ($post['pl_id'] != '') {
+                $pl_id = $post['pl_id'];
+                $sql .= " WHERE a.id = '$pl_id'";
             }
         }
 
-        if (isset($post['id'])) {
-            if ($post['id'] != '') {
-                $id = $post['id'];
-                $this->db->where('a.id', $id);
-            }
-        }
+        $query = $this->db->query($sql);
 
-        $this->db->select('a.*, b.fullname as checker_name, c.name as ekspedisi_name, e.fullname as created_by_name');
-        $this->db->from('tb_out_temp a');
-        $this->db->join('master_user b', 'a.checker_id = b.id');
-        $this->db->join('master_ekspedisi c', 'a.ekspedisi = c.id', 'left');
-        $this->db->join('master_user e', 'a.created_by = e.id', 'left');
-
-        if ($_SESSION['user_data']['role'] == 4) {
-            $this->db->where('checker_id', userId());
-        }
-
-        return $this->db->get();
+        return $query;
+        // var_dump($query->result());
+        // return $this->db->get();
     }
 
     function prosesActivity($id, $params)
     {
+        // var_dump($id);
+        // Memulai transaksi
+        $this->db->trans_start();
+
         $this->db->where('id', $id);
         $this->db->update('tb_out_temp', $params);
         if ($this->db->affected_rows() > 0) {
-            $act = $this->db->get_where('tb_out_temp', ['id' => $id])->row();
+            $sql = "select 
+            b.id as pl_id, b.pl_no as no_pl, b.no_truck, b.tot_qty as qty,
+            b.adm_pl_date as pl_date, b.adm_pl_time as pl_time, b.expedisi as ekspedisi,
+            a.start_picking, a.stop_picking, a.start_checking, a.stop_checking, a.start_scanning, a.stop_scanning,
+            a.created_date, a.created_by, a.remarks
+            from tb_out_temp a
+            INNER JOIN pl_h b on a.no_pl = b.id
+            WHERE a.id = '$id'";
+            $act = $this->db->query($sql)->row();
             if ($act->stop_picking != null && $act->stop_checking != null && $act->stop_scanning != null) {
                 $data = array(
+                    'pl_id' => $act->pl_id,
                     'no_pl' => $act->no_pl,
                     'no_truck' => $act->no_truck,
                     'qty' => $act->qty,
-                    'checker_id' => $act->checker_id,
+                    // 'checker_id' => $act->checker_id,
                     'pl_date' => $act->pl_date,
                     'pl_time' => $act->pl_time,
-                    'time_arival' => $act->time_arival,
+                    // 'time_arival' => $act->time_arival,
                     'ekspedisi' => $act->ekspedisi,
-                    'driver' => $act->driver,
+                    // 'driver' => $act->driver,
                     'start_picking' => $act->start_picking,
                     'stop_picking' => $act->stop_picking,
                     'duration_picking' => countDuration($act->start_picking, $act->stop_picking),
@@ -80,6 +121,19 @@ class Outbound_m extends CI_Model
                     $this->db->delete('tb_out_temp');
                 }
             }
+        }
+
+        // Menyelesaikan transaksi
+        $this->db->trans_complete();
+
+        // Memeriksa apakah transaksi berhasil atau tidak
+        if ($this->db->trans_status() === FALSE) {
+            // Jika transaksi gagal, bisa dilakukan rollback
+            $this->db->trans_rollback();
+            // Atau penanganan kesalahan lainnya
+        } else {
+            // Jika transaksi berhasil, bisa dilakukan commit
+            $this->db->trans_commit();
         }
     }
 
@@ -200,7 +254,19 @@ class Outbound_m extends CI_Model
         if ($id != null) {
             $sql .= " WHERE id = '$id'";
         }
-        
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getAllPickingListIdle()
+    {
+        $sql = "SELECT a.id AS pl_id, a.pl_no
+        FROM pl_h a
+        LEFT JOIN tb_out_temp b ON a.id = b.no_pl
+        LEFT JOIN tb_out c ON a.id = c.pl_id
+        WHERE b.no_pl IS NULL AND c.no_pl IS NULL";
+
         $query = $this->db->query($sql);
         return $query;
     }

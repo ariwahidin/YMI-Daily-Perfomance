@@ -1,3 +1,8 @@
+<?php
+// var_dump($task->result());
+// die;
+?>
+
 <?php foreach ($task->result() as $data) { ?>
     <div class="row">
         <div class="col">
@@ -5,22 +10,47 @@
                 <div class="card-header bg-primary-subtle">
                     <div style="font-size: 11px;" class="row">
                         <div class="col-md-3 col-6 ps-3">
-                            <p class="m-0">Activity Date : <span><?= date('Y-m-d', strtotime($data->created_date)) ?></span></p>
-                            <p class="m-0">PL Date : <span><?= date('Y-m-d', strtotime($data->pl_date)) ?></span></p>
+                            <p class="m-0">Date : <span><?= date('Y-m-d', strtotime($data->activity_date)) ?></span></p>
                             <p class="m-0">PL No : <span class=""><?= $data->no_pl ?></span></p>
-                            <p class="m-0">PL Time : <span><?= $data->pl_time == null ? '' : date('H:i', strtotime($data->pl_time)) ?></span></p>
-                            <p class="m-0">Checker : <span><?= $data->checker_name ?></span></p>
+                            <p class="m-0">PL Date : <span><?= $data->adm_pl_date ?></span></p>
+                            <p class="m-0">PL Time : <span><?= date('H:i', strtotime($data->adm_pl_time)) ?></span></p>
                             <p class="m-0">Qty : <span><?= $data->qty ?></span></p>
                         </div>
                         <div class="col-md-2 col-6">
-                            <p class="m-0">No Truck : <span><?= $data->no_truck ?></span></p>
-                            <p class="m-0">Ekspedisi : <span><?= $data->ekspedisi_name ?></span></p>
-                            <p class="m-0">Driver : <span><?= $data->driver ?></span></p>
-                            <p class="m-0">Remarks : <span><?= $data->remarks ?></span></p>
+                            <p class="m-0">Picker : </p>
+                            <ul>
+                                <?php
+                                foreach (getPicker($data->pl_id)->result() as $picker) {
+                                ?>
+                                    <li><?= $picker->fullname ?></li>
+                                <?php
+                                }
+                                ?>
+                            </ul>
+                            <p class="m-0">Checker : </p>
+                            <ul>
+                                <?php
+                                foreach (getChecker($data->pl_id)->result() as $checker) {
+                                ?>
+                                    <li><?= $checker->fullname ?></li>
+                                <?php
+                                }
+                                ?>
+                            </ul>
+                            <p class="m-0">Scanner : </p>
+                            <ul>
+                                <?php
+                                foreach (getScanner($data->pl_id)->result() as $scanner) {
+                                ?>
+                                    <li><?= $scanner->fullname ?></li>
+                                <?php
+                                }
+                                ?>
+                            </ul>
                         </div>
                         <?php if ($_SESSION['user_data']['role'] != 4) { ?>
                             <div class="col-md-6 pt-1">
-                                <button class="btn btn-sm btn-primary btnEdit" data-id="<?= $data->id ?>">Edit</button>
+                                <button class="btn btn-sm btn-primary btnEdit" data-id="<?= $data->id ?>" data-pl-id="<?= $data->pl_id ?>">Edit</button>
                                 <button class="btn btn-sm btn-danger btnDelete" data-id="<?= $data->id ?>">Delete</button>
                             </div>
                         <?php } ?>
@@ -54,13 +84,13 @@
                                                 <?php
                                                 if ($data->start_picking === null && $data->stop_picking === null) {
                                                 ?>
-                                                    <button class="btn btn-sm btn-success rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-proses="start_picking">
+                                                    <button class="btn btn-sm btn-success rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-pl-id="<?= $data->pl_id ?>" data-proses="start_picking" data-activity="picking">
                                                         <i class="bx bx-play"></i>
                                                     </button>
                                                 <?php
                                                 } elseif ($data->start_picking != null && $data->stop_picking === null) {
                                                 ?>
-                                                    <button class="btn btn-sm btn-danger rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-proses="stop_picking">
+                                                    <button class="btn btn-sm btn-danger rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-pl-id="<?= $data->pl_id ?>" data-proses="stop_picking" data-activity="picking">
                                                         <i class="bx bx-stop"></i>
                                                     </button>
                                                 <?php
@@ -99,13 +129,13 @@
                                                 <?php
                                                 if ($data->start_checking === null && $data->stop_checking === null) {
                                                 ?>
-                                                    <button class="btn btn-sm btn-success rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-proses="start_checking">
+                                                    <button class="btn btn-sm btn-success rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-pl-id="<?= $data->pl_id ?>" data-proses="start_checking" data-activity="checking">
                                                         <i class="bx bx-play"></i>
                                                     </button>
                                                 <?php
                                                 } elseif ($data->start_checking != null && $data->stop_checking === null) {
                                                 ?>
-                                                    <button class="btn btn-sm btn-danger rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-proses="stop_checking">
+                                                    <button class="btn btn-sm btn-danger rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-pl-id="<?= $data->pl_id ?>" data-proses="stop_checking" data-activity="checking">
                                                         <i class="bx bx-stop"></i>
                                                     </button>
                                                 <?php
@@ -145,13 +175,13 @@
                                                     <?php
                                                     if ($data->start_scanning === null && $data->stop_scanning === null) {
                                                     ?>
-                                                        <button class="btn btn-sm btn-success rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-proses="start_scanning">
+                                                        <button class="btn btn-sm btn-success rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-pl-id="<?= $data->pl_id ?>" data-proses="start_scanning" data-activity="scanning">
                                                             <i class="bx bx-play"></i>
                                                         </button>
                                                     <?php
                                                     } elseif ($data->start_scanning != null && $data->stop_scanning === null) {
                                                     ?>
-                                                        <button class="btn btn-sm btn-danger rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-proses="stop_scanning">
+                                                        <button class="btn btn-sm btn-danger rounded fs-2 btnActivity" data-id="<?= $data->id ?>" data-pl-id="<?= $data->pl_id ?>" data-proses="stop_scanning" data-activity="scanning">
 
                                                             <i class="bx bx-stop"></i>
                                                         </button>

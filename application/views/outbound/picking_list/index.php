@@ -72,43 +72,39 @@
                             <div class="form-group">
                                 <label for="name" class="form-label">PL No : </label>
                                 <input type="text" class="form-control" id="pl_no" name="pl_no" placeholder="" required>
-                                <!-- <input type="hidden" id="eks_id" name="eks_id" val="" readonly> -->
                                 <input type="hidden" id="form_proses" name="form_proses" val="" readonly>
                             </div>
 
                         </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="name" class="form-label">SJ No : </label>
-                                <input type="text" class="form-control" id="sj_no" name="sj_no" placeholder="">
-                            </div>
-                        </div>
+
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Destination : </label>
                                 <input type="text" class="form-control" id="dest" name="dest" placeholder="">
                             </div>
                         </div>
+
                         <div class="col">
                             <div class="form-group">
-                                <label for="name" class="form-label">Dealer Code : </label>
-                                <input type="text" class="form-control" id="dealer_code" name="dealer_code" placeholder="">
+                                <label for="name" class="form-label">Total Qty : </label>
+                                <input type="number" class="form-control" id="tot_qty" name="tot_qty" placeholder="">
                             </div>
                         </div>
+
 
                     </div>
 
                     <div class="row mt-2">
                         <div class="col">
                             <div class="form-group">
-                                <label for="name" class="form-label">Dealer : </label>
-                                <input type="text" class="form-control" id="dealer_det" name="dealer_det" placeholder="">
+                                <label for="name" class="form-label">Dealer Code : </label>
+                                <input type="text" class="form-control" id="dealer_code" name="dealer_code" placeholder="">
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <label for="name" class="form-label">Expedisi : </label>
-                                <input type="text" class="form-control" id="expedisi" name="expedisi" placeholder="">
+                                <label for="name" class="form-label">Dealer / Depo : </label>
+                                <input type="text" class="form-control" id="dealer_det" name="dealer_det" placeholder="">
                             </div>
                         </div>
                         <div class="col">
@@ -117,25 +113,18 @@
                                 <input type="text" class="form-control" id="dock" name="dock" placeholder="">
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="name" class="form-label">Destination : </label>
-                                <input type="text" class="form-control" id="dest" name="dest" placeholder="">
-                            </div>
-                        </div>
+
                     </div>
 
+
+
                     <div class="row mt-2">
+
+
                         <div class="col">
                             <div class="form-group">
-                                <label for="name" class="form-label">No Truck : </label>
-                                <input type="text" class="form-control" id="no_truck" name="no_truck" placeholder="">
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="name" class="form-label">Total Qty : </label>
-                                <input type="number" class="form-control" id="tot_qty" name="tot_qty" placeholder="">
+                                <label for="name" class="form-label">PL Printed Time: </label>
+                                <input type="time" class="form-control" id="pl_print_time" name="pl_print_time" placeholder="" required>
                             </div>
                         </div>
                         <div class="col">
@@ -153,6 +142,38 @@
                     </div>
 
 
+                    <div class="row mt-2">
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Expedisi : </label>
+                                <select class="form-control" name="expedisi" id="expedisi">
+                                    <option value="">Choose ekspedisi</option>
+                                    <?php foreach ($ekspedisi->result() as $eks) { ?>
+                                        <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">No Truck : </label>
+                                <input type="text" class="form-control" id="no_truck" name="no_truck" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">SJ No : </label>
+                                <input type="text" class="form-control" id="sj_no" name="sj_no" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">SJ Time : </label>
+                                <input type="time" class="form-control" id="sj_time" name="sj_time" placeholder="">
+                            </div>
+                        </div>
+                    </div>
 
 
                     <div class="col-lg-12 mt-3">
@@ -242,8 +263,10 @@
             moment.tz.setDefault('Asia/Jakarta');
             let today = moment().format('YYYY-MM-DD');
             let currentTime = moment().format('HH:mm');
+            $('#sj_time').val('');
             $('#rec_pl_date').val(today);
             $('#rec_pl_time').val(currentTime);
+            $('#pl_print_time').val(currentTime);
             $('#headerForm').text('Add new PL');
             $('#form_proses').val('add_new');
             $('#modalForm').modal('show');

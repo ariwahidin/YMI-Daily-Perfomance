@@ -33,59 +33,118 @@ class Outbound extends CI_Controller
     public function createTask()
     {
         $post = $this->input->post();
+
+        // var_dump($post);
+        // die;
+
+        $this->db->trans_start();
+
+        foreach ($post['picker_id'] as $key => $val) {
+            $params = array(
+                'pl_id' => $post['no_pl'],
+                'user_id' => $val,
+                'sts' => 'picker'
+            );
+            $this->db->insert('pl_p', $params);
+        }
+
+        $params = array(
+            'tot_qty' => $post['qty'],
+            'no_truck' => $post['no_truck'],
+            'remarks' => $post['remarks'],
+            'updated_at' => currentDateTime(),
+            'updated_by' => userId()
+        );
+
+        $this->db->where(['id' => $post['no_pl']]);
+        $this->db->update('pl_h', $params);
+
         $params = array(
             'no_pl' => $post['no_pl'],
-            'no_truck' => $post['no_truck'],
-            'qty' => $post['qty'],
-            'checker_id' => $post['checker_id'],
-            'pl_date' => $post['pl_date'],
-            'pl_time' => $post['pl_time'],
-            'ekspedisi' => $post['ekspedisi'],
-            'driver' => $post['driver'],
-            'remarks' => $post['remarks'],
+            // 'qty' => $post['qty'],
+            // 'ekspedisi' => $post['ekspedisi'],
+            // 'remarks' => $post['remarks'],
             'created_date' => currentDateTime(),
             'created_by' => userId()
         );
+
         $this->outbound_m->createTask($params);
-        if ($this->db->affected_rows() > 0) {
+
+
+        $this->db->trans_complete();
+
+        // Memeriksa apakah transaksi berhasil atau tidak
+        if ($this->db->trans_status() === FALSE) {
+            // Jika transaksi gagal, bisa dilakukan rollback
+            $this->db->trans_rollback();
+            // Atau penanganan kesalahan lainnya
+            $response = array(
+                'success' => false,
+                'error' => $this->db->error(),
+                'message' => 'Create task failed'
+            );
+        } else {
+            // Jika transaksi berhasil, bisa dilakukan commit
+            $this->db->trans_commit();
             $response = array(
                 'success' => true,
                 'message' => 'Create task successfully'
             );
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Create task failed'
-            );
         }
+
         echo json_encode($response);
     }
 
     public function editTask()
     {
         $post = $this->input->post();
-        $id = $post['id_task'];
+
+        // var_dump($post);
+        // die;
+
+        $this->db->trans_start();
+
+        $this->db->delete('pl_p', ['pl_id' => $post['no_pl'], 'sts' => 'picker']);
+
+        foreach ($post['picker_id'] as $picker) {
+            $params = array(
+                'pl_id' => $post['no_pl'],
+                'user_id' => $picker,
+                'sts' => 'picker'
+            );
+            $this->db->insert('pl_p', $params);
+        }
+
         $params = array(
-            'no_pl' => $post['no_pl'],
-            'no_truck' => $post['no_truck'],
-            'qty' => $post['qty'],
-            'pl_date' => $post['pl_date'],
-            'pl_time' => $post['pl_time'],
-            'checker_id' => $post['checker_id'],
-            'driver' => $post['driver'],
-            'ekspedisi' => $post['ekspedisi'],
-            'remarks' => $post['remarks']
+            'remarks' => $post['remarks'],
+            'updated_at' => currentDateTime(),
+            'updated_by' => userId()
         );
-        $this->outbound_m->editTask($id, $params);
-        if ($this->db->affected_rows() > 0) {
+
+        $this->db->where(['id' => $post['no_pl']]);
+        $this->db->update('pl_h', $params);
+
+        $this->db->trans_complete();
+
+        // Memeriksa apakah transaksi berhasil atau tidak
+        if ($this->db->trans_status() === FALSE) {
+            // Jika transaksi gagal, bisa dilakukan rollback
+            $this->db->trans_rollback();
+            // Atau penanganan kesalahan lainnya
             $response = array(
-                'success' => true
+                'success' => false,
+                'error' => $this->db->error(),
+                'message' => 'Edit task failed'
             );
         } else {
+            // Jika transaksi berhasil, bisa dilakukan commit
+            $this->db->trans_commit();
             $response = array(
-                'success' => false
+                'success' => true,
+                'message' => 'Edit task successfully'
             );
         }
+
         echo json_encode($response);
     }
 
@@ -102,9 +161,12 @@ class Outbound extends CI_Controller
     public function getTaskById()
     {
         $post = $this->input->post();
+
+        // var_dump($post);
         $result = $this->outbound_m->getTaskByUser($post)->row();
         $response = array(
-            'data' => $result
+            'data' => $result,
+            'picker' => getPicker($post['pl_id'])->result()
         );
         echo json_encode($response);
     }
@@ -112,6 +174,84 @@ class Outbound extends CI_Controller
     public function prosesActivity()
     {
         $post = $this->input->post();
+
+        // var_dump($post);
+        // die;
+
+        if ($post['activity'] == 'picking') {
+            $user_id = userId();
+            $pl_id = $post['pl_id'];
+            $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
+            $query = $this->db->query($sql);
+            if ($query->num_rows() < 1) {
+                $response = array(
+                    'success' => false,
+                    'message' => 'This user is not picker for this PL'
+                );
+                echo json_encode($response);
+                exit;
+            }
+        }
+
+        if ($post['activity'] == 'checking') {
+            $user_id = userId();
+            $pl_id = $post['pl_id'];
+            $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
+            $query = $this->db->query($sql);
+
+            if ($query->num_rows() > 0) {
+                $response = array(
+                    'success' => false,
+                    'message' => 'This user is not allowed to checking proccess'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+            $sql = "SELECT TOP 1 * FROM pl_p WHERE sts = 'checker' and user_id = '$user_id' and pl_id = '$pl_id'";
+            $query = $this->db->query($sql);
+
+            if ($query->num_rows() < 1) {
+                $params = array(
+                    'pl_id' => $pl_id,
+                    'user_id' => $user_id,
+                    'sts' => 'checker'
+                );
+                $this->db->insert('pl_p', $params);
+            }
+        }
+
+        if ($post['activity'] == 'scanning') {
+            $user_id = userId();
+            $pl_id = $post['pl_id'];
+            $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
+            $query = $this->db->query($sql);
+
+            if ($query->num_rows() > 0) {
+                $response = array(
+                    'success' => false,
+                    'message' => 'This user is not allowed to scanning proccess'
+                );
+                echo json_encode($response);
+                exit;
+            }
+
+            $sql = "SELECT TOP 1 * FROM pl_p WHERE sts = 'scanner' and user_id = '$user_id' and pl_id = '$pl_id'";
+            $query = $this->db->query($sql);
+
+            if ($query->num_rows() < 1) {
+                $params = array(
+                    'pl_id' => $pl_id,
+                    'user_id' => $user_id,
+                    'sts' => 'scanner'
+                );
+                $this->db->insert('pl_p', $params);
+            }
+        }
+
+        // var_dump($post);
+        // die;
+
         $id = $post['id'];
         $params = array(
             $post['proses'] => currentDateTime()
@@ -289,7 +429,8 @@ class Outbound extends CI_Controller
     public function pickingList()
     {
         $data = array(
-            'picking_list' => $this->outbound_m->getAllPickingList()
+            'picking_list' => $this->outbound_m->getAllPickingList(),
+            'ekspedisi' => $this->ekspedisi_m->getEkspedisi(),
         );
         $this->render('outbound/picking_list/index', $data);
     }
@@ -300,6 +441,7 @@ class Outbound extends CI_Controller
         $params = array(
             'pl_no' => $post['pl_no'],
             'sj_no' => $post['sj_no'],
+            'sj_time' => $post['sj_time'],
             'dest' => $post['dest'],
             'tot_qty' => $post['tot_qty'],
             'dealer_code' => $post['dealer_code'],
@@ -307,6 +449,7 @@ class Outbound extends CI_Controller
             'expedisi' => $post['expedisi'],
             'dock' => $post['dock'],
             'no_truck' => $post['no_truck'],
+            'pl_print_time' => $post['pl_print_time'],
             'adm_pl_date' => $post['rec_pl_date'],
             'adm_pl_time' => $post['rec_pl_time'],
             'created_at' => currentDateTime(),
@@ -331,7 +474,7 @@ class Outbound extends CI_Controller
     {
         $response = array(
             'success' => true,
-            'picking_list' => $this->outbound_m->getAllPickingList()->result()
+            'picking_list' => $this->outbound_m->getAllPickingListIdle()->result()
         );
         echo json_encode($response);
     }

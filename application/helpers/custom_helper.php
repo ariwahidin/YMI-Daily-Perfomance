@@ -108,3 +108,33 @@ function userId()
 {
     return $_SESSION['user_data']['user_id'];
 }
+
+function getPicker($pl_id)
+{
+    $CI = &get_instance();
+    $sql = "SELECT b.fullname, a.user_id FROM pl_p a
+    INNER JOIN master_user b ON a.user_id = b.id
+    WHERE a.pl_id = '$pl_id' AND sts = 'picker'";
+    $query = $CI->db->query($sql);
+    return $query;
+}
+
+function getChecker($pl_id)
+{
+    $CI = &get_instance();
+    $sql = "SELECT b.fullname FROM pl_p a
+    INNER JOIN master_user b ON a.user_id = b.id
+    WHERE a.pl_id = '$pl_id' AND sts = 'checker'";
+    $query = $CI->db->query($sql);
+    return $query;
+}
+
+function getScanner($pl_id)
+{
+    $CI = &get_instance();
+    $sql = "SELECT b.fullname FROM pl_p a
+    INNER JOIN master_user b ON a.user_id = b.id
+    WHERE a.pl_id = '$pl_id' AND sts = 'scanner'";
+    $query = $CI->db->query($sql);
+    return $query;
+}

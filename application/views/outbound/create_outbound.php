@@ -8,6 +8,10 @@
         z-index: 1600;
         /* Atur z-index sesuai kebutuhan */
     }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: blueviolet;
+    }
 </style>
 <div class="row">
     <div class="col-12">
@@ -68,7 +72,7 @@
                 <h5 class="modal-title" id="createTaskLabel">Create Activity Outbound</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" id="createTaskBtn-close" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="modalCreateTask">
                 <div id="task-error-msg" class="alert alert-danger py-2"></div>
                 <form autocomplete="off" action="#" id="creatask">
                     <input type="hidden" id="proses" name="proses" class="form-control">
@@ -76,43 +80,41 @@
 
 
                     <div class="row g-4 mb-3">
-                        <div class="col col-lg-4">
-                            <label for="" class="form-label">No picking list</label>
-                            <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;">
-                            </select>
-                            <!-- <input type="text" id="no_pl" name="no_pl" class="form-control" placeholder="" value="" required> -->
+                        <div class="col col-lg-3" id="divPLNo">
+
+                        </div>
+                        <div class="col col-lg-3">
+                            <label for="" class="form-label">Destination</label>
+                            <input type="text" id="dest" name="dest" class="form-control" placeholder="" value="" required readonly>
+                        </div>
+                        <div class="col col-lg-2">
+                            <label for="" class="form-label">Dealer Code</label>
+                            <input type="text" id="dealer_code" name="dealer_code" class="form-control" placeholder="" value="" readonly>
                         </div>
                         <div class="col col-lg-4">
-                            <label for="" class="form-label">Picking list date</label>
-                            <input type="date" id="pl_date" name="pl_date" class="form-control" placeholder="" value="" required>
-                        </div>
-                        <div class="col col-lg-4">
-                            <label for="" class="form-label">Picking list time</label>
-                            <input type="time" id="pl_time" name="pl_time" class="form-control" placeholder="" value="">
+                            <label for="" class="form-label">Dealer / Depo</label>
+                            <input type="text" id="dealer_det" name="dealer_det" class="form-control" placeholder="" value="" readonly>
                         </div>
                     </div>
 
                     <div class="row g-4 mb-3">
                         <div class="col col-lg-3">
-                            <label for="priority-field" class="form-label">Checker</label>
-                            <select class="form-control" name="checker_id" id="checker_id" required>
-                                <option value="">Choose checker</option>
-                                <?php foreach ($checker->result() as $check) { ?>
-                                    <option value="<?= $check->id ?>"><?= $check->fullname ?></option>
-                                <?php } ?>
-                            </select>
+                            <label for="priority-field" class="form-label">Total Qty</label>
+                            <input type="number" id="qty" name="qty" class="form-control" placeholder="" value="" readonly>
                         </div>
+
+
                         <div class="col col-lg-3">
                             <label for="priority-field" class="form-label">No truck</label>
-                            <input type="text" id="no_truck" name="no_truck" class="form-control" placeholder="" value="">
+                            <input type="text" id="no_truck" name="no_truck" class="form-control" placeholder="" value="" readonly>
                         </div>
-                        <div class="col col-lg-3">
+                        <!-- <div class="col col-lg-3">
                             <label for="priority-field" class="form-label">Driver</label>
                             <input type="text" id="driver" name="driver" class="form-control" placeholder="" value="">
-                        </div>
+                        </div> -->
                         <div class="col col-lg-3">
                             <label for="priority-field" class="form-label">Ekspedisi</label>
-                            <select class="form-control" name="ekspedisi" id="ekspedisi" required>
+                            <select class="form-control" name="ekspedisi" id="ekspedisi" disabled>
                                 <option value="">Choose ekspedisi</option>
                                 <?php foreach ($ekspedisi->result() as $eks) { ?>
                                     <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
@@ -122,11 +124,17 @@
                     </div>
 
                     <div class="row g-4 mb-3">
-                        <div class="col col-lg-4">
-                            <label for="priority-field" class="form-label">Qty</label>
-                            <input type="number" id="qty" name="qty" class="form-control" placeholder="" value="">
+                        <div class="col col-lg-3">
+                            <label for="priority-field" class="form-label">Picker</label>
+                            <select style="background-color: blue !important;" class="js-example-basic-multiple" name="picker_id[]" multiple="multiple" id="picker_id" required>
+                                <option value="">Choose picker</option>
+                                <?php foreach ($checker->result() as $check) { ?>
+                                    <option value="<?= $check->id ?>"><?= $check->fullname ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
-                        <div class="col-lg-8">
+
+                        <div class="col-lg-5">
                             <label for="priority-field" class="form-label">Remarks</label>
                             <input type="text" id="remarks" name="remarks" class="form-control" value="">
                         </div>
@@ -151,6 +159,8 @@
         getAllRowTask();
         initWebSocket();
 
+        $('.js-example-basic-multiple').select2();
+
 
 
         // $('#createTask').modal('show');
@@ -162,14 +172,21 @@
             $.get('getPickingListAdm', {}, function(response) {
 
                 if (response.success == true) {
+
+                    let divPL = $('#divPLNo');
+                    divPL.empty();
+                    divPL.html(`<label for="" class="form-label">PL No : </label>
+                                    <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;" required>
+                                </select>`);
+
                     let selPL = $('#no_pl');
                     selPL.empty();
 
-                    let opt = `<option value="">Choose Picking Listss </option>`;
+                    let opt = `<option value="">Choose PL No </option>`;
                     response.picking_list.forEach(function(elem) {
-                        opt += `<option value="${elem.id}">${elem.pl_no}</option>`;
+                        opt += `<option value="${elem.pl_id}">${elem.pl_no}</option>`;
                     });
-                    selPL.html(opt);;
+                    selPL.html(opt);
 
                     // console.log(opt);
                     // .select2();
@@ -177,6 +194,9 @@
                         tags: true,
                         dropdownParent: $("#createTask")
                     });
+
+                    // Membersihkan opsi-opsi yang sudah terpilih sebelumnya
+                    $('#picker_id').find('option:selected').prop('selected', false).trigger('change');
 
                     $('#btnTask').text('Create');
                     $('#createTaskLabel').text('Create new');
@@ -193,14 +213,23 @@
 
         });
 
-        $('#no_pl').on('change', function() {
+        $('#divPLNo').on('change', '#no_pl', function() {
             let id = $(this).val();
+            // console.log(id);
+
+            // return;
+
+
             if (id != '') {
                 $.post('getPickingListAdmById', {
                     id: id
                 }, function(response) {
                     let data = response.picking_list;
                     $('#no_truck').val(data.no_truck);
+                    $('#dest').val(data.dest);
+                    $('#dealer_code').val(data.dealer_code);
+                    $('#dealer_det').val(data.dealer_det);
+                    $('#ekspedisi').val(data.expedisi);
                     $('#qty').val(data.tot_qty);
                 }, 'json');
             }
@@ -259,6 +288,7 @@
             e.preventDefault();
             let form = new FormData(this);
             let proses = $('#proses').val();
+
             if (proses === 'new_task') {
                 $.ajax({
                     url: 'createTask',
@@ -314,28 +344,57 @@
         $('#content').on('click', '.btnEdit', async function() {
             startLoading();
             let id = $(this).data('id');
+            let pl_id = $(this).data('pl-id');
             let result = await $.post('getTaskById', {
-                id: id
+                id: id,
+                pl_id: pl_id
             }, function(response) {
                 let task = response.data;
+                // console.log(task);
+                // return false;
+
                 $('#proses').val('edit_task');
                 $('#id_task').val(id);
-                $('#no_pl').val(task.no_pl);
-                $('#pl_date').val(task.pl_date);
-                $('#pl_time').val(formatTime(task.pl_time));
-                $('#ekspedisi').val(task.ekspedisi);
-                $('#no_truck').val(task.no_truck);
+
+                let divPL = $('#divPLNo');
+                divPL.empty();
+                divPL.html(`<label for="" class="form-label">PL No : </label>
+                                    <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;" required>
+                                </select>`);
+
+                let selPL = $('#no_pl');
+                selPL.empty();
+
+                let opt = `<option value="">Choose PL No </option>`;
+                opt += `<option value="${task.pl_id}" selected>${task.no_pl}</option>`;
+                selPL.html(opt);
+                $('#no_pl').select2({
+                    tags: true,
+                    dropdownParent: $("#createTask")
+                });
+
+                // Membersihkan opsi-opsi yang sudah terpilih sebelumnya
+                $('#picker_id').find('option:selected').prop('selected', false);
+                // Meloop melalui setiap nilai yang dipilih
+                $.each(response.picker, function(index, value) {
+                    // Menandai opsi dengan nilai yang sesuai sebagai dipilih
+                    // console.log(value.user_id);
+                    $('#picker_id option[value="' + value.user_id + '"]').prop('selected', true).trigger('change');
+                });
+
+
+                $('#dest').val(task.dest);
+                $('#dealer_code').val(task.dealer_code);
+                $('#dealer_det').val(task.dealer_det);
                 $('#qty').val(task.qty);
-                $('#checker_id').val(task.checker_id);
-                // $('#sj_date').val(task.sj_date);
-                // $('#sj_time').val(task.sj_time);
-                $('#driver').val(task.driver);
+                $('#no_truck').val(task.no_truck);
+                $('#ekspedisi').val(task.expedisi);
                 $('#remarks').val(task.remarks);
-                // $('#send_date').val(task.sj_send_date);
-                // $('#toa').val(task.time_arival);
-                // $('#pintu_unloading').val(task.pintu_unloading);
-                $('#btnTask').text('Edit');
-                $('#createTaskLabel').text('Edit task');
+
+                $('#btnTask').text('Update');
+                $('#createTaskLabel').text('Edit');
+                $('#proses').val('edit_task');
+
                 $('#createTask').modal('show');
                 stopLoading();
             }, 'json');
@@ -360,14 +419,25 @@
             startLoading();
             let dataToPost = {
                 id: $(this).data('id'),
+                pl_id: $(this).data('pl-id'),
+                activity: $(this).data('activity'),
                 proses: $(this).data('proses')
             };
 
+            // console.log(dataToPost);
+            // return false;
+
             $.post('prosesActivity', dataToPost, function(response) {
                 if (response.success == true) {
-                    stopLoading();
                     getAllRowTask();
+                    stopLoading();
                     socket.send('ping');
+                } else {
+                    stopLoading();
+                    Swal.fire({
+                        icon: 'error',
+                        title: response.message,
+                    })
                 }
             }, 'json');
         })

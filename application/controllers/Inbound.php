@@ -287,7 +287,7 @@ class Inbound extends CI_Controller
             $row['SURAT JALAN'] = $val->no_sj;
             $row['NO TRUCK'] = $val->no_truck;
             $row['EXPEDISI'] = $val->ekspedisi_name;
-            $row['TIME ARIVAL'] = $val->time_arival;
+            $row['TIME ARIVAL'] = $val->time_arival; 
             $row['NAMA SUPIR'] = $val->driver;
             $row['ALOCATION'] = $val->alloc_code;
             $row['PINTU UNLOADING'] = $val->pintu_unloading;
