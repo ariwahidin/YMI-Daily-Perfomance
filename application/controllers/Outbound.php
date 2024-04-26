@@ -19,7 +19,7 @@ class Outbound extends CI_Controller
 
     public function index()
     {
-        $checker = $this->user_m->getOperator();
+        $checker = $this->user_m->getOperatorOutbound();
         $factory = $this->factory_m->getFactory();
         $ekspedisi = $this->ekspedisi_m->getEkspedisi();
         $data = array(
@@ -271,6 +271,8 @@ class Outbound extends CI_Controller
     public function deleteOut()
     {
         $post = $this->input->post();
+
+        $this->db->delete('pl_p', ['pl_id' => $post['pl_id']]);
         $this->outbound_m->deleteOutTemp($post);
         if ($this->db->affected_rows() > 0) {
             $response = array(
@@ -297,18 +299,40 @@ class Outbound extends CI_Controller
         $this->render('outbound/outbound_report', $data);
     }
 
+    public function getReportOutbound($post)
+    {
+        $rows = $this->outbound_m->getCompletedActivity($post);
+
+        foreach ($rows->result() as $data) {
+            $data->{'DURASI DORONG'} = countDuration($data->{'MULAI DORONG'}, $data->{'SELESAI DORONG'});
+            $data->{'LEAD TIME DURASI DORONG'} = roundMinutes($data->{'DURASI DORONG'});
+            $data->{'DURASI CHECK'} = countDuration($data->{'MULAI CHECK'}, $data->{'SELESAI CHECK'});
+            $data->{'LEAD TIME DURASI CHECK'} = roundMinutes($data->{'DURASI CHECK'});
+            $data->{'DURASI SCAN'} = countDuration($data->{'MULAI SCAN'}, $data->{'SELESAI SCAN'});
+            $data->{'LEAD TIME DURASI SCAN'} = roundMinutes($data->{'DURASI SCAN'});
+        }
+
+        return $rows;
+    }
+
     public function tableReport()
     {
         $post = $this->input->post();
-        $rows = $this->outbound_m->getCompletedActivity($post);
+        $rows = $this->getReportOutbound($post);
 
         // var_dump($rows->result());
 
-        foreach ($rows->result() as $data) {
-            $data->duration_picking = countDuration($data->start_picking, $data->stop_picking);
-            $data->duration_checking = countDuration($data->start_checking, $data->stop_checking);
-            $data->duration_scanning = countDuration($data->start_scanning, $data->stop_scanning);
-        }
+        // foreach ($rows->result() as $data) {
+        //     $data->{'DURASI DORONG'} = countDuration($data->{'MULAI DORONG'}, $data->{'SELESAI DORONG'});
+        //     $data->{'LEAD TIME DURASI DORONG'} = roundMinutes($data->{'DURASI DORONG'});
+        //     $data->{'DURASI CHECK'} = countDuration($data->{'MULAI CHECK'}, $data->{'SELESAI CHECK'});
+        //     $data->{'LEAD TIME DURASI CHECK'} = roundMinutes($data->{'DURASI CHECK'});
+        //     $data->{'DURASI SCAN'} = countDuration($data->{'MULAI SCAN'}, $data->{'SELESAI SCAN'});
+        //     $data->{'LEAD TIME DURASI SCAN'} = roundMinutes($data->{'DURASI SCAN'});
+        // }
+
+        // var_dump($rows->result());
+        // die;
 
         $data = array(
             'completed' => $rows
@@ -318,33 +342,37 @@ class Outbound extends CI_Controller
 
     public function getDataExcel()
     {
-        $rows = $this->outbound_m->getCompletedActivity($_POST)->result();
+        $rows = $this->getReportOutbound($_POST)->result();
         $dataExcel = array();
         $no = 1;
-        foreach ($rows as $val) {
+        foreach ($rows as $data) {
             $row = array();
             $row['NO'] = $no++;
-            $row['TANGGAL AKTIVITAS'] = date('Y-m-d', strtotime($val->created_date));
-            $row['PL DATE'] = date('Y-m-d', strtotime($val->pl_date));
-            $row['PL TIME'] = date('Y-m-d', strtotime($val->pl_time));
-            $row['PL NO'] = $val->no_pl;
-            $row['NO TRUCK'] = $val->no_truck;
-            $row['EXPEDISI'] = $val->ekspedisi_name;
-            $row['NAMA SUPIR'] = $val->driver;
-            $row['QTY'] = $val->qty;
-            $row['CHECKER'] = $val->checker_name;
-            $row['START UNLOAD'] = date('H:i', strtotime($val->start_picking));
-            $row['STOP UNLOAD'] = date('H:i', strtotime($val->stop_picking));
-            $row['PICKING DURATION'] = date('H:i:s', strtotime($val->duration_picking));
-            $row['LEAD TIME PICKING'] = roundMinutes(date('H:i:s', strtotime($val->duration_picking)));
-            $row['START CHECKING'] = date('H:i', strtotime($val->start_checking));
-            $row['STOP CHECKING'] = date('H:i', strtotime($val->stop_checking));
-            $row['CHECKING DURATION'] = date('H:i:s', strtotime($val->duration_picking));
-            $row['LEAD TIME CHECKING'] = roundMinutes(date('H:i:s', strtotime($val->duration_picking)));
-            $row['START SCANNING'] = date('H:i', strtotime($val->start_scanning));
-            $row['STOP SCANNING'] = date('H:i', strtotime($val->stop_scanning));
-            $row['SCANNING DURATION'] = date('H:i:s', strtotime($val->duration_scanning));
-            $row['LEAD TIME SCANNING'] = roundMinutes(date('H:i:s', strtotime($val->duration_scanning)));
+            $row['TANGGAL'] = $data->{'TANGGAL'};
+            $row['NO PL'] = $data->{'NO PL'};
+            $row['NO SJ'] = $data->{'NO SJ'};
+            $row['TUJUAN'] = $data->{'TUJUAN'};
+            $row['NO TRUCK'] = $data->{'NO TRUCK'};
+            $row['KODE DEALER'] =  $data->{'KODE DEALER'};
+            $row['EXPEDISI'] = $data->{'EXPEDISI'};
+            $row['MD/DDS'] = $data->{'MD/DDS'};
+            $row['QTY'] = $data->{'QTY'};
+            $row['JAM CETAK PL'] = date('H:i', strtotime($data->{'JAM CETAK PL'}));
+            $row['JAM AMANO'] = date('H:i', strtotime($data->{'JAM AMANO'}));
+            $row['MULAI DORONG'] = date('H:i', strtotime($data->{'MULAI DORONG'}));
+            $row['SELESAI DORONG'] =  date('H:i', strtotime($data->{'SELESAI DORONG'}));
+            $row['MULAI CHECK'] = date('H:i', strtotime($data->{'MULAI CHECK'}));
+            $row['SELESAI CHECK'] = date('H:i', strtotime($data->{'SELESAI CHECK'}));
+            $row['MULAI SCAN'] = date('H:i', strtotime($data->{'MULAI SCAN'}));
+            $row['SELESAI SCAN'] = date('H:i', strtotime($data->{'SELESAI SCAN'}));
+            $row['JAM TERIMA SJ'] = date('H:i', strtotime($data->{'JAM TERIMA SJ'}));
+            $row['PINTU LOADING'] =  $data->{'PINTU LOADING'};
+            $row['DURASI DORONG'] =  $data->{'DURASI DORONG'};
+            $row['LEAD TIME DURASI DORONG'] = $data->{'LEAD TIME DURASI DORONG'};
+            $row['DURASI CHECK'] = $data->{'DURASI CHECK'};
+            $row['LEAD TIME DURASI CHECK'] = $data->{'LEAD TIME DURASI CHECK'};
+            $row['DURASI SCAN'] = $data->{'DURASI SCAN'};
+            $row['LEAD TIME DURASI SCAN'] = $data->{'LEAD TIME DURASI SCAN'};
             array_push($dataExcel, $row);
         }
 
@@ -435,26 +463,41 @@ class Outbound extends CI_Controller
         $this->render('outbound/picking_list/index', $data);
     }
 
+    public function getTablePickingList()
+    {
+        $data = array(
+            'picking_list' => $this->outbound_m->getAllPickingList(),
+        );
+        $response = array(
+            'success' => true,
+            'table' => $this->load->view('outbound/picking_list/table_pl', $data, true)
+        );
+        echo json_encode($response);
+    }
+
     public function createPickingList()
     {
         $post = $this->input->post();
         $params = array(
             'pl_no' => $post['pl_no'],
             'sj_no' => $post['sj_no'],
-            'sj_time' => $post['sj_time'],
+            'sj_time' => $post['sj_time'] == '' ? null : $post['sj_time'],
             'dest' => $post['dest'],
             'tot_qty' => $post['tot_qty'],
+            'remarks' => $post['remarks'],
+            'pintu_loading' => $post['pintu_loading'],
             'dealer_code' => $post['dealer_code'],
             'dealer_det' => $post['dealer_det'],
             'expedisi' => $post['expedisi'],
             'dock' => $post['dock'],
             'no_truck' => $post['no_truck'],
-            'pl_print_time' => $post['pl_print_time'],
+            'pl_print_time' => $post['pl_print_time'] == '' ? null : $post['pl_print_time'],
             'adm_pl_date' => $post['rec_pl_date'],
-            'adm_pl_time' => $post['rec_pl_time'],
+            'adm_pl_time' => $post['rec_pl_time'] == '' ? null : $post['rec_pl_time'],
             'created_at' => currentDateTime(),
             'created_by' => userId()
         );
+
         $this->outbound_m->createPickingList($params);
         if ($this->db->affected_rows() > 0) {
             $response = array(
@@ -465,6 +508,46 @@ class Outbound extends CI_Controller
             $response = array(
                 'success' => false,
                 'message' => 'Failed create picking list'
+            );
+        }
+        echo json_encode($response);
+    }
+
+    public function editPickingList()
+    {
+        $post = $this->input->post();
+
+        $params = array(
+            'pl_no' => $post['pl_no'],
+            'sj_no' => $post['sj_no'],
+            'sj_time' => $post['sj_time'] == '' ? null : $post['sj_time'],
+            'dest' => $post['dest'],
+            'tot_qty' => $post['tot_qty'],
+            'dealer_code' => $post['dealer_code'],
+            'dealer_det' => $post['dealer_det'],
+            'expedisi' => $post['expedisi'],
+            'dock' => $post['dock'],
+            'pintu_loading' => $post['pintu_loading'],
+            'no_truck' => $post['no_truck'],
+            'pl_print_time' => $post['pl_print_time'] == '' ? null : $post['pl_print_time'],
+            'adm_pl_date' => $post['rec_pl_date'],
+            'adm_pl_time' => $post['rec_pl_time'] == '' ? null : $post['rec_pl_time'],
+            'updated_at' => currentDateTime(),
+            'updated_by' => userId()
+        );
+
+        $this->db->where(['id' => $post['pl_id']]);
+        $this->db->update('pl_h', $params);
+
+        if ($this->db->affected_rows() > 0) {
+            $response = array(
+                'success' => true,
+                'message' => 'Edit picking list successfully'
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Edit create picking list'
             );
         }
         echo json_encode($response);
@@ -485,6 +568,37 @@ class Outbound extends CI_Controller
             'success' => true,
             'picking_list' => $this->outbound_m->getAllPickingList($_POST['id'])->row_array()
         );
+        echo json_encode($response);
+    }
+
+    public function cekStatusPickingList()
+    {
+        $post = $this->input->post();
+        $id = $post['id'];
+        $rows = $this->outbound_m->getAllPickingList($id)->row();
+        $response = array(
+            'success' => true,
+            'data' => $rows
+        );
+        echo json_encode($response);
+    }
+
+    public function deletePickingList()
+    {
+        $post = $this->input->post();
+        $this->db->where(['id' => $post['id']]);
+        $this->db->delete('pl_h');
+        if ($this->db->affected_rows() > 0) {
+            $response = array(
+                'success' => true,
+                'message' => 'Deleting data successfully'
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Error : ' . $this->db->error()
+            );
+        }
         echo json_encode($response);
     }
 }

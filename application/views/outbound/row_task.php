@@ -15,9 +15,10 @@
                             <p class="m-0">PL Date : <span><?= $data->adm_pl_date ?></span></p>
                             <p class="m-0">PL Time : <span><?= date('H:i', strtotime($data->adm_pl_time)) ?></span></p>
                             <p class="m-0">Qty : <span><?= $data->qty ?></span></p>
+                            <p class="m-0">Remarks : <span><?= $data->remarks ?></span></p>
                         </div>
                         <div class="col-md-2 col-6">
-                            <p class="m-0">Picker : </p>
+                            <p class="m-0">Picker :
                             <ul>
                                 <?php
                                 foreach (getPicker($data->pl_id)->result() as $picker) {
@@ -27,7 +28,8 @@
                                 }
                                 ?>
                             </ul>
-                            <p class="m-0">Checker : </p>
+                            </p>
+                            <p class="m-0">Checker :
                             <ul>
                                 <?php
                                 foreach (getChecker($data->pl_id)->result() as $checker) {
@@ -37,6 +39,7 @@
                                 }
                                 ?>
                             </ul>
+                            </p>
                             <p class="m-0">Scanner : </p>
                             <ul>
                                 <?php
@@ -51,7 +54,7 @@
                         <?php if ($_SESSION['user_data']['role'] != 4) { ?>
                             <div class="col-md-6 pt-1">
                                 <button class="btn btn-sm btn-primary btnEdit" data-id="<?= $data->id ?>" data-pl-id="<?= $data->pl_id ?>">Edit</button>
-                                <button class="btn btn-sm btn-danger btnDelete" data-id="<?= $data->id ?>">Delete</button>
+                                <button class="btn btn-sm btn-danger btnDelete" data-id="<?= $data->id ?>" data-pl-id="<?= $data->pl_id ?>">Delete</button>
                             </div>
                         <?php } ?>
                     </div>

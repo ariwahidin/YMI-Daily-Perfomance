@@ -91,13 +91,13 @@ class Outbound_m extends CI_Model
                 $data = array(
                     'pl_id' => $act->pl_id,
                     'no_pl' => $act->no_pl,
-                    'no_truck' => $act->no_truck,
-                    'qty' => $act->qty,
+                    // 'no_truck' => $act->no_truck,
+                    // 'qty' => $act->qty,
                     // 'checker_id' => $act->checker_id,
-                    'pl_date' => $act->pl_date,
-                    'pl_time' => $act->pl_time,
+                    // 'pl_date' => $act->pl_date,
+                    // 'pl_time' => $act->pl_time,
                     // 'time_arival' => $act->time_arival,
-                    'ekspedisi' => $act->ekspedisi,
+                    // 'ekspedisi' => $act->ekspedisi,
                     // 'driver' => $act->driver,
                     'start_picking' => $act->start_picking,
                     'stop_picking' => $act->stop_picking,
@@ -108,7 +108,7 @@ class Outbound_m extends CI_Model
                     'start_scanning' => $act->start_scanning,
                     'stop_scanning' => $act->stop_scanning,
                     'duration_scanning' => countDuration($act->start_scanning, $act->stop_scanning),
-                    'remarks' => $act->remarks,
+                    // 'remarks' => $act->remarks,
                     'activity_created_date' => $act->created_date,
                     'activity_created_by' => $act->created_by,
                     'created_date' => currentDateTime(),
@@ -145,29 +145,28 @@ class Outbound_m extends CI_Model
 
     public function getCompletedActivity()
     {
-        $sql = "select a.*, b.fullname as checker_name, d.name as ekspedisi_name
+        $sql = "select CONVERT(DATE, a.created_date) as TANGGAL, c.pl_no AS [NO PL], c.sj_no AS [NO SJ], 
+        c.dest as TUJUAN, c.no_truck as [NO TRUCK], c.dealer_code as [KODE DEALER], d.name AS EXPEDISI, c.dock as [MD/DDS], c.tot_qty as QTY,
+        c.remarks AS REMARKS, c.pintu_loading as [PINTU LOADING],
+        CONVERT(DATETIME2,CONVERT(VARBINARY(6),c.pl_print_time)+CONVERT(BINARY(3),CONVERT(DATE, a.created_date))) as [JAM CETAK PL],
+        CONVERT(DATETIME2,CONVERT(VARBINARY(6),c.adm_pl_time)+CONVERT(BINARY(3),CONVERT(DATE, c.adm_pl_date))) as [JAM AMANO],
+        a.start_picking as [MULAI DORONG], a.stop_picking as [SELESAI DORONG], a.start_checking as [MULAI CHECK], a.stop_checking as [SELESAI CHECK],
+        a.start_scanning as [MULAI SCAN], a.stop_scanning as [SELESAI SCAN],
+        CONVERT(DATETIME2,CONVERT(VARBINARY(6),c.sj_time)+CONVERT(BINARY(3),CONVERT(DATE, c.created_at))) as [JAM TERIMA SJ]
         from tb_out a 
-        inner join master_user b on a.checker_id = b.id
-        left join master_ekspedisi d on a.ekspedisi = d.id
-        where a.is_deleted <> 'Y' ";
+        left join master_user b on a.checker_id = b.id 
+        left join pl_h c on  c.id = a.pl_id
+        left join master_ekspedisi d on c.expedisi = d.id where a.is_deleted <> 'Y' ";
 
         if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
             $startDate = $_POST['startDate'];
             $endDate = $_POST['endDate'];
-            $sql .= " AND CONVERT(DATE, created_date) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
+            $sql .= " AND CONVERT(DATE, a.created_date) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
         } else {
-            $sql .= " AND CONVERT(DATE, created_date) = CONVERT(DATE, GETDATE())";
+            $sql .= " AND CONVERT(DATE, a.created_date) = CONVERT(DATE, GETDATE())";
         }
 
-        // if (isset($_POST['checker'])) {
-        //     if ($_POST['checker'] != '') {
-        //         $checker = $_POST['checker'];
-        //         $sql .= " AND checker like '%$checker%'";
-        //     }
-        // }
-
-
-        $sql .= " ORDER BY id DESC";
+        $sql .= " ORDER BY a.id DESC";
 
         $query = $this->db->query($sql);
         return $query;
@@ -249,11 +248,21 @@ class Outbound_m extends CI_Model
 
     public function getAllPickingList($id = null)
     {
-        $sql = "SELECT * FROM pl_h";
+        $sql = "select a.*, b.name as ekspedisi_name, c.no_pl, d.no_pl,
+        case 
+        WHEN c.no_pl is null and d.no_pl is null then 'unprocessed' 
+        WHEN c.no_pl is not null and d.no_pl is null then 'processing' 
+        WHEN c.no_pl is null and d.no_pl is not null then 'done' end as [status]
+        from pl_h a
+        left join master_ekspedisi b on a.expedisi = b.id
+        left join tb_out_temp c on a.id = c.no_pl
+        left join tb_out d on a.id = d.pl_id";
 
         if ($id != null) {
-            $sql .= " WHERE id = '$id'";
+            $sql .= " WHERE a.id = '$id'";
         }
+
+        $sql .= " order by a.created_at desc";
 
         $query = $this->db->query($sql);
         return $query;

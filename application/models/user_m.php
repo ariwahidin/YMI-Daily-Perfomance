@@ -149,4 +149,17 @@ class User_m extends CI_Model
         return $this->db->get();
     }
 
+    public function getOperatorOutbound()
+    {
+        $this->db->select('a.id, a.fullname, b.role');
+        $this->db->from('master_user a');
+        $this->db->join('master_role b', 'a.role = b.id');
+        $where = array(
+            // 'b.role' => 'operator',
+            'a.is_active' => 'Y'
+        );
+        $this->db->where($where);
+        return $this->db->get();
+    }
+
 }

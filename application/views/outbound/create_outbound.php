@@ -79,60 +79,58 @@
                     <input type="hidden" id="id_task" name="id_task" class="form-control">
 
 
-                    <div class="row g-4 mb-3">
-                        <div class="col col-lg-3" id="divPLNo">
+                    <div class="row g-3 mb-2">
+                        <div class="col-6 col-lg-3" id="divPLNo">
 
                         </div>
-                        <div class="col col-lg-3">
+                        <div class="col-6 col-lg-3">
                             <label for="" class="form-label">Destination</label>
-                            <input type="text" id="dest" name="dest" class="form-control" placeholder="" value="" required readonly>
+                            <input type="text" id="dest" name="dest" class="form-control-sm" placeholder="" value="" required readonly>
                         </div>
-                        <div class="col col-lg-2">
+                        <div class="col-6 col-lg-3">
                             <label for="" class="form-label">Dealer Code</label>
-                            <input type="text" id="dealer_code" name="dealer_code" class="form-control" placeholder="" value="" readonly>
+                            <input type="text" id="dealer_code" name="dealer_code" class="form-control-sm" placeholder="" value="" readonly>
                         </div>
-                        <div class="col col-lg-4">
+                        <div class="col-6 col-lg-3">
                             <label for="" class="form-label">Dealer / Depo</label>
-                            <input type="text" id="dealer_det" name="dealer_det" class="form-control" placeholder="" value="" readonly>
+                            <input type="text" id="dealer_det" name="dealer_det" class="form-control-sm" placeholder="" value="" readonly>
                         </div>
                     </div>
 
-                    <div class="row g-4 mb-3">
-                        <div class="col col-lg-3">
+                    <div class="row g-2 mb-2">
+                        <div class="col-6 col-lg-3">
                             <label for="priority-field" class="form-label">Total Qty</label>
-                            <input type="number" id="qty" name="qty" class="form-control" placeholder="" value="" readonly>
+                            <input type="number" id="qty" name="qty" class="form-control-sm" placeholder="" value="" readonly>
                         </div>
 
 
-                        <div class="col col-lg-3">
+                        <div class="col-6 col-lg-3">
                             <label for="priority-field" class="form-label">No truck</label>
-                            <input type="text" id="no_truck" name="no_truck" class="form-control" placeholder="" value="" readonly>
+                            <input type="text" id="no_truck" name="no_truck" class="form-control-sm" placeholder="" value="" readonly>
                         </div>
-                        <!-- <div class="col col-lg-3">
-                            <label for="priority-field" class="form-label">Driver</label>
-                            <input type="text" id="driver" name="driver" class="form-control" placeholder="" value="">
-                        </div> -->
-                        <div class="col col-lg-3">
+
+                        <div class="col-6 col-lg-3">
                             <label for="priority-field" class="form-label">Ekspedisi</label>
-                            <select class="form-control" name="ekspedisi" id="ekspedisi" disabled>
+                            <select class="form-control-sm" name="ekspedisi" id="ekspedisi" disabled>
                                 <option value="">Choose ekspedisi</option>
                                 <?php foreach ($ekspedisi->result() as $eks) { ?>
                                     <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
                                 <?php } ?>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="row g-4 mb-3">
-                        <div class="col col-lg-3">
+                        <div class="col-6 col-lg-3">
                             <label for="priority-field" class="form-label">Picker</label>
-                            <select style="background-color: blue !important;" class="js-example-basic-multiple" name="picker_id[]" multiple="multiple" id="picker_id" required>
+                            <select style="background-color: blue !important;" class="js-example-basic-multiple form-control-sm" name="picker_id[]" multiple="multiple" id="picker_id" required>
                                 <option value="">Choose picker</option>
                                 <?php foreach ($checker->result() as $check) { ?>
                                     <option value="<?= $check->id ?>"><?= $check->fullname ?></option>
                                 <?php } ?>
                             </select>
                         </div>
+                    </div>
+
+                    <div class="row g-4 mb-3">
+
 
                         <div class="col-lg-5">
                             <label for="priority-field" class="form-label">Remarks</label>
@@ -175,7 +173,7 @@
 
                     let divPL = $('#divPLNo');
                     divPL.empty();
-                    divPL.html(`<label for="" class="form-label">PL No : </label>
+                    divPL.html(`<label for="" class="form-label">PL No </label>
                                     <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;" required>
                                 </select>`);
 
@@ -300,8 +298,8 @@
                     success: function(response) {
                         if (response.success == true) {
                             getAllRowTask();
-                            socket.send('ping');
                             $('#createTask').modal('hide');
+                            socket.send('ping');
                         }
                     }
                 });
@@ -358,7 +356,7 @@
 
                 let divPL = $('#divPLNo');
                 divPL.empty();
-                divPL.html(`<label for="" class="form-label">PL No : </label>
+                divPL.html(`<label for="" class="form-label">PL No </label>
                                     <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;" required>
                                 </select>`);
 
@@ -403,8 +401,10 @@
         $('#content').on('click', '.btnDelete', function() {
             startLoading();
             let id = $(this).data('id');
+            let pl_id = $(this).data('pl-id');
             $.post('deleteOut', {
-                id: id
+                id: id,
+                pl_id: pl_id
             }, function(response) {
                 stopLoading();
                 if (response.success == true) {
@@ -615,7 +615,7 @@
             }, function(response) {
                 let content = $('#content');
                 content.empty();
-                content.html(response)
+                content.html(response);
             });
         }
 

@@ -14,44 +14,14 @@
 </div>
 
 <div class="row">
-    <div class="col col-md-6">
+    <div class="col col-md-12">
         <div class="card">
             <div class="card-header">
                 <button class="btn btn-primary" id="btnAdd">Add new</button>
+                <button class="btn btn-success" id="btnRefresh">Refresh</button>
             </div>
-            <div class="card-body">
-                <table id="user-table" class="display table table bordered" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>PL No</th>
-                            <th>Dock</th>
-                            <th>No Truck</th>
-                            <th>Dest</th>
-                            <th>Qty</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $no = 1;
-                        foreach ($picking_list->result() as $data) {
-                        ?>
-                            <tr>
-                                <td><?= $no++ ?></td>
-                                <td><?= $data->pl_no ?></td>
-                                <td><?= $data->dock ?></td>
-                                <td><?= $data->no_truck ?></td>
-                                <td><?= $data->dest ?></td>
-                                <td>
-                                    <button class="btn btn-sm btn-info btnEdit" data-id="<?= $data->id ?>">Edit</button>
-                                    <button class="btn btn-sm btn-danger btnDelete">Delete</button>
-                                </td>
-                            </tr>
-                        <?php
-                        }
-                        ?>
-                    </tbody>
-                </table>
+            <div class="card-body table-responsive" id="cardPL">
+
             </div>
         </div>
     </div>
@@ -73,6 +43,7 @@
                                 <label for="name" class="form-label">PL No : </label>
                                 <input type="text" class="form-control" id="pl_no" name="pl_no" placeholder="" required>
                                 <input type="hidden" id="form_proses" name="form_proses" val="" readonly>
+                                <input type="hidden" id="pl_id" name="pl_id" val="" readonly>
                             </div>
 
                         </div>
@@ -88,6 +59,13 @@
                             <div class="form-group">
                                 <label for="name" class="form-label">Total Qty : </label>
                                 <input type="number" class="form-control" id="tot_qty" name="tot_qty" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Pintu Loading : </label>
+                                <input type="number" class="form-control" id="pintu_loading" name="pintu_loading" placeholder="">
                             </div>
                         </div>
 
@@ -147,7 +125,7 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Expedisi : </label>
-                                <select class="form-control" name="expedisi" id="expedisi">
+                                <select class="form-control" name="expedisi" id="expedisi" required>
                                     <option value="">Choose ekspedisi</option>
                                     <?php foreach ($ekspedisi->result() as $eks) { ?>
                                         <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
@@ -175,6 +153,15 @@
                         </div>
                     </div>
 
+                    <div class="row mt-2">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Remarks : </label>
+                                <input type="text" class="form-control" name="remarks" id="remarks">
+                            </div>
+                        </div>
+                    </div>
+
 
                     <div class="col-lg-12 mt-3">
                         <div class="hstack gap-2 justify-content-end">
@@ -188,9 +175,11 @@
     </div>
 </div>
 
-
 <script>
     $(document).ready(function() {
+
+        getTablePickingList();
+
         $('#plForm').on('submit', function(e) {
             e.preventDefault();
             let formUser = new FormData(this);
@@ -212,7 +201,39 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             }).then(function() {
-                                window.location.href = 'pickingList';
+                                // window.location.href = 'pickingList';
+                                getTablePickingList();
+                                $('#modalForm').modal('hide');
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed',
+                                text: response.message
+                            });
+                        }
+                    },
+                    dataType: 'json'
+                });
+            } else {
+                $.ajax({
+                    url: 'editPickingList',
+                    type: 'POST',
+                    data: formUser,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success == true) {
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(function() {
+                                // window.location.href = 'pickingList';
+                                getTablePickingList();
+                                $('#modalForm').modal('hide');
                             })
                         } else {
                             Swal.fire({
@@ -225,39 +246,25 @@
                     dataType: 'json'
                 });
             }
-
-            // else {
-            //     $.ajax({
-            //         url: 'editEkspedisi',
-            //         type: 'POST',
-            //         data: formUser,
-            //         processData: false,
-            //         contentType: false,
-            //         success: function(response) {
-            //             if (response.success == true) {
-            //                 Swal.fire({
-            //                     position: "top-end",
-            //                     icon: "success",
-            //                     title: response.message,
-            //                     showConfirmButton: false,
-            //                     timer: 1500
-            //                 }).then(function() {
-            //                     window.location.href = 'index';
-            //                 })
-            //             } else {
-            //                 Swal.fire({
-            //                     icon: 'error',
-            //                     title: 'Failed',
-            //                     text: response.message
-            //                 });
-            //             }
-            //         },
-            //         dataType: 'json'
-            //     });
-            // }
         });
 
+        function getTablePickingList() {
+            $.post('getTablePickingList', {}, function(response) {
+                if (response.success == true) {
+                    $('#cardPL').empty();
+                    $('#cardPL').html(response.table);
+                    $('#tablePL').dataTable();
+                }
+            }, 'json');
+        }
+
         // $('#user-table').DataTable();
+
+        $('#btnRefresh').on('click', async function() {
+            startLoading();
+            await getTablePickingList();
+            stopLoading();
+        })
 
         $('#btnAdd').on('click', function() {
             moment.tz.setDefault('Asia/Jakarta');
@@ -272,37 +279,84 @@
             $('#modalForm').modal('show');
         })
 
-        // $('.btnEdit').on('click', function() {
-        //     $('#headerForm').text('Edit ekspedisi');
-        //     $('#form_proses').val('edit');
-        //     $('#eks_id').val($(this).data('id'));
-        //     $('#name').val($(this).data('name'));
-        //     $('#modalForm').modal('show');
-        // })
+        $('#cardPL').on('click', '.btnEdit', function() {
+            let pl_id = $(this).data('id');
 
-        // $('.btnDelete').on('click', function() {
-        //     let id = $(this).data('id');
-        //     $.post('deleteEkspedisi', {
-        //         id: id
-        //     }, function(response) {
-        //         if (response.success == true) {
-        //             Swal.fire({
-        //                 position: "top-end",
-        //                 icon: "success",
-        //                 title: response.message,
-        //                 showConfirmButton: false,
-        //                 timer: 1500
-        //             }).then(function() {
-        //                 window.location.href = 'index';
-        //             })
-        //         } else {
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Failed',
-        //                 text: response.message
-        //             });
-        //         }
-        //     }, 'json');
-        // })
+            $.post('getPickingListAdmById', {
+                id: pl_id
+            }, function(response) {
+                let data = response.picking_list;
+                $('#form_proses').val('edit');
+                $('#pl_id').val(data.id);
+                $('#pl_no').val(data.pl_no);
+                $('#dest').val(data.dest);
+                $('#tot_qty').val(data.tot_qty);
+                $('#pintu_loading').val(data.pintu_loading);
+                $('#dealer_code').val(data.dealer_code);
+                $('#dealer_det').val(data.dealer_det);
+                $('#dock').val(data.dock);
+                $('#pl_print_time').val(data.pl_print_time);
+                $('#rec_pl_date').val(data.adm_pl_date);
+                $('#rec_pl_time').val(data.adm_pl_time);
+                $('#expedisi').val(data.expedisi);
+                $('#no_truck').val(data.no_truck);
+                $('#sj_no').val(data.sj_no);
+                $('#sj_time').val(data.sj_time);
+                $('#remarks').val(data.remarks);
+                $('#headerForm').text('Edit PL');
+                $('#form_proses').val('edit');
+                $('#modalForm').modal('show');
+            }, 'json');
+
+        })
+
+        $('#cardPL').on('click', '.btnDelete', function() {
+            let id = $(this).data('id');
+
+
+            $.post('cekStatusPickingList', {
+                id: id
+            }, function(response) {
+                if (response.success == true) {
+                    if (response.data.status == 'unprocessed') {
+                        $.post('deletePickingList', {
+                            id: id
+                        }, function(response) {
+                            if (response.success == true) {
+                                getTablePickingList();
+                            }
+                        }, 'json');
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Not allowed',
+                            text: 'Status picking list : ' + response.data.status
+                        });
+                    }
+                }
+            }, 'json');
+
+            // $.post('deleteEkspedisi', {
+            //     id: id
+            // }, function(response) {
+            //     if (response.success == true) {
+            //         Swal.fire({
+            //             position: "top-end",
+            //             icon: "success",
+            //             title: response.message,
+            //             showConfirmButton: false,
+            //             timer: 1500
+            //         }).then(function() {
+            //             window.location.href = 'index';
+            //         })
+            //     } else {
+            //         Swal.fire({
+            //             icon: 'error',
+            //             title: 'Failed',
+            //             text: response.message
+            //         });
+            //     }
+            // }, 'json');
+        })
     });
 </script>
