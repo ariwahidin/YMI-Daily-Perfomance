@@ -479,6 +479,7 @@ class Outbound extends CI_Controller
     {
         $post = $this->input->post();
         $params = array(
+            'transaction_number' => $this->outbound_m->generateTransactionNumber(),
             'pl_no' => $post['pl_no'],
             'sj_no' => $post['sj_no'],
             'sj_time' => $post['sj_time'] == '' ? null : $post['sj_time'],
@@ -581,6 +582,11 @@ class Outbound extends CI_Controller
             'data' => $rows
         );
         echo json_encode($response);
+    }
+
+    public function generateTransactionNumber()
+    {
+        echo $this->outbound_m->generateTransactionNumber();
     }
 
     public function deletePickingList()

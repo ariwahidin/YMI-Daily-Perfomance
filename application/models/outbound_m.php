@@ -1,6 +1,31 @@
 <?php
 class Outbound_m extends CI_Model
 {
+
+    function generateTransactionNumber()
+    {
+        // Set zona waktu ke Asia/Jakarta
+        date_default_timezone_set('Asia/Jakarta');
+        // Ambil tanggal saat ini
+        $date = date('ymd');
+
+        // Ambil nomor urut perharinya dari database
+        $sql = "SELECT
+        ISNULL(MAX(RIGHT(transaction_number, 5)), 0) + 1 AS max_id 
+        FROM pl_h 
+        WHERE SUBSTRING(transaction_number, 2, 6) = '$date'";
+        
+        $query = $this->db->query($sql);
+        $row = $query->row();
+
+        $max_id = sprintf("%05s", $row->max_id);
+
+        // Gabungkan informasi dan nomor urut perharinya
+        $transaction_number = "O$date$max_id";
+
+        return $transaction_number;
+    }
+
     function createTask($params)
     {
         return $this->db->insert('tb_out_temp', $params);
