@@ -83,6 +83,11 @@
     </div>
 </div>
 
+<div class="row" id="divUserProses">
+    
+
+</div>
+
 <div class="row project-wrapper">
     <div class="col-xl-6">
         <div class="card">
@@ -132,10 +137,20 @@
 <script>
     $(document).ready(function() {
         getAllProccessInbound();
+        getUserProses();
 
 
         var socket;
         initWebSocket();
+
+        function getUserProses() {
+            $.get('getUserProses', {}, function(response) {
+                if (response.success == true) {
+                    $('#divUserProses').empty();
+                    $('#divUserProses').html(response.table_user_proses);
+                }
+            }, 'json');
+        }
 
         function initWebSocket() {
             let hostname = window.location.hostname;
@@ -152,6 +167,7 @@
                 cartInbound();
                 getAllProccessOutbound();
                 cartOutbound();
+                getUserProses();
                 // console.log('Received message: ' + event.data);
                 // Handle received message
             };
@@ -178,6 +194,7 @@
         }
 
         getAllProccessOutbound();
+
         function getAllProccessOutbound() {
             $.post('getAllProccessOutbound', function(response) {
                 let divOutbound = $('#divOutbound');

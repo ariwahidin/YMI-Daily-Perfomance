@@ -170,18 +170,21 @@ class Outbound_m extends CI_Model
 
     public function getCompletedActivity()
     {
-        $sql = "select CONVERT(DATE, a.created_date) as TANGGAL, c.pl_no AS [NO PL], c.sj_no AS [NO SJ], 
-        c.dest as TUJUAN, c.no_truck as [NO TRUCK], c.dealer_code as [KODE DEALER], d.name AS EXPEDISI, c.dock as [MD/DDS], c.tot_qty as QTY,
-        c.remarks AS REMARKS, c.pintu_loading as [PINTU LOADING],
-        CONVERT(DATETIME2,CONVERT(VARBINARY(6),c.pl_print_time)+CONVERT(BINARY(3),CONVERT(DATE, a.created_date))) as [JAM CETAK PL],
-        CONVERT(DATETIME2,CONVERT(VARBINARY(6),c.adm_pl_time)+CONVERT(BINARY(3),CONVERT(DATE, c.adm_pl_date))) as [JAM AMANO],
-        a.start_picking as [MULAI DORONG], a.stop_picking as [SELESAI DORONG], a.start_checking as [MULAI CHECK], a.stop_checking as [SELESAI CHECK],
-        a.start_scanning as [MULAI SCAN], a.stop_scanning as [SELESAI SCAN],
-        CONVERT(DATETIME2,CONVERT(VARBINARY(6),c.sj_time)+CONVERT(BINARY(3),CONVERT(DATE, c.created_at))) as [JAM TERIMA SJ]
+        $sql = "select CONVERT(DATE, a.created_date) as TANGGAL, c.pl_no AS [NO PL], c.sj_no AS [NO SJ], c.dest as TUJUAN, c.no_truck as [NO TRUCK], 
+        c.dealer_code as [KODE DEALER], d.name AS EXPEDISI, c.dock as [MD/DDS], c.tot_qty as QTY, c.remarks AS REMARKS, c.pintu_loading as [PINTU LOADING], 
+        --CONVERT(DATETIME2,CONVERT(VARBINARY(6),c.pl_print_time)+CONVERT(BINARY(3),
+        c.pl_print_time as [JAM CETAK PL], 
+        --CONVERT(DATETIME2,CONVERT(VARBINARY(6),c.adm_pl_time)+CONVERT(BINARY(3),
+        c.adm_pl_time as [JAM AMANO], 
+        a.start_picking as [MULAI DORONG], 
+        a.stop_picking as [SELESAI DORONG], a.start_checking as [MULAI CHECK], 
+        a.stop_checking as [SELESAI CHECK], a.start_scanning as [MULAI SCAN], 
+        a.stop_scanning as [SELESAI SCAN],
+        c.sj_time as [JAM TERIMA SJ] 
         from tb_out a 
         left join master_user b on a.checker_id = b.id 
-        left join pl_h c on  c.id = a.pl_id
-        left join master_ekspedisi d on c.expedisi = d.id where a.is_deleted <> 'Y' ";
+        left join pl_h c on c.id = a.pl_id 
+        left join master_ekspedisi d on c.expedisi = d.id  where a.is_deleted <> 'Y' ";
 
         if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
             $startDate = $_POST['startDate'];
