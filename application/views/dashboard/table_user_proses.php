@@ -2,13 +2,13 @@
     <div class="card">
         <div class="card-header">Summary of Inbound Activity</div>
         <div class="card-body">
-            <table class="table table-sm table-striped table-responsive table-bordered">
+            <table class="table table-sm table-striped table-nowrap table-responsive table-bordered">
                 <thead>
                     <tr>
                         <th>No.</th>
                         <th>Fullname</th>
-                        <th>Total SJ</th>
-                        <th>Total Qty</th>
+                        <th>SJ</th>
+                        <th>Qty</th>
                         <th>Date</th>
                     </tr>
                 </thead>
@@ -32,7 +32,6 @@
         </div>
     </div>
 </div>
-
 <div class="col-md-5 table-responsive">
     <div class="card">
         <div class="card-header">User Activity</div>
