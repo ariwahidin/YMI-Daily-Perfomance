@@ -50,6 +50,8 @@ class Dashboard extends CI_Controller
     public function getAllProccessOutbound()
     {
         $outbound = $this->outbound_m->getAllOutboundProccess();
+        // var_dump($outbound->result());
+        // exit;
         $data = array(
             'outbound' => $outbound
         );

@@ -29,10 +29,11 @@
 
 
 <div class="row" id="reportContent">
+
     <div class="col-xl-12">
         <div class="card">
+
             <div class="card-header align-items-center d-flex">
-                <!-- <h4 class="card-title mb-0 flex-grow-1">Completed Activities</h4> -->
                 <input type="text" class="form-control" style="width: 200px; margin-right: 10px; display:none;" id="sChecker" placeholder="Checker">
                 <input type="date" class="form-control" style="width: 200px; margin-right: 10px;" id="sStartDate" placeholder="Start Date">
                 <input type="date" class="form-control" style="width: 200px; margin-right: 10px;" id="sEndDate" placeholder="End Date">
@@ -41,13 +42,30 @@
             </div>
 
             <div class="card-body">
-                <!-- <p class="text-muted">Use <code>table</code> class to show bootstrap-based default table.</p> -->
-                <div class="live-preview">
-                    <div class="table-responsive" id="tablePlace">
+                <!-- Nav tabs -->
+                <ul class="nav nav-pills nav-success mb-3" role="tablist">
+                    <li class="nav-item waves-effect waves-light" role="presentation">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#outbound-1" role="tab" aria-selected="false" tabindex="-1">Outbound Summary</a>
+                    </li>
+                    <li class="nav-item waves-effect waves-light" role="presentation">
+                        <a class="nav-link" data-bs-toggle="tab" href="#picker-1" role="tab" aria-selected="false" tabindex="-1">Picker Detail</a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active show" id="outbound-1" role="tabpanel">
+                        <div class="table-responsive" id="tablePlace">
 
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="picker-1" role="tabpanel">
+                        <div class="table-responsive" id="divPicker">
+
+                        </div>
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 </div>
@@ -198,9 +216,6 @@
             });
         })
 
-
-
-
         $('#tablePlace').on('click', '.btnDelete', function() {
             let id = $(this).data('id');
             Swal.fire({
@@ -242,8 +257,14 @@
                     // return;
 
                     var headers = Object.keys(dataAct.data[0]);
+                    var headers_picker = Object.keys(dataAct.data_picker[0]);
+
+                    // return;
+
+
                     var workbook = new ExcelJS.Workbook();
-                    var sheet1 = workbook.addWorksheet('Sheet 1');
+                    var sheet1 = workbook.addWorksheet('Summary Outbound');
+                    var sheet2 = workbook.addWorksheet('Picker Detail');
 
 
                     sheet1.addRow(headers).eachCell(function(row, rowNumber) {
@@ -256,8 +277,29 @@
                         };
                     });
 
+                    sheet2.addRow(headers_picker).eachCell(function(row, rowNumber) {
+                        row.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFFF00'
+                            }
+                        };
+                    });
+
                     // Menentukan lebar kolom berdasarkan isi
                     sheet1.columns.forEach(function(column) {
+                        var maxLength = 0;
+                        column.eachCell(function(cell) {
+                            var columnLength = cell.value ? cell.value.toString().length : 10;
+                            if (columnLength > maxLength) {
+                                maxLength = columnLength;
+                            }
+                        });
+                        column.width = maxLength < 10 ? 10 : maxLength;
+                    });
+
+                    sheet2.columns.forEach(function(column) {
                         var maxLength = 0;
                         column.eachCell(function(cell) {
                             var columnLength = cell.value ? cell.value.toString().length : 10;
@@ -288,7 +330,24 @@
                         });
                     });
 
-
+                    sheet2.eachRow(function(row) {
+                        row.eachCell(function(cell) {
+                            cell.border = {
+                                top: {
+                                    style: 'thin'
+                                },
+                                left: {
+                                    style: 'thin'
+                                },
+                                bottom: {
+                                    style: 'thin'
+                                },
+                                right: {
+                                    style: 'thin'
+                                }
+                            };
+                        });
+                    });
 
                     dataAct.data.forEach(function(row, ) {
                         var rowData = headers.map(function(header) {
@@ -309,6 +368,44 @@
 
                         // Menambahkan border ke seluruh tabel
                         sheet1.eachRow(function(row) {
+                            row.eachCell(function(cell) {
+                                cell.border = {
+                                    top: {
+                                        style: 'thin'
+                                    },
+                                    left: {
+                                        style: 'thin'
+                                    },
+                                    bottom: {
+                                        style: 'thin'
+                                    },
+                                    right: {
+                                        style: 'thin'
+                                    }
+                                };
+                            });
+                        });
+                    });
+
+                    dataAct.data_picker.forEach(function(row, ) {
+                        var rowData = headers_picker.map(function(header) {
+                            return row[header];
+                        });
+                        sheet2.addRow(rowData);
+                        // Menentukan lebar kolom berdasarkan isi
+                        sheet2.columns.forEach(function(column) {
+                            var maxLength = 0;
+                            column.eachCell(function(cell) {
+                                var columnLength = cell.value ? cell.value.toString().length : 10;
+                                if (columnLength > maxLength) {
+                                    maxLength = columnLength;
+                                }
+                            });
+                            column.width = maxLength < 10 ? 10 : maxLength;
+                        });
+
+                        // Menambahkan border ke seluruh tabel
+                        sheet2.eachRow(function(row) {
                             row.eachCell(function(cell) {
                                 cell.border = {
                                     top: {
@@ -356,8 +453,6 @@
             let sDate = $('#sStartDate').val();
             let eDate = $('#sEndDate').val();
 
-            let divTable = $('#tablePlace')
-            divTable.empty();
             $.ajax({
                 url: "tableReport",
                 type: "POST",
@@ -365,11 +460,21 @@
                     startDate: sDate,
                     endDate: eDate
                 },
-                success: function(data) {
-                    divTable.html(data);
-                    $('#tableCompleteActivities').DataTable({
-                        sort: false
-                    });
+                dataType: 'JSON',
+                success: function(response) {
+                    if (response.success == true) {
+                        let divTable = $('#tablePlace');
+                        let divPicker = $('#divPicker');
+                        divTable.empty();
+                        divPicker.empty();
+
+                        divTable.html(response.summary);
+                        // $('#tableCompleteActivities').DataTable({
+                        //     sort: false
+                        // });
+
+                        divPicker.html(response.picker);
+                    }
                 }
             });
         }

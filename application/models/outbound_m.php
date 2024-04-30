@@ -14,7 +14,7 @@ class Outbound_m extends CI_Model
         ISNULL(MAX(RIGHT(transaction_number, 5)), 0) + 1 AS max_id 
         FROM pl_h 
         WHERE SUBSTRING(transaction_number, 2, 6) = '$date'";
-        
+
         $query = $this->db->query($sql);
         $row = $query->row();
 
@@ -217,20 +217,24 @@ class Outbound_m extends CI_Model
 
     public function getAllOutboundProccess()
     {
-        $sql = "select * from (
-            select a.no_pl, b.fullname as checker_name,
-            start_picking, stop_picking,
-            start_checking, stop_checking, start_scanning, stop_scanning, created_date as created_at
-            from tb_out_temp a 
-            inner join  master_user b on a.checker_id = b.id
-            union all
-            SELECT no_pl, b.fullname as checker_name, a.start_picking,
-            a.stop_picking, a.start_checking, a.stop_checking,
-            a.start_scanning, a.stop_scanning, a.activity_created_date as created_at
-            FROM tb_out a
-            INNER JOIN master_user b ON a.checker_id = b.id) ss
-            WHERE CONVERT(DATE, created_at) = CONVERT(DATE, GETDATE())
-            order by created_at desc";
+        $sql = "SELECT *,
+        CASE WHEN start_picking is null and stop_picking is null and start_scanning is null and start_scanning is null and start_checking is null and stop_checking is null then '' ELSE
+        CASE WHEN start_picking is not null and stop_picking is not null and start_scanning is not null and stop_scanning is not null and start_checking is not null and stop_checking is not null then 'Done' ELSE
+        'Processing' END END AS [status]
+        FROM
+        (SELECT a.id as pl_id, pl_no, b.start_picking, b.stop_picking,
+        b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, b.created_date
+        FROM pl_h a
+        INNER JOIN tb_out_temp b on a.id = b.no_pl
+        union
+        SELECT a.id as pl_id, b.no_pl as pl_no, b.start_picking, b.stop_picking,
+        b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, b.activity_created_date as created_date
+        FROM pl_h a
+        INNER JOIN tb_out b ON a.id = b.pl_id
+        )a 
+        WHERE CONVERT(DATE, created_date) = CONVERT(DATE, getdate())
+        order by created_date desc";
+        
         $query = $this->db->query($sql);
         return $query;
     }
@@ -303,6 +307,28 @@ class Outbound_m extends CI_Model
         LEFT JOIN tb_out_temp b ON a.id = b.no_pl
         LEFT JOIN tb_out c ON a.id = c.pl_id
         WHERE b.no_pl IS NULL AND c.no_pl IS NULL";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getPickerOutbound()
+    {
+        $sql = "select a.pl_id, c.fullname, b.sts, a.no_pl, a.start_picking, a.stop_picking, 
+        a.pl_date, a.created_date
+        from tb_out a 
+        inner join pl_p b on a.pl_id = b.pl_id
+        inner join master_user c on b.user_id = c.id
+        where a.is_deleted <> 'Y'
+        and b.sts = 'picker'";
+
+        if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
+            $startDate = $_POST['startDate'];
+            $endDate = $_POST['endDate'];
+            $sql .= " AND CONVERT(DATE, a.created_date) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
+        } else {
+            $sql .= " AND CONVERT(DATE, a.created_date) = CONVERT(DATE, GETDATE())";
+        }
 
         $query = $this->db->query($sql);
         return $query;

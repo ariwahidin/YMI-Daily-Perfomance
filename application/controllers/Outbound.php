@@ -315,29 +315,45 @@ class Outbound extends CI_Controller
         return $rows;
     }
 
+    public function getPickerOutbound($post)
+    {
+        $rows = $this->outbound_m->getPickerOutbound();
+        $no = 1;
+        $dataExcel = array();
+        foreach ($rows->result() as $data) {
+            $row = array();
+            $row['NO'] = $no++;
+            $row['PICKER NAME'] = $data->fullname;
+            $row['TANGGAL'] = $data->created_date;
+            $row['NO PL'] = $data->no_pl;
+            $row['PL DATE'] = $data->pl_date;
+            $row['MULAI DORONG'] = date('H:i', strtotime($data->start_picking));
+            $row['SELESAI DORONG'] = date('H:i', strtotime($data->stop_picking));
+            $row['DURASI DORONG'] = countDuration($row['MULAI DORONG'], $row['SELESAI DORONG']);
+            $row['LEAD TIME DURASI DORONG'] = roundMinutes($row['DURASI DORONG']); 
+            array_push($dataExcel, $row);
+        }
+
+        return $dataExcel;
+    }
+
     public function tableReport()
     {
         $post = $this->input->post();
         $rows = $this->getReportOutbound($post);
 
-        // var_dump($rows->result());
-
-        // foreach ($rows->result() as $data) {
-        //     $data->{'DURASI DORONG'} = countDuration($data->{'MULAI DORONG'}, $data->{'SELESAI DORONG'});
-        //     $data->{'LEAD TIME DURASI DORONG'} = roundMinutes($data->{'DURASI DORONG'});
-        //     $data->{'DURASI CHECK'} = countDuration($data->{'MULAI CHECK'}, $data->{'SELESAI CHECK'});
-        //     $data->{'LEAD TIME DURASI CHECK'} = roundMinutes($data->{'DURASI CHECK'});
-        //     $data->{'DURASI SCAN'} = countDuration($data->{'MULAI SCAN'}, $data->{'SELESAI SCAN'});
-        //     $data->{'LEAD TIME DURASI SCAN'} = roundMinutes($data->{'DURASI SCAN'});
-        // }
-
-        // var_dump($rows->result());
-        // die;
-
         $data = array(
-            'completed' => $rows
+            'completed' => $rows,
+            'picker' => $this->getPickerOutbound($post)
         );
-        $this->load->view('outbound/table_report', $data);
+
+        $response = array(
+            'success' => true,
+            'summary' => $this->load->view('outbound/table_report', $data, true),
+            'picker' => $this->load->view('outbound/table_picker', $data, true )
+        );
+
+        echo json_encode($response);
     }
 
     public function getDataExcel()
@@ -376,9 +392,15 @@ class Outbound extends CI_Controller
             array_push($dataExcel, $row);
         }
 
+        $data_picker = $this->getPickerOutbound($_POST);
+
+        // var_dump($data_picker);
+        // exit;
+
         $data = array(
             'success' => true,
-            'data' => $dataExcel
+            'data' => $dataExcel,
+            'data_picker' => $data_picker
         );
         echo json_encode($data);
     }
