@@ -25,11 +25,12 @@ class Dashboard_m extends CI_Model
 
     function getUserIdle()
     {
-        $sql = "select fullname from master_user 
-        where id not in(select checker_id from tb_trans_temp)
-        and id not in(select user_id from pl_p a
+        $sql = "select a.fullname, b.name as position_name from master_user a
+        inner join master_position b on a.position = b.id 
+        where a.id not in(select checker_id from tb_trans_temp)
+        and a.id not in(select user_id from pl_p a
         inner join tb_out_temp b on a.pl_id =b.no_pl)
-        and is_active = 'Y'";
+        and is_active = 'Y' and position is not null";
         $query = $this->db->query($sql);
         return $query;
     }

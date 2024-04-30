@@ -21,7 +21,8 @@ class User extends CI_Controller
     {
         $data = array(
             'role' => $this->role_m->getRole(),
-            'user' => $this->user_m->getUserActive()
+            'user' => $this->user_m->getUserActive(),
+            'position' => $this->db->get('master_position')
         );
         $this->render('user/index', $data);
     }
@@ -29,6 +30,8 @@ class User extends CI_Controller
     public function createUser()
     {
         $post = $this->input->post();
+        // var_dump($post);
+        // die;
         $cek = $this->user_m->getUserByUsername($post['username']);
         if ($cek->num_rows() < 1) {
             $this->user_m->createUser($post);
@@ -55,6 +58,8 @@ class User extends CI_Controller
     public function editUser()
     {
         $post = $this->input->post();
+        // var_dump($post);
+        // die;
         $this->user_m->editUser($post);
         if ($this->db->affected_rows() > 0) {
             $response = array(

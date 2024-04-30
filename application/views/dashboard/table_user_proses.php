@@ -75,6 +75,7 @@
                     <tr>
                         <th>No.</th>
                         <th>Fullname</th>
+                        <th>Position</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,6 +86,7 @@
                         <tr>
                             <td><?= $no++ ?></td>
                             <td><?= $data->fullname ?></td>
+                            <td><?= $data->position_name ?></td>
                         </tr>
                     <?php
                     }

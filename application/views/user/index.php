@@ -28,13 +28,14 @@
                 <button class="btn btn-primary" id="btnAdd">Add new user</button>
             </div>
             <div class="card-body">
-                <table id="user-table" class="display table table bordered" style="width:100%">
+                <table id="user-table" class="table table-striped table-bordered table-sm" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Fullname</th>
                             <th>Username</th>
                             <th>Role</th>
+                            <th>Position</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -48,8 +49,9 @@
                                 <td><?= $data->fullname ?></td>
                                 <td><?= $data->username ?></td>
                                 <td><?= $data->role_name ?></td>
+                                <td><?= $data->position_name ?></td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm btnEdit" data-id="<?= $data->id ?>" data-fullname="<?= $data->fullname ?>" data-username="<?= $data->username ?>" data-role="<?= $data->role ?>">Edit</button>
+                                    <button class="btn btn-primary btn-sm btnEdit" data-id="<?= $data->id ?>" data-fullname="<?= $data->fullname ?>" data-username="<?= $data->username ?>" data-role="<?= $data->role ?>" data-position="<?= $data->position_id?>">Edit</button>
 
                                     <?php
                                     if ($_SESSION['user_data']['user_id'] != $data->id) {
@@ -101,7 +103,7 @@
                                 <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
                             </div>
                         </div>
-                        <div class="col-lg-12">
+                        <div class="col-lg-6">
                             <label for="role" class="form-label">Role</label>
                             <div>
                                 <select name="role" id="role" class="form-control" required>
@@ -110,6 +112,21 @@
                                     foreach ($role->result() as $r) {
                                     ?>
                                         <option value="<?= $r->id ?>"><?= $r->role ?></option>
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="role" class="form-label">Position</label>
+                            <div>
+                                <select name="position" id="position" class="form-control">
+                                    <option value="">Choose position</option>
+                                    <?php
+                                    foreach ($position->result() as $data) {
+                                    ?>
+                                        <option value="<?= $data->id ?>"><?= $data->name ?></option>
                                     <?php
                                     }
                                     ?>
@@ -201,6 +218,10 @@
             $('#headerForm').text('Add new user');
             $('#form_proses').val('add_new');
             $('#username').removeAttr('readonly');
+            $('#fullname').val('');
+            $('#username').val('');
+            $('#role').val('');
+            $('#position').val('');
             $('#password').attr('required', 'required');
             $('#modalForm').modal('show');
         })
@@ -211,7 +232,8 @@
             $('#user_id').val($(this).data('id'));
             $('#fullname').val($(this).data('fullname'));
             $('#username').val($(this).data('username'));
-            $('#username').attr('readonly', 'readonly');;
+            $('#position').val($(this).data('position'));
+            $('#username').attr('readonly', 'readonly');
             $('#password').val('');
             $('#password').removeAttr('required');
             $('#role').val($(this).data('role'));

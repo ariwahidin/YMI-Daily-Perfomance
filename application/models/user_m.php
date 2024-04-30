@@ -64,9 +64,10 @@ class User_m extends CI_Model
 
     function getUserActive($username = null, $password = null)
     {
-        $this->db->select('a.id, a.fullname, a.username, a.role, b.role as role_name');
+        $this->db->select('a.id, a.fullname, a.username, a.role, c.id as position_id, c.name as position_name, b.role as role_name');
         $this->db->from('master_user a');
-        $this->db->join('master_role b', 'b.id = a.role');
+        $this->db->join('master_role b', 'b.id = a.role', 'left');
+        $this->db->join('master_position c', 'c.id = a.position', 'left');
         $this->db->where('a.is_deleted <> ', 'Y');
         if ($username != null && $password != null) {
             $this->db->where('a.username', $username);
@@ -86,6 +87,7 @@ class User_m extends CI_Model
             'username' => $post['username'],
             'password' => $post['password'],
             'role' => $post['role'],
+            'position' => $post['position'] == '' ? null : $post['position'],
             'is_deleted' => 'N',
             'created_by' => $_SESSION['user_data']['user_id'],
             'created_at' => $created_at
@@ -101,6 +103,7 @@ class User_m extends CI_Model
             'fullname' => $post['fullname'],
             'username' => $post['username'],
             'role' => $post['role'],
+            'position' => $post['position'] == '' ? null : $post['position'],
             'updated_by' => $_SESSION['user_data']['user_id'],
             'updated_at' => $created_at
         );
@@ -161,5 +164,4 @@ class User_m extends CI_Model
         $this->db->where($where);
         return $this->db->get();
     }
-
 }
