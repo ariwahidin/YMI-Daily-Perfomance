@@ -110,8 +110,8 @@
                         </div>
 
                         <div class="col-6 col-lg-3">
-                            <label for="priority-field" class="form-label">Ekspedisi</label>
-                            <select class="form-control-sm" name="ekspedisi" id="ekspedisi" disabled>
+                            <label for="priority-field" class="form-label">Ekspedisi</label><br>
+                            <select class="form-control-sm" name="ekspedisi" id="ekspedisi" style="width: 150px;" disabled>
                                 <option value="">Choose ekspedisi</option>
                                 <?php foreach ($ekspedisi->result() as $eks) { ?>
                                     <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
@@ -129,10 +129,14 @@
                         </div>
                     </div>
 
-                    <div class="row g-4 mb-3">
+                    <div class="row mb-3">
 
 
-                        <div class="col-lg-5">
+                        <div class="col-lg-3">
+                            <label for="priority-field" class="form-label">Pintu Loading</label>
+                            <input type="text" id="pintu_loading" name="pintu_loading" class="form-control-sm" value="">
+                        </div>
+                        <div class="col-lg-9">
                             <label for="priority-field" class="form-label">Remarks</label>
                             <input type="text" id="remarks" name="remarks" class="form-control" value="">
                         </div>
@@ -228,6 +232,8 @@
                     $('#dealer_code').val(data.dealer_code);
                     $('#dealer_det').val(data.dealer_det);
                     $('#ekspedisi').val(data.expedisi);
+                    $('#pintu_loading').val(data.pintu_loading);
+                    $('#remarks').val(data.remarks);
                     $('#qty').val(data.tot_qty);
                 }, 'json');
             }
@@ -387,6 +393,7 @@
                 $('#qty').val(task.qty);
                 $('#no_truck').val(task.no_truck);
                 $('#ekspedisi').val(task.expedisi);
+                $('#pintu_loading').val(task.pintu_loading);
                 $('#remarks').val(task.remarks);
 
                 $('#btnTask').text('Update');

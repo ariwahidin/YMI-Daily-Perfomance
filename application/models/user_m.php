@@ -152,6 +152,16 @@ class User_m extends CI_Model
         return $this->db->get();
     }
 
+    public function getOperatorForInbound()
+    {
+        $sql = "SELECT a.id, a.fullname, a.position as position_id, b.name as position 
+        FROM master_user a
+        INNER JOIN master_position b ON a.position = b.id
+        WHERE b.id = 1 and a.is_active = 'Y'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     public function getOperatorOutbound()
     {
         $this->db->select('a.id, a.fullname, b.role');

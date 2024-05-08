@@ -20,7 +20,8 @@ class Ekspedisi extends CI_Controller
     public function index()
     {
         $data = array(
-            'ekspedisi' => $this->ekspedisi_m->getEkspedisi()
+            'ekspedisi' => $this->ekspedisi_m->getEkspedisi(),
+            'position' => $this->db->get('master_position')
         );
         $this->render('ekspedisi/index', $data);
     }
@@ -28,8 +29,12 @@ class Ekspedisi extends CI_Controller
     public function createEkspedisi()
     {
         $post = $this->input->post();
+        // var_dump($post);
+        // die;
         $params = array(
             'name' => $post['name'],
+            'no_truck' => $post['no_truck'],
+            'position_id' => $post['position'],
             'is_active' => 'Y',
             'is_deleted' => 'N',
             'created_by' => userId(),
@@ -56,9 +61,14 @@ class Ekspedisi extends CI_Controller
     public function editEkspedisi()
     {
         $post = $this->input->post();
+        // var_dump($post);
+        // die;
+
         $id = $post['eks_id'];
         $params = array(
             'name' => $post['name'],
+            'position_id' => $post['position'],
+            'no_truck' => $post['no_truck'],
             'updated_at' => currentDateTime(),
             'updated_by' => userId()
         );

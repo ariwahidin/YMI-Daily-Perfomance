@@ -27,6 +27,7 @@
             <th scope="col">LEAD TIME DURASI CHECK</th>
             <th scope="col">DURASI SCAN</th>
             <th scope="col">LEAD TIME DURASI SCAN</th>
+            <th scope="col">REMARKS</th>
         </tr>
     </thead>
     <tbody>
@@ -61,6 +62,7 @@
                 <td><?= $data->{'LEAD TIME DURASI CHECK'} ?></td>
                 <td><?= $data->{'DURASI SCAN'} ?></td>
                 <td><?= $data->{'LEAD TIME DURASI SCAN'} ?></td>
+                <td><?= $data->{'REMARKS'} ?></td>
             </tr>
         <?php
         }

@@ -40,6 +40,7 @@ class Outbound_m extends CI_Model
     public function getTaskByUser($post = null)
     {
         // var_dump($post);
+        // die;
         // if (isset($post['search'])) {
         //     if ($post['search'] != '') {
         //         $search = $post['search'];
@@ -71,7 +72,7 @@ class Outbound_m extends CI_Model
 
 
         $sql = "SELECT b.id, a.id as pl_id, a.pl_no as no_pl, a.adm_pl_date, a.adm_pl_time, a.no_truck, 
-        a.tot_qty as qty, a.sj_no, a.expedisi,
+        a.tot_qty as qty, a.sj_no, a.expedisi, a.pintu_loading,
         a.sj_time, a.dest, a.dealer_code, a.dealer_det, a.remarks,
         b.start_picking, b.stop_picking,
         b.start_checking, b.stop_checking,
@@ -86,6 +87,15 @@ class Outbound_m extends CI_Model
                 $sql .= " WHERE a.id = '$pl_id'";
             }
         }
+
+        if (isset($post['search'])) {
+            if ($post['search'] != '') {
+                $search = $post['search'];
+                $sql .= " WHERE a.pl_no LIKE '%$search%'";
+            }
+        }
+
+        $sql .= " ORDER BY b.id DESC";
 
         $query = $this->db->query($sql);
 
@@ -180,7 +190,8 @@ class Outbound_m extends CI_Model
         a.stop_picking as [SELESAI DORONG], a.start_checking as [MULAI CHECK], 
         a.stop_checking as [SELESAI CHECK], a.start_scanning as [MULAI SCAN], 
         a.stop_scanning as [SELESAI SCAN],
-        c.sj_time as [JAM TERIMA SJ] 
+        c.sj_time as [JAM TERIMA SJ],
+        c.remarks as [REMARKS] 
         from tb_out a 
         left join master_user b on a.checker_id = b.id 
         left join pl_h c on c.id = a.pl_id 
@@ -234,7 +245,7 @@ class Outbound_m extends CI_Model
         )a 
         WHERE CONVERT(DATE, created_date) = CONVERT(DATE, getdate())
         order by created_date desc";
-        
+
         $query = $this->db->query($sql);
         return $query;
     }
@@ -315,10 +326,11 @@ class Outbound_m extends CI_Model
     public function getPickerOutbound()
     {
         $sql = "select a.pl_id, c.fullname, b.sts, a.no_pl, a.start_picking, a.stop_picking, 
-        a.pl_date, a.created_date
+        d.adm_pl_date as pl_date, a.created_date
         from tb_out a 
         inner join pl_p b on a.pl_id = b.pl_id
         inner join master_user c on b.user_id = c.id
+		inner join pl_h d on a.pl_id = d.id 
         where a.is_deleted <> 'Y'
         and b.sts = 'picker'";
 

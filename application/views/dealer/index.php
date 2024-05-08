@@ -12,11 +12,11 @@
 <div class="row">
     <div class="col col-md-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Master Ekspedisi</h4>
+            <h4 class="mb-sm-0">Master dealer</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Master Ekspedisi</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Master dealer</a></li>
                 </ol>
             </div>
 
@@ -28,31 +28,29 @@
     <div class="col col-md-6">
         <div class="card">
             <div class="card-header">
-                <button class="btn btn-primary" id="btnAdd">Add new ekspedisi</button>
+                <button class="btn btn-primary" id="btnAdd">Add new dealer</button>
             </div>
             <div class="card-body">
                 <table id="user-table" class="display table table bordered" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>No Truck</th>
-                            <th>Position</th>
+                            <th>Dealer Code</th>
+                            <th>Dealer Name</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $no = 1;
-                        foreach ($ekspedisi->result() as $data) {
+                        foreach ($dealer->result() as $data) {
                         ?>
                             <tr>
                                 <td><?= $no++ ?></td>
+                                <td><?= $data->code ?></td>
                                 <td><?= $data->name ?></td>
-                                <td><?= $data->no_truck ?></td>
-                                <td><?= $data->position ?></td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm btnEdit" data-id="<?= $data->id ?>" data-name="<?= $data->name ?>" data-position="<?= $data->position_id ?>" data-notruck="<?= $data->no_truck ?>">Edit</button>
+                                    <button class="btn btn-primary btn-sm btnEdit" data-id="<?= $data->id ?>" data-code="<?= $data->code ?>" data-name="<?= $data->name ?>">Edit</button>
                                     <button class=" btn btn-danger btn-sm btnDelete" data-id="<?= $data->id ?>">Delete</button>
                                 </td>
                             </tr>
@@ -79,31 +77,14 @@
                     <div class="row g-3">
                         <div class="col-xxl-6">
                             <div>
-                                <label for="name" class="form-label">Ekspedisi Name</label>
+                                <label for="name" class="form-label">Dealer Code</label>
+                                <input type="text" class="form-control" id="code" name="code" placeholder="" required>
+                            </div>
+                            <div>
+                                <label for="name" class="form-label">Dealer Name</label>
                                 <input type="text" class="form-control" id="name" name="name" placeholder="" required>
                                 <input type="hidden" id="eks_id" name="eks_id" val="" readonly>
                                 <input type="hidden" id="form_proses" name="form_proses" val="" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div>
-                                <label for="name" class="form-label">Position</label>
-                                <select class="form-control" name="position" id="position_id">
-                                    <option value="">Choose position</option>
-                                    <?php
-                                    foreach ($position->result() as $data) {
-                                    ?>
-                                        <option value="<?= $data->id ?>"><?= $data->name ?></option>
-                                    <?php
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div>
-                                <label for="name" class="form-label">No Truck</label>
-                                <input type="text" class="form-control" id="no_truck" name="no_truck" placeholder="" required>
                             </div>
                         </div>
 
@@ -129,7 +110,7 @@
 
             if (form_proses === 'add_new') {
                 $.ajax({
-                    url: 'createEkspedisi',
+                    url: 'createdealer',
                     type: 'POST',
                     data: formUser,
                     processData: false,
@@ -157,7 +138,7 @@
                 });
             } else {
                 $.ajax({
-                    url: 'editEkspedisi',
+                    url: 'editdealer',
                     type: 'POST',
                     data: formUser,
                     processData: false,
@@ -189,24 +170,23 @@
         $('#user-table').DataTable();
 
         $('#btnAdd').on('click', function() {
-            $('#headerForm').text('Add new ekspedisi');
+            $('#headerForm').text('Add new dealer');
             $('#form_proses').val('add_new');
             $('#modalForm').modal('show');
         })
 
         $('.btnEdit').on('click', function() {
-            $('#headerForm').text('Edit ekspedisi');
+            $('#headerForm').text('Edit dealer');
             $('#form_proses').val('edit');
             $('#eks_id').val($(this).data('id'));
+            $('#code').val($(this).data('code'));
             $('#name').val($(this).data('name'));
-            $('#position_id').val($(this).data('position'));
-            $('#no_truck').val($(this).data('notruck'));
             $('#modalForm').modal('show');
         })
 
         $('.btnDelete').on('click', function() {
             let id = $(this).data('id');
-            $.post('deleteEkspedisi', {
+            $.post('deletedealer', {
                 id: id
             }, function(response) {
                 if (response.success == true) {

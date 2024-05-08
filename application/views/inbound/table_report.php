@@ -1,4 +1,4 @@
-<table style="font-size: 10px;" class="table table-bordered table-striped table-nowrap align-middle mb-0" id="tableCompleteActivities">
+<table style="font-size: 10px;" class="table table-bordered table-striped table-nowrap align-middle" id="tableCompleteActivities">
     <thead>
         <tr>
             <th scope="col">NO.</th>
@@ -38,7 +38,7 @@
                 <td><?= $no++ ?></td>
                 <td><?= date('Y-m-d', strtotime($data->sj_created_at)) ?></td>
                 <td><?= date('Y-m-d', strtotime($data->sj_send_date)) ?></td>
-                <td><?= date('Y-m-d', strtotime($data->unload_st_time)) ?></td>
+                <td><?= $data->start_unload == null ? '' : date('Y-m-d', strtotime($data->start_unload)) ?></td>
                 <td><?= $data->factory_name ?></td>
                 <td><?= $data->no_sj ?></td>
                 <td><?= date('Y-m-d', strtotime($data->sj_date)) ?></td>
@@ -51,18 +51,24 @@
                 <td><?= $data->checker_name ?></td>
                 <td><?= $data->qty ?></td>
                 <td><?= date('H:i', strtotime($data->time_arival)) ?></td>
-                <td><?= date('H:i', strtotime($data->unload_st_time)) ?></td>
-                <td><?= date('H:i', strtotime($data->unload_fin_time)) ?></td>
+                <td><?= $data->start_unload == null ? '' : date('H:i', strtotime($data->start_unload)) ?></td>
+                <td><?= $data->stop_unload == null ? '' : date('H:i', strtotime($data->stop_unload)) ?></td>
                 <td><?= $data->unload_duration ?></td>
-                <td><?= date('H:i', strtotime($data->checking_st_time)) ?></td>
-                <td><?= date('H:i', strtotime($data->checking_fin_time)) ?></td>
+                <td><?= $data->start_checking == null ? '' : date('H:i', strtotime($data->start_checking)) ?></td>
+                <td><?= $data->stop_checking == null ? '' : date('H:i', strtotime($data->stop_checking)) ?></td>
                 <td><?= $data->checking_duration ?></td>
-                <td><?= date('H:i', strtotime($data->putaway_st_time)) ?></td>
-                <td><?= date('H:i', strtotime($data->putaway_fin_time)) ?></td>
+                <td><?= $data->start_putaway == null ? '' : date('H:i', strtotime($data->start_putaway)) ?></td>
+                <td><?= $data->stop_putaway == null ? '' : date('H:i', strtotime($data->stop_putaway)) ?></td>
                 <td><?= $data->putaway_duration ?></td>
                 <td>
-                    <button class="btn mt-1 mb-1 btn-sm btn-primary btnEdit" data-id="<?= $data->id ?>">Edit</button>
-                    <button class="btn mt-1 mb-1 btn-sm btn-danger btnDelete" data-id="<?= $data->id ?>">Delete</button>
+                    <?php
+                    if ($data->status == 'complete') {
+                    ?>
+                        <button class="btn mt-1 mb-1 btn-sm btn-primary btnEdit" data-id="<?= $data->id ?>">Edit</button>
+                        <button class="btn mt-1 mb-1 btn-sm btn-danger btnDelete" data-id="<?= $data->id ?>">Delete</button>
+                    <?php
+                    }
+                    ?>
                 </td>
             </tr>
         <?php

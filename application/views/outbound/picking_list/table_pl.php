@@ -18,6 +18,7 @@
             <th>No Truck</th>
             <th>Dest</th>
             <th>Pintu Loading</th>
+            <th>Remarks</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -44,6 +45,7 @@
                 <td><?= $data->no_truck ?></td>
                 <td><?= $data->dest ?></td>
                 <td><?= $data->pintu_loading ?></td>
+                <td><?= $data->remarks ?></td>
                 <td>
                     <button class="btn btn-sm btn-info btnEdit" data-id="<?= $data->id ?>">Edit</button>
                     <button class="btn btn-sm btn-danger btnDelete" data-id="<?= $data->id ?>">Delete</button>

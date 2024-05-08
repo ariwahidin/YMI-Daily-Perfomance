@@ -19,7 +19,7 @@ class Inbound extends CI_Controller
 
     public function index()
     {
-        $checker = $this->user_m->getOperator();
+        $checker = $this->user_m->getOperatorForInbound();
         $factory = $this->factory_m->getFactory();
         $ekspedisi = $this->ekspedisi_m->getEkspedisi();
         $data = array(
@@ -125,7 +125,7 @@ class Inbound extends CI_Controller
 
     public function task()
     {
-        $checker = $this->user_m->getOperator();
+        $checker = $this->user_m->getOperatorForInbound();
         $factory = $this->factory_m->getFactory();
         $ekspedisi = $this->ekspedisi_m->getEkspedisi();
         $data = array(
@@ -287,24 +287,24 @@ class Inbound extends CI_Controller
             $row['SURAT JALAN'] = $val->no_sj;
             $row['NO TRUCK'] = $val->no_truck;
             $row['EXPEDISI'] = $val->ekspedisi_name;
-            $row['TIME ARIVAL'] = $val->time_arival; 
+            $row['TIME ARIVAL'] = $val->time_arival;
             $row['NAMA SUPIR'] = $val->driver;
             $row['ALOCATION'] = $val->alloc_code;
             $row['PINTU UNLOADING'] = $val->pintu_unloading;
             $row['QTY'] = $val->qty;
             $row['CHECKER'] = $val->checker_name;
-            $row['START UNLOAD'] = date('H:i', strtotime($val->start_unload));
-            $row['STOP UNLOAD'] = date('H:i', strtotime($val->stop_unload));
-            $row['UNLOAD DURATION'] = date('H:i:s', strtotime($val->unload_duration));
-            $row['LEAD TIME UNLOAD'] = roundMinutes(date('H:i:s', strtotime($val->unload_duration)));
-            $row['START CHECKING'] = date('H:i', strtotime($val->start_checking));
-            $row['STOP CHECKING'] = date('H:i', strtotime($val->stop_checking));
-            $row['CHECKING DURATION'] = date('H:i:s', strtotime($val->checking_duration));
-            $row['LEAD TIME CHECKING'] = roundMinutes(date('H:i:s', strtotime($val->checking_duration)));
-            $row['START PUTAWAY'] = date('H:i', strtotime($val->start_putaway));
-            $row['STOP PUTAWAY'] = date('H:i', strtotime($val->stop_putaway));
-            $row['PUTAWAY DURATION'] = date('H:i:s', strtotime($val->putaway_duration));
-            $row['LEAD TIME PUTAWAY'] = roundMinutes(date('H:i:s', strtotime($val->putaway_duration)));
+            $row['START UNLOAD'] = $val->start_unload == null ? '' :  date('H:i', strtotime($val->start_unload));
+            $row['STOP UNLOAD'] = $val->stop_unload == null ? '' :  date('H:i', strtotime($val->stop_unload));
+            $row['UNLOAD DURATION'] = $val->stop_unload == null ? '' : countDuration(date('Y-m-d H:i:s', strtotime($val->start_unload)), date('Y-m-d H:i:s', strtotime($val->stop_unload)));
+            $row['LEAD TIME UNLOAD'] = $val->stop_unload == null ? '' :  roundMinutes($row['UNLOAD DURATION']);
+            $row['START CHECKING'] = $val->start_checking == null ? '' : date('H:i', strtotime($val->start_checking));
+            $row['STOP CHECKING'] = $val->stop_checking == null ? '' : date('H:i', strtotime($val->stop_checking));
+            $row['CHECKING DURATION'] = $val->stop_checking == null ? '' : countDuration(date('Y-m-d H:i:s', strtotime($val->start_checking)), date('Y-m-d H:i:s', strtotime($val->stop_checking)));
+            $row['LEAD TIME CHECKING'] = $val->stop_checking == null ? '' : roundMinutes($row['CHECKING DURATION']);
+            $row['START PUTAWAY'] = $val->start_putaway == null ? '' : date('H:i', strtotime($val->start_putaway));
+            $row['STOP PUTAWAY'] = $val->stop_putaway == null ? '' : date('H:i', strtotime($val->stop_putaway));
+            $row['PUTAWAY DURATION'] = $val->stop_putaway == null ? '' : countDuration(date('Y-m-d H:i:s', strtotime($val->start_putaway)), date('Y-m-d H:i:s', strtotime($val->stop_putaway)));
+            $row['LEAD TIME PUTAWAY'] = $val->stop_putaway == null ? '' : roundMinutes($row['PUTAWAY DURATION']);
             array_push($dataExcel, $row);
         }
 
@@ -369,7 +369,7 @@ class Inbound extends CI_Controller
             'updated_by' => userId(),
             'updated_at' => currentDateTime()
         );
-        
+
         $this->inbound_m->editTaskCompleted($id, $params);
 
         if ($this->db->affected_rows() > 0) {

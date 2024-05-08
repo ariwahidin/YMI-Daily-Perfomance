@@ -6,7 +6,7 @@ class Outbound extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        $this->load->model(['outbound_m', 'user_m', 'ekspedisi_m', 'factory_m']);
+        $this->load->model(['outbound_m', 'user_m', 'ekspedisi_m', 'factory_m', 'destination_m', 'dealer_m']);
         is_not_logged_in();
     }
 
@@ -51,6 +51,7 @@ class Outbound extends CI_Controller
         $params = array(
             'tot_qty' => $post['qty'],
             'no_truck' => $post['no_truck'],
+            'pintu_loading' => $post['pintu_loading'],
             'remarks' => $post['remarks'],
             'updated_at' => currentDateTime(),
             'updated_by' => userId()
@@ -116,6 +117,7 @@ class Outbound extends CI_Controller
         }
 
         $params = array(
+            'pintu_loading' => $post['pintu_loading'],
             'remarks' => $post['remarks'],
             'updated_at' => currentDateTime(),
             'updated_by' => userId()
@@ -330,7 +332,7 @@ class Outbound extends CI_Controller
             $row['MULAI DORONG'] = date('H:i', strtotime($data->start_picking));
             $row['SELESAI DORONG'] = date('H:i', strtotime($data->stop_picking));
             $row['DURASI DORONG'] = countDuration($row['MULAI DORONG'], $row['SELESAI DORONG']);
-            $row['LEAD TIME DURASI DORONG'] = roundMinutes($row['DURASI DORONG']); 
+            $row['LEAD TIME DURASI DORONG'] = roundMinutes($row['DURASI DORONG']);
             array_push($dataExcel, $row);
         }
 
@@ -350,7 +352,7 @@ class Outbound extends CI_Controller
         $response = array(
             'success' => true,
             'summary' => $this->load->view('outbound/table_report', $data, true),
-            'picker' => $this->load->view('outbound/table_picker', $data, true )
+            'picker' => $this->load->view('outbound/table_picker', $data, true)
         );
 
         echo json_encode($response);
@@ -389,6 +391,7 @@ class Outbound extends CI_Controller
             $row['LEAD TIME DURASI CHECK'] = $data->{'LEAD TIME DURASI CHECK'};
             $row['DURASI SCAN'] = $data->{'DURASI SCAN'};
             $row['LEAD TIME DURASI SCAN'] = $data->{'LEAD TIME DURASI SCAN'};
+            $row['REMARKS'] = $data->{'REMARKS'};
             array_push($dataExcel, $row);
         }
 
@@ -481,6 +484,8 @@ class Outbound extends CI_Controller
         $data = array(
             'picking_list' => $this->outbound_m->getAllPickingList(),
             'ekspedisi' => $this->ekspedisi_m->getEkspedisi(),
+            'dest' => $this->destination_m->getdestination(),
+            'dealer' => $this->dealer_m->getDealer(),
         );
         $this->render('outbound/picking_list/index', $data);
     }
@@ -540,6 +545,9 @@ class Outbound extends CI_Controller
     {
         $post = $this->input->post();
 
+        // var_dump($post);
+        // die;
+
         $params = array(
             'pl_no' => $post['pl_no'],
             'sj_no' => $post['sj_no'],
@@ -552,6 +560,7 @@ class Outbound extends CI_Controller
             'dock' => $post['dock'],
             'pintu_loading' => $post['pintu_loading'],
             'no_truck' => $post['no_truck'],
+            'remarks' => $post['remarks'],
             'pl_print_time' => $post['pl_print_time'] == '' ? null : $post['pl_print_time'],
             'adm_pl_date' => $post['rec_pl_date'],
             'adm_pl_time' => $post['rec_pl_time'] == '' ? null : $post['rec_pl_time'],

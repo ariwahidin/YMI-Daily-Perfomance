@@ -7,16 +7,8 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6">
-                <!-- <script>
-                    document.write(new Date().getFullYear())
-                </script>  -->
                 PT. Puninar Yusen Logistics Indonesia
             </div>
-            <!-- <div class="col-sm-6">
-                <div class="text-sm-end d-none d-sm-block">
-                    Design & Develop by Themesbrand
-                </div>
-            </div> -->
         </div>
     </div>
 </footer>
@@ -78,6 +70,32 @@
     });
 
     setTimeout(stopLoading, 1000);
+
+    function toggleTheme() {
+        // Mengecek apakah sessionStorage memiliki data dengan key 'data-bs-theme'
+        if (sessionStorage.getItem('data-bs-theme')) {
+            // Mengambil nilai yang tersimpan dalam sessionStorage
+            var currentTheme = sessionStorage.getItem('data-bs-theme');
+
+            // Mengubah tema dari 'dark' menjadi 'light' atau sebaliknya
+            var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            // Memperbarui data pada sessionStorage dengan tema yang baru
+            sessionStorage.setItem('data-bs-theme', newTheme);
+
+            // Di sini Anda dapat menambahkan logika lain, misalnya memperbarui tampilan halaman sesuai dengan tema yang baru
+
+            // Contoh: Mengubah warna latar belakang body
+            document.body.classList.toggle('dark-theme');
+            document.body.classList.toggle('light-theme');
+        } else {
+            // Jika tidak ada data dengan key 'data-bs-theme' dalam sessionStorage, maka tambahkan data baru dengan tema 'light'
+            sessionStorage.setItem('data-bs-theme', 'light');
+        }
+    }
+
+    // Mengaitkan fungsi toggleTheme() dengan sebuah tombol (misalnya, tombol dengan ID 'theme-toggle')
+    document.getElementById('btnTheme').addEventListener('click', toggleTheme);
 </script>
 </body>
 

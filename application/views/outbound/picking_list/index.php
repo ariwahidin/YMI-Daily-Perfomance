@@ -1,3 +1,4 @@
+<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
 <div class="row">
     <div class="col col-md-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -45,58 +46,7 @@
                                 <input type="hidden" id="form_proses" name="form_proses" val="" readonly>
                                 <input type="hidden" id="pl_id" name="pl_id" val="" readonly>
                             </div>
-
                         </div>
-
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="name" class="form-label">Destination : </label>
-                                <input type="text" class="form-control" id="dest" name="dest" placeholder="">
-                            </div>
-                        </div>
-
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="name" class="form-label">Total Qty : </label>
-                                <input type="number" class="form-control" id="tot_qty" name="tot_qty" placeholder="">
-                            </div>
-                        </div>
-
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="name" class="form-label">Pintu Loading : </label>
-                                <input type="number" class="form-control" id="pintu_loading" name="pintu_loading" placeholder="">
-                            </div>
-                        </div>
-
-
-                    </div>
-
-                    <div class="row mt-2">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="name" class="form-label">Dealer Code : </label>
-                                <input type="text" class="form-control" id="dealer_code" name="dealer_code" placeholder="">
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="name" class="form-label">Dealer / Depo : </label>
-                                <input type="text" class="form-control" id="dealer_det" name="dealer_det" placeholder="">
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="name" class="form-label">Dock : </label>
-                                <input type="text" class="form-control" id="dock" name="dock" placeholder="">
-                            </div>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="row mt-2">
 
 
                         <div class="col">
@@ -117,6 +67,83 @@
                                 <input type="time" class="form-control" id="rec_pl_time" name="rec_pl_time" placeholder="" required>
                             </div>
                         </div>
+
+
+
+
+
+
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Dealer Code : </label>
+                                <!-- <input type="text" class="form-control" id="dealer_code" name="dealer_code" placeholder=""> -->
+                                <select name="dealer_code" id="dealer_code">
+                                    <option value="">Choose dealer code</option>
+                                    <?php
+                                    foreach ($dealer->result() as $data) {
+                                    ?>
+                                        <option value="<?= $data->code ?>" data-name="<?= $data->name ?>"><?= $data->code ?></option>
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Dealer / Depo : </label>
+                                <input type="text" class="form-control" id="dealer_det" name="dealer_det" placeholder="" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Pintu Loading : </label>
+                                <input type="number" class="form-control" id="pintu_loading" name="pintu_loading" placeholder="">
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row mt-2">
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Destination : </label>
+                                <!-- <input type="text" class="form-control" id="dest" name="dest" placeholder=""> -->
+                                <select name="dest" id="dest" class="form-control">
+                                    <option value="">Choose destination</option>
+                                    <?php
+                                    foreach ($dest->result() as $data) {
+                                    ?>
+                                        <option value="<?= $data->code ?>" data-name="<?= $data->name ?>"><?= $data->code ?></option>
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Dest. Type : </label>
+                                <input type="text" class="form-control" id="dock" name="dock" placeholder="" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Total Qty : </label>
+                                <input type="number" class="form-control" id="tot_qty" name="tot_qty" placeholder="">
+                            </div>
+                        </div>
+
                     </div>
 
 
@@ -124,19 +151,25 @@
 
                         <div class="col">
                             <div class="form-group">
-                                <label for="name" class="form-label">Expedisi : </label>
-                                <select class="form-control" name="expedisi" id="expedisi" required>
-                                    <option value="">Choose ekspedisi</option>
+                                <label for="name" class="form-label">No Truck : </label>
+                                <!-- <input type="text" class="form-control" id="no_truck" name="no_truck" placeholder=""> -->
+                                <select class="form-control" name="no_truck" id="no_truck" required>
+                                    <option value="">Choose No Truck</option>
                                     <?php foreach ($ekspedisi->result() as $eks) { ?>
-                                        <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
+                                        <option value="<?= $eks->no_truck ?>" data-id="<?= $eks->id ?>"><?= $eks->no_truck ?></option>
                                     <?php } ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <label for="name" class="form-label">No Truck : </label>
-                                <input type="text" class="form-control" id="no_truck" name="no_truck" placeholder="">
+                                <label for="name" class="form-label">Expedisi : </label>
+                                <select class="form-control" name="expedisi" id="expedisi">
+                                    <option value="">Choose ekspedisi</option>
+                                    <?php foreach ($ekspedisi->result() as $eks) { ?>
+                                        <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                         </div>
                         <div class="col">
@@ -174,9 +207,45 @@
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
+
+        $('#dest').select2({
+            tags: true,
+            dropdownParent: $("#modalForm")
+        });
+
+        $('#dest').on('change', function() {
+            let kode = $(this).val();
+            let name = $(this).children('option:selected').data('name');
+            $('#dock').val(name);
+        })
+
+        $('#dealer_code').select2({
+            tags: true,
+            dropdownParent: $("#modalForm")
+        });
+
+        $('#dealer_code').on('change', function() {
+            let kode = $(this).val();
+            let name = $(this).children('option:selected').data('name');
+            $('#dealer_det').val(name);
+        })
+
+        $('#no_truck').select2({
+            tags: true,
+            dropdownParent: $("#modalForm")
+        });
+
+        $('#no_truck').on('change', function() {
+            let kode = $(this).val();
+            let id = $(this).children('option:selected').data('id');
+            console.log(id);
+            $('#expedisi').val(id);
+        })
+
+
 
         getTablePickingList();
 
@@ -309,6 +378,8 @@
             }, 'json');
 
         })
+
+
 
         $('#cardPL').on('click', '.btnDelete', function() {
             let id = $(this).data('id');

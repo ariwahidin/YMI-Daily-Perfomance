@@ -11,10 +11,11 @@
                     <div style="font-size: 11px;" class="row">
                         <div class="col-md-3 col-6 ps-3">
                             <p class="m-0">Date : <span><?= date('Y-m-d', strtotime($data->activity_date)) ?></span></p>
-                            <p class="m-0">PL No : <span class=""><?= $data->no_pl ?></span></p>
+                            <p class="m-0">PL No : <span class=""><strong><?= $data->no_pl ?></strong></span></p>
                             <p class="m-0">PL Date : <span><?= $data->adm_pl_date ?></span></p>
                             <p class="m-0">PL Time : <span><?= date('H:i', strtotime($data->adm_pl_time)) ?></span></p>
                             <p class="m-0">Qty : <span><?= $data->qty ?></span></p>
+                            <p class="m-0">Pintu Loading : <span><?= $data->pintu_loading ?></span></p>
                             <p class="m-0">Remarks : <span><?= $data->remarks ?></span></p>
                         </div>
                         <div class="col-md-2 col-6">
