@@ -19,8 +19,8 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card card-animate overflow-hidden">
-            <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Inbound Summary</h4>
+            <div class="card-header card-info align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Inbound Summary <?= date('Y-m-d') ?></h4>
             </div>
             <div class="card-body" style="z-index:1 ;">
                 <div class="d-flex align-items-center">

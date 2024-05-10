@@ -42,7 +42,32 @@ class Dashboard_m extends CI_Model
         from tb_trans a
         group by a.checker_id, CONVERT(date, a.created_date))a
         inner join master_user b on a.checker_id =  b.id
+        WHERE convert(date, a.created_date) = convert(date, getdate())
         order by a.created_date desc";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function getUserInboundActivity()
+    {
+        $sql = "select distinct a.id, a.user_id, b.fullname, a.date, a.start_time, a.end_time, c.name as position, 
+        case when d.id is not null then 'active' else 'idle' end as [status]
+        from work_schedule a
+        inner join master_user b on a.user_id = b.id
+        inner join master_position c on a.position_id = c.id
+        left join tb_trans_temp d on a.user_id = d.checker_id
+        WHERE a.is_deleted <> 'Y' and a.date = convert(date, getdate()) AND c.id = 1";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function getUserOutbound()
+    {
+        $sql = "select distinct a.id, a.user_id, b.fullname, a.date, a.start_time, a.end_time, c.name as position
+        from work_schedule a
+        inner join master_user b on a.user_id = b.id
+        inner join master_position c on a.position_id = c.id
+        WHERE a.is_deleted <> 'Y' and a.date = convert(date, getdate()) AND c.id = 2";
         $query = $this->db->query($sql);
         return $query;
     }

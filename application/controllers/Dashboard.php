@@ -26,9 +26,11 @@ class Dashboard extends CI_Controller
     public function getUserProses()
     {
         $data = array(
-            'user_proses' => $this->dashboard_m->getUserProses(),
-            'user_idle' => $this->dashboard_m->getUserIdle(),
-            'inbound' => $this->dashboard_m->getResumeUserInbound()
+            // 'user_proses' => $this->dashboard_m->getUserProses(),
+            // 'user_idle' => $this->dashboard_m->getUserIdle(),
+            'inbound' => $this->dashboard_m->getResumeUserInbound(),
+            'user_inbound' => $this->dashboard_m->getUserInboundActivity(),
+            'user_outbound' => $this->dashboard_m->getUserOutbound()
         );
 
         $response = array(
@@ -50,8 +52,6 @@ class Dashboard extends CI_Controller
     public function getAllProccessOutbound()
     {
         $outbound = $this->outbound_m->getAllOutboundProccess();
-        // var_dump($outbound->result());
-        // exit;
         $data = array(
             'outbound' => $outbound
         );

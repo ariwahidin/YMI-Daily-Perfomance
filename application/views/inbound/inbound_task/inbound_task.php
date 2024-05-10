@@ -1,3 +1,4 @@
+<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
 <link href="<?= base_url() ?>myassets/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script src="<?= base_url() ?>myassets/js/jquery-3.7.0.js"></script>
 <script src="<?= base_url() ?>myassets/js/jquery.dataTables.min.js"></script>
@@ -104,11 +105,16 @@
                     <div class="row g-4 mb-3">
                         <div class="col-lg-4">
                             <label for="task-status" class="form-label">No Truck</label>
-                            <input type="text" id="no_truck" name="no_truck" class="form-control" value="">
+                            <!-- <input type="text" id="no_truck" name="no_truck" class="form-control" value=""> -->
+                            <select class="form-control" name="no_truck" id="no_truck" required>
+                                <option value="">Choose No Truck</option>
+                                <?php foreach ($ekspedisi->result() as $e) { ?>
+                                    <option value="<?= $e->no_truck ?>" data-id="<?= $e->id ?>"> <?= $e->no_truck ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                         <div class="col col-lg-4">
                             <label for="priority-field" class="form-label">Expedisi</label>
-                            <!-- <input type="text" id="expedisi" name="expedisi" class="form-control" placeholder="" value=""> -->
                             <select class="form-control" name="expedisi" id="expedisi" required>
                                 <option value="">Choose Ekspedisi</option>
                                 <?php foreach ($ekspedisi->result() as $e) { ?>
@@ -169,8 +175,23 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
+
+
+        $('#no_truck').select2({
+            tags: true,
+            dropdownParent: $("#createTask")
+        });
+
+        $('#no_truck').on('change', function() {
+            let kode = $(this).val();
+            let id = $(this).children('option:selected').data('id');
+            // console.log(id);
+            $('#expedisi').val(id);
+        })
+
 
         var socket;
         getAllRowTask();
@@ -240,8 +261,8 @@
                     success: function(response) {
                         if (response.success == true) {
                             getAllRowTask();
-                            socket.send('ping');
                             $('#createTask').modal('hide');
+                            socket.send('ping');
                         }
                     }
                 });

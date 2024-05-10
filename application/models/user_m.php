@@ -62,6 +62,7 @@ class User_m extends CI_Model
         return $this->db->count_all_results();
     }
 
+
     function getUserActive($username = null, $password = null)
     {
         $this->db->select('a.id, a.fullname, a.username, a.role, c.id as position_id, c.name as position_name, b.role as role_name');

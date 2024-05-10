@@ -20,55 +20,61 @@ class WorkSchedule extends CI_Controller
     public function index()
     {
         $data = array(
-            'destination' => $this->work_schedule_m->getdestination()
+            'users' => $this->user_m->getUserActive(),
+            'position' => $this->db->get('master_position'),
+            'work_schedule' => $this->work_schedule_m->getWorkSchedule()
         );
-        $this->render('destination/index', $data);
+        $this->render('work_schedule/index', $data);
     }
 
-    public function createdestination()
+    public function createSchedule()
     {
         $post = $this->input->post();
 
-        $cek = $this->db->get_where('master_destination', ['code' => $post['code']]);
+        $cek = $this->db->get_where('work_schedule', ['user_id' => $post['user_id'], 'date' => $post['date'], 'is_deleted' => 'N']);
 
         if ($cek->num_rows() < 1) {
 
             $params = array(
-                'code' => $post['code'],
-                'name' => $post['name'],
-                'is_active' => 'Y',
-                'is_deleted' => 'N',
+                'user_id' => $post['user_id'],
+                'position_id' => $post['position_id'],
+                'date' => $post['date'],
+                'start_time' => date('Y-m-d H:i:s', strtotime($post['date'] . $post['start_time'])),
+                'end_time' => date('Y-m-d H:i:s', strtotime($post['date'] . $post['end_time'])),
+                'created_at' => currentDateTime(),
                 'created_by' => userId(),
-                'created_at' => currentDateTime()
+                'is_deleted' => 'N'
             );
 
-            $this->work_schedule_m->createdestination($params);
+            $this->db->insert('work_schedule', $params);
+
             if ($this->db->affected_rows() > 0) {
                 $response = array(
                     'success' => true,
-                    'message' => 'Create new destination has been successfully'
+                    'message' => 'Schedule has been created successfully'
                 );
             } else {
                 $response = array(
                     'success' => false,
-                    'message' => 'Failed to create new destination'
+                    'message' => 'Failed to created schedule' . $this->db->error()
                 );
             }
         } else {
             $response = array(
                 'success' => false,
-                'message' => 'destination code already exists'
+                'message' => 'This schedule already exists'
             );
         }
+
         echo json_encode($response);
     }
 
-    public function editdestination()
+    public function editSchedule()
     {
         $post = $this->input->post();
 
-        $id = $post['eks_id'];
-        $cek = $this->db->get_where('master_destination', ['code' => $post['code'], 'id !=' => $id]);
+
+        $cek = $this->db->get_where('work_schedule', ['user_id' => $post['user_id'], 'date' => $post['date'], 'is_deleted' => 'N', 'id !=' => $post['eks_id']]);
 
         // var_dump($this->db->last_query());
         // die;
@@ -76,52 +82,63 @@ class WorkSchedule extends CI_Controller
         if ($cek->num_rows() < 1) {
 
             $params = array(
-                'code' => $post['code'],
-                'name' => $post['name'],
-                'updated_at' => currentDateTime(),
-                'updated_by' => userId()
+                'user_id' => $post['user_id'],
+                'position_id' => $post['position_id'],
+                'date' => $post['date'],
+                'start_time' => date('Y-m-d H:i:s', strtotime($post['date'] . $post['start_time'])),
+                'end_time' => date('Y-m-d H:i:s', strtotime($post['date'] . $post['end_time'])),
+                'created_at' => currentDateTime(),
+                'created_by' => userId()
             );
-            $this->work_schedule_m->editdestination($id, $params);
+
+            $this->db->where(['id' => $post['eks_id']]);
+            $this->db->update('work_schedule', $params);
+
             if ($this->db->affected_rows() > 0) {
                 $response = array(
                     'success' => true,
-                    'message' => 'Edit destination has been successfully'
+                    'message' => 'Schedule has been update successfully'
                 );
             } else {
                 $response = array(
                     'success' => false,
-                    'message' => 'Failed to edit destination'
+                    'message' => 'Failed to updating schedule' . $this->db->error()
                 );
             }
         } else {
             $response = array(
                 'success' => false,
-                'message' => 'destination code already exists'
+                'message' => 'This schedule already exists'
             );
         }
+
+
         echo json_encode($response);
     }
 
-    public function deletedestination()
+    public function deleteSchedule()
     {
         $post = $this->input->post();
-        $id = $post['id'];
+        // var_dump($post);
+
         $params = array(
-            'is_active' => 'N',
             'is_deleted' => 'Y',
             'deleted_at' => currentDateTime(),
             'deleted_by' => userId()
         );
-        $this->work_schedule_m->deletedestination($id, $params);
+
+        $this->db->where(['id' => $post['id']]);
+        $this->db->update('work_schedule', $params);
+
         if ($this->db->affected_rows() > 0) {
             $response = array(
                 'success' => true,
-                'message' => 'Delete destination has been successfully'
+                'message' => 'Deleting work schedule has been successfully'
             );
         } else {
             $response = array(
                 'success' => false,
-                'message' => 'Failed to delete destination'
+                'message' => 'Failed to deleting work schedule'
             );
         }
         echo json_encode($response);
