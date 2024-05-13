@@ -469,9 +469,9 @@
                         divPicker.empty();
 
                         divTable.html(response.summary);
-                        // $('#tableCompleteActivities').DataTable({
-                        //     sort: false
-                        // });
+                        $('#tableOutboundActivities').DataTable({
+                            sort: false
+                        });
 
                         divPicker.html(response.picker);
                     }

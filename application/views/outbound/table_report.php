@@ -1,4 +1,4 @@
-<table style="font-size: 10px;" class="table table-bordered table-striped table-nowrap align-middle mb-0" id="tableCompleteActivities">
+<table style="font-size: 10px;" class="table table-bordered table-striped table-nowrap align-middle mb-0" id="tableOutboundActivities">
     <thead>
         <tr>
             <th scope="col">NO.</th>
@@ -48,12 +48,12 @@
                 <td><?= $data->{'QTY'} ?></td>
                 <td><?= date('H:i', strtotime($data->{'JAM CETAK PL'})) ?></td>
                 <td><?= date('H:i', strtotime($data->{'JAM AMANO'}))  ?></td>
-                <td><?= date('H:i', strtotime($data->{'MULAI DORONG'})) ?></td>
-                <td><?= date('H:i', strtotime($data->{'SELESAI DORONG'})) ?></td>
-                <td><?= date('H:i', strtotime($data->{'MULAI CHECK'})) ?></td>
-                <td><?= date('H:i', strtotime($data->{'SELESAI CHECK'})) ?></td>
-                <td><?= date('H:i', strtotime($data->{'MULAI SCAN'})) ?></td>
-                <td><?= date('H:i', strtotime($data->{'SELESAI SCAN'})) ?></td>
+                <td><?= $data->{'MULAI DORONG'} == null ? '' : date('H:i', strtotime($data->{'MULAI DORONG'})) ?></td>
+                <td><?= $data->{'SELESAI DORONG'} == null ? '' : date('H:i', strtotime($data->{'SELESAI DORONG'})) ?></td>
+                <td><?= $data->{'MULAI CHECK'} == null ? '' : date('H:i', strtotime($data->{'MULAI CHECK'})) ?></td>
+                <td><?= $data->{'SELESAI CHECK'} == null ? '' : date('H:i', strtotime($data->{'SELESAI CHECK'})) ?></td>
+                <td><?= $data->{'MULAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'MULAI SCAN'})) ?></td>
+                <td><?= $data->{'SELESAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'SELESAI SCAN'})) ?></td>
                 <td><?= $data->{'JAM TERIMA SJ'} == null ? '' : date('H:i', strtotime($data->{'JAM TERIMA SJ'})) ?></td>
                 <td><?= $data->{'PINTU LOADING'} ?></td>
                 <td><?= $data->{'DURASI DORONG'} ?></td>

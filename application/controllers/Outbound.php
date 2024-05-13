@@ -306,12 +306,12 @@ class Outbound extends CI_Controller
         $rows = $this->outbound_m->getCompletedActivity($post);
 
         foreach ($rows->result() as $data) {
-            $data->{'DURASI DORONG'} = countDuration($data->{'MULAI DORONG'}, $data->{'SELESAI DORONG'});
-            $data->{'LEAD TIME DURASI DORONG'} = roundMinutes($data->{'DURASI DORONG'});
-            $data->{'DURASI CHECK'} = countDuration($data->{'MULAI CHECK'}, $data->{'SELESAI CHECK'});
-            $data->{'LEAD TIME DURASI CHECK'} = roundMinutes($data->{'DURASI CHECK'});
-            $data->{'DURASI SCAN'} = countDuration($data->{'MULAI SCAN'}, $data->{'SELESAI SCAN'});
-            $data->{'LEAD TIME DURASI SCAN'} = roundMinutes($data->{'DURASI SCAN'});
+            $data->{'DURASI DORONG'} = $data->{'SELESAI DORONG'} == null ? null : countDuration($data->{'MULAI DORONG'}, $data->{'SELESAI DORONG'});
+            $data->{'LEAD TIME DURASI DORONG'} = $data->{'DURASI DORONG'} == null ? '' : roundMinutes($data->{'DURASI DORONG'});
+            $data->{'DURASI CHECK'} = $data->{'SELESAI CHECK'} == null ? null : countDuration($data->{'MULAI CHECK'}, $data->{'SELESAI CHECK'});
+            $data->{'LEAD TIME DURASI CHECK'} = $data->{'DURASI CHECK'} == null ? '' : roundMinutes($data->{'DURASI CHECK'});
+            $data->{'DURASI SCAN'} = $data->{'SELESAI SCAN'} == null ? null : countDuration($data->{'MULAI SCAN'}, $data->{'SELESAI SCAN'});
+            $data->{'LEAD TIME DURASI SCAN'} = $data->{'DURASI SCAN'} == null ? '' : roundMinutes($data->{'DURASI SCAN'});
         }
 
         return $rows;
@@ -375,15 +375,15 @@ class Outbound extends CI_Controller
             $row['EXPEDISI'] = $data->{'EXPEDISI'};
             $row['MD/DDS'] = $data->{'MD/DDS'};
             $row['QTY'] = $data->{'QTY'};
-            $row['JAM CETAK PL'] = date('H:i', strtotime($data->{'JAM CETAK PL'}));
-            $row['JAM AMANO'] = date('H:i', strtotime($data->{'JAM AMANO'}));
-            $row['MULAI DORONG'] = date('H:i', strtotime($data->{'MULAI DORONG'}));
-            $row['SELESAI DORONG'] =  date('H:i', strtotime($data->{'SELESAI DORONG'}));
-            $row['MULAI CHECK'] = date('H:i', strtotime($data->{'MULAI CHECK'}));
-            $row['SELESAI CHECK'] = date('H:i', strtotime($data->{'SELESAI CHECK'}));
-            $row['MULAI SCAN'] = date('H:i', strtotime($data->{'MULAI SCAN'}));
-            $row['SELESAI SCAN'] = date('H:i', strtotime($data->{'SELESAI SCAN'}));
-            $row['JAM TERIMA SJ'] = date('H:i', strtotime($data->{'JAM TERIMA SJ'}));
+            $row['JAM CETAK PL'] = $data->{'JAM CETAK PL'} == null ? '' : date('H:i', strtotime($data->{'JAM CETAK PL'}));
+            $row['JAM AMANO'] = $data->{'JAM AMANO'} == null ? '' : date('H:i', strtotime($data->{'JAM AMANO'}));
+            $row['MULAI DORONG'] = $data->{'MULAI DORONG'} == null ? '' : date('H:i', strtotime($data->{'MULAI DORONG'}));
+            $row['SELESAI DORONG'] = $data->{'SELESAI DORONG'} == null ? '' :  date('H:i', strtotime($data->{'SELESAI DORONG'}));
+            $row['MULAI CHECK'] = $data->{'MULAI CHECK'} == null ? '' : date('H:i', strtotime($data->{'MULAI CHECK'}));
+            $row['SELESAI CHECK'] = $data->{'SELESAI CHECK'} == null ? '' : date('H:i', strtotime($data->{'SELESAI CHECK'}));
+            $row['MULAI SCAN'] = $data->{'MULAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'MULAI SCAN'}));
+            $row['SELESAI SCAN'] = $data->{'SELESAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'SELESAI SCAN'}));
+            $row['JAM TERIMA SJ'] = $data->{'JAM TERIMA SJ'} == null ? '' : date('H:i', strtotime($data->{'JAM TERIMA SJ'}));
             $row['PINTU LOADING'] =  $data->{'PINTU LOADING'};
             $row['DURASI DORONG'] =  $data->{'DURASI DORONG'};
             $row['LEAD TIME DURASI DORONG'] = $data->{'LEAD TIME DURASI DORONG'};
