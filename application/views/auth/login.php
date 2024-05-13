@@ -26,6 +26,14 @@
         #logo {
             border-radius: 10%;
         }
+
+        /* CSS untuk layar seluler */
+        @media only screen and (max-width: 600px) {
+            #divImage {
+                display: none;
+                /* Menyembunyikan div pada layar seluler dengan lebar maksimum 600px */
+            }
+        }
     </style>
 </head>
 
@@ -41,7 +49,7 @@
                     <div class="col-lg-12">
                         <div class="card overflow-hidden">
                             <div class="row g-0">
-                                <div class="col-lg-6">
+                                <div class="col-lg-6" id="divImage">
                                     <div class="swiper default-swiper rounded swiper-initialized swiper-horizontal swiper-backface-hidden">
                                         <div class="swiper-wrapper" id="" aria-live="off">
                                             <div class="swiper-slide swiper-slide-active" role="group" data-swiper-slide-index="1" style="width: 400px;">
