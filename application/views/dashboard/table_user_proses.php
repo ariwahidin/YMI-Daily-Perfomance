@@ -6,7 +6,7 @@
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>Fullname</th>
+                        <th>Checker</th>
                         <th>SJ</th>
                         <th>Qty</th>
                         <th>Date</th>
@@ -85,7 +85,7 @@
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>Fullname</th>
+                        <th>Picker</th>
                         <th>Status</th>
                         <th>PL</th>
                     </tr>

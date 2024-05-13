@@ -27,11 +27,11 @@
 <div class="row">
     <div class="col col-md-6">
         <div class="card">
-            <div class="card-header">
-                <button class="btn btn-primary" id="btnAdd">Add new destination</button>
+            <div class="card-header bg-primary">
+                <button class="btn btn-info" id="btnAdd">Add new destination</button>
             </div>
             <div class="card-body">
-                <table id="user-table" class="display table table bordered" style="width:100%">
+                <table id="user-table" class="display table table-sm table-bordered" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>

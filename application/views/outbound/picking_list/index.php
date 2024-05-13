@@ -17,8 +17,8 @@
 <div class="row">
     <div class="col col-md-12">
         <div class="card">
-            <div class="card-header">
-                <button class="btn btn-primary" id="btnAdd">Add new</button>
+            <div class="card-header bg-primary">
+                <button class="btn btn-info" id="btnAdd">Add new</button>
                 <button class="btn btn-success" id="btnRefresh">Refresh</button>
             </div>
             <div class="card-body table-responsive" id="cardPL">

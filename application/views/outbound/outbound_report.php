@@ -33,12 +33,12 @@
     <div class="col-xl-12">
         <div class="card">
 
-            <div class="card-header align-items-center d-flex">
+            <div class="card-header bg-success align-items-center d-flex">
                 <input type="text" class="form-control" style="width: 200px; margin-right: 10px; display:none;" id="sChecker" placeholder="Checker">
                 <input type="date" class="form-control" style="width: 200px; margin-right: 10px;" id="sStartDate" placeholder="Start Date">
                 <input type="date" class="form-control" style="width: 200px; margin-right: 10px;" id="sEndDate" placeholder="End Date">
                 <button class="btn btn-outline-primary btn-icon waves-effect waves-light" id="sButton"><i class="ri-filter-fill"></i></button>
-                <button style="margin-left: 10px;" class="btn btn-outline-success" id="btnExcel">Excel</button>
+                <button style="margin-left: 10px;" class="btn btn-outline-primary " id="btnExcel">Excel</button>
             </div>
 
             <div class="card-body">

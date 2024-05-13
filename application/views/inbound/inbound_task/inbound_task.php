@@ -73,8 +73,8 @@
                     <input type="hidden" id="id_task" name="id_task" class="form-control">
 
 
-                    <div class="row g-4 mb-3">
-                        <div class="col col-lg-3">
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-6">
                             <label for="priority-field" class="form-label">Factory Code</label>
                             <!-- <input type="text" id="factory" name="factory" class="form-control" value=""> -->
                             <select class="form-control" name="factory" id="factory" required>
@@ -84,7 +84,7 @@
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="col col-lg-3">
+                        <div class="col col-lg-3 col-xs-6">
                             <label for="task-title-input" class="form-label">SJ No</label>
                             <input type="text" id="sj" name="sj" class="form-control" placeholder="" value="" required>
                         </div>
@@ -101,9 +101,9 @@
                             <input type="time" id="sj_time" name="sj_time" class="form-control" placeholder="" value="">
                         </div>
                     </div>
-
-                    <div class="row mb-3">
-                        <div class="col col-lg-3">
+                    
+                    <div class="row form-group">
+                        <div class="col col-lg-3 col-xs-6">
                             <label for="task-status" class="form-label">No Truck</label>
                             <!-- <input type="text" id="no_truck" name="no_truck" class="form-control" value=""> -->
                             <select class="form-control" name="no_truck" id="no_truck" required>
@@ -113,7 +113,7 @@
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="col col-lg-3">
+                        <div class="col col-lg-3 col-xs-6">
                             <label for="priority-field" class="form-label">Expedisi</label>
                             <select class="form-control" name="expedisi" id="expedisi" required>
                                 <option value="">Choose Ekspedisi</option>
@@ -122,37 +122,37 @@
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="col col-lg-3">
+                        <div class="col-lg-3 col-6">
                             <label for="priority-field" class="form-label">Driver</label>
                             <input type="text" id="driver" name="driver" class="form-control" placeholder="" value="">
                         </div>
-                        <div class="col col-lg-3">
+                        <div class="form-group col-lg-3 col-6">
                             <label for="" class="form-label">Unloading Sequence Number</label>
                             <input type="number" id="unloading_sequence" name="unloading_sequence" class="form-control" placeholder="" value="" required>
                         </div>
                     </div>
+                    
+                    <div class="row">
 
-                    <div class="mb-3 position-relative row">
-
-                        <div class="col col-lg-3">
+                        <div class="col-6 col-lg-3">
                             <label for="task-status" class="form-label">Alocation Code</label>
                             <input type="text" id="alocation" name="alocation" class="form-control" value="">
                         </div>
-                        <div class="col col-lg-3">
+                        <div class="col-6 col-lg-3">
                             <label for="task-assign-input" class="form-label">Pintu Unloading</label>
                             <input type="text" id="pintu_unloading" name="pintu_unloading" class="form-control" value="">
                         </div>
-                        <div class="col col-lg-3">
+                        <div class="col-6 col-lg-3">
                             <label for="task-status" class="form-label">Qty</label>
                             <input type="number" id="qty" name="qty" class="form-control" placeholder="" value="">
                         </div>
-                        <div class="col col-lg-3">
+                        <div class="col-6 col-lg-3">
                             <label for="task-status" class="form-label">Time of arival</label>
                             <input type="time" id="toa" name="toa" class="form-control" placeholder="" value="">
                         </div>
                     </div>
 
-                    <div class="row g-4 mb-3">
+                    <div class="row">
                         <div class="col col-lg-3">
                             <label for="task-assign-input" class="form-label">Checker</label>
                             <select class="form-control" name="checker" id="checker" required>
@@ -168,7 +168,7 @@
                             <input type="text" id="remarks" name="remarks" class="form-control" value="">
                         </div>
                     </div>
-
+                    <br>
                     <div class="hstack gap-2 justify-content-end">
                         <button type="button" class="btn btn-ghost-success" data-bs-dismiss="modal"><i class="ri-close-fill align-bottom"></i> Close</button>
                         <button type="submit" class="btn btn-primary" id="btnTask">Create</button>

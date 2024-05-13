@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col">
             <div class="card bg-success-subtle">
-                <div class="card-header bg-primary-subtle">
+                <div class="card-header card-success">
                     <div style="font-size: 11px;" class="row">
                         <div class="col-md-3 col-6 ps-3">
                             <p class="m-0">Date : <span><?= date('Y-m-d', strtotime($data->activity_date)) ?></span></p>

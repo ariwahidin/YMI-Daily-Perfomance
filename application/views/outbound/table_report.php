@@ -54,7 +54,7 @@
                 <td><?= date('H:i', strtotime($data->{'SELESAI CHECK'})) ?></td>
                 <td><?= date('H:i', strtotime($data->{'MULAI SCAN'})) ?></td>
                 <td><?= date('H:i', strtotime($data->{'SELESAI SCAN'})) ?></td>
-                <td><?= date('H:i', strtotime($data->{'JAM TERIMA SJ'})) ?></td>
+                <td><?= $data->{'JAM TERIMA SJ'} == null ? '' : date('H:i', strtotime($data->{'JAM TERIMA SJ'})) ?></td>
                 <td><?= $data->{'PINTU LOADING'} ?></td>
                 <td><?= $data->{'DURASI DORONG'} ?></td>
                 <td><?= $data->{'LEAD TIME DURASI DORONG'} ?></td>

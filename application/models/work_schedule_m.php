@@ -7,7 +7,7 @@ class Work_schedule_m extends CI_Model
         from work_schedule a
         inner join master_user b on a.user_id = b.id
         left join master_position c on a.position_id = c.id
-        WHERE a.is_deleted <> 'Y'";
+        WHERE a.is_deleted <> 'Y' ORDER BY a.date DESC";
         $query = $this->db->query($sql);
         return $query;
     }

@@ -24,8 +24,8 @@
 <div class="row">
     <div class="col col-md-10">
         <div class="card">
-            <div class="card-header">
-                <button class="btn btn-primary" id="btnAdd">Add new user</button>
+            <div class="card-header bg-primary">
+                <button class="btn btn-info" id="btnAdd">Add new user</button>
             </div>
             <div class="card-body">
                 <table id="user-table" class="table table-striped table-bordered table-sm" style="width:100%">

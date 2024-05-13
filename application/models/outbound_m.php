@@ -217,11 +217,11 @@ class Outbound_m extends CI_Model
     public function getPresentaseOutbound()
     {
         $sql = "SELECT 
-        (SELECT COUNT(*) FROM tb_out_temp) AS outbound_proses,
-        (SELECT COUNT(*) FROM tb_out) AS outbound_complete,
-        (SELECT COUNT(*) FROM tb_out_temp) + (SELECT COUNT(*) FROM tb_out) AS total_outbound,
-        CASE WHEN (SELECT COUNT(*) FROM tb_out) <> 0 
-             THEN ((SELECT COUNT(*) FROM tb_out) / CAST(((SELECT COUNT(*) FROM tb_out_temp) + (SELECT COUNT(*) FROM tb_out))   AS float)) * 100 
+        (SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) AS outbound_proses,
+        (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) AS outbound_complete,
+        (SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) AS total_outbound,
+        CASE WHEN (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) <> 0 
+             THEN ((SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) / CAST(((SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())))   AS float)) * 100 
              ELSE 0 
         END AS presentase;";
         $query = $this->db->query($sql);
