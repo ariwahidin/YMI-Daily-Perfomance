@@ -25,48 +25,17 @@
 </div>
 
 <div class="row">
-    <div class="col col-md-10">
+    <div class="col-12 col-md-10">
         <div class="card">
-            <div class="card-header bg-primary">
+            <div class="card-header bg-primary d-flex">
+                <input type="text" class="form-control" style="display:none; width: 200px; margin-right: 10px;" id="sChecker" placeholder="Checker">
+                <input type="date" class="form-control" style="width: 200px; margin-right: 10px;" id="sStartDate" placeholder="Start Date">
+                <input type="date" class="form-control" style="width: 200px; margin-right: 10px;" id="sEndDate" placeholder="End Date">
+                <button class="btn btn-outline-success" id="sButton"><i class="ri-filter-fill"></i></button>&nbsp;&nbsp;
                 <button class="btn btn-info" id="btnAdd">Add new work schedule</button>
             </div>
-            <div class="card-body">
-                <table id="user-table" class="table table-sm table-bordered table-striped" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Employee Name</th>
-                            <th>Day</th>
-                            <th>Date</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Position</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $no = 1;
-                        foreach ($work_schedule->result() as $data) {
-                        ?>
-                            <tr>
-                                <td><?= $no++ ?></td>
-                                <td><?= $data->fullname ?></td>
-                                <td><?= date('l', strtotime($data->date)) ?></td>
-                                <td><?= $data->date ?></td>
-                                <td><?= date('H:i', strtotime($data->start_time)) ?></td>
-                                <td><?= date('H:i', strtotime($data->end_time)) ?></td>
-                                <td><?= $data->position_name ?></td>
-                                <td>
-                                    <button class="btn btn-primary btn-sm btnEdit" data-id="<?= $data->id ?>" data-user-id="<?= $data->user_id ?>" data-position-id="<?= $data->position_id ?>" data-date="<?= $data->date ?>" data-start-time="<?= date('H:i', strtotime($data->start_time)) ?>" data-end-time="<?= date('H:i', strtotime($data->end_time)) ?>">Edit</button>
-                                    <button class=" btn btn-danger btn-sm btnDelete" data-id="<?= $data->id ?>">Delete</button>
-                                </td>
-                            </tr>
-                        <?php
-                        }
-                        ?>
-                    </tbody>
-                </table>
+            <div class="card-body table-responsive" id="divSchedule">
+
             </div>
         </div>
     </div>
@@ -134,12 +103,10 @@
                                     <input type="time" class="form-control" id="end_time" value="17:00" name="end_time" placeholder="" required>
                                 </div>
                             </div>
-
                         </div>
-                        <br>
 
                         <div class="col-lg-12">
-                            <div class="hstack gap-2 justify-content-end">
+                            <div class="hstack gap-2 justify-content-end pt-2">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
@@ -174,7 +141,9 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             }).then(function() {
-                                window.location.href = 'index';
+                                // window.location.href = 'index';
+                                getTableSchedule();
+                                $('#modalForm').modal('hide');
                             })
                         } else {
                             Swal.fire({
@@ -202,7 +171,9 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             }).then(function() {
-                                window.location.href = 'index';
+                                // window.location.href = 'index';
+                                getTableSchedule();
+                                $('#modalForm').modal('hide');
                             })
                         } else {
                             Swal.fire({
@@ -217,7 +188,44 @@
             }
         });
 
-        $('#user-table').DataTable();
+
+        // $('#user-table').DataTable();
+
+        $('#sButton').on('click', function() {
+            getTableSchedule();
+        })
+
+        getTableSchedule();
+
+        function getTableSchedule() {
+            var today = new Date().toISOString().split('T')[0];
+            if ($('#sStartDate').val() == '') {
+                $('#sStartDate').val(today)
+            }
+            if ($('#sEndDate').val() == '') {
+                $('#sEndDate').val(today)
+            }
+
+            let sDate = $('#sStartDate').val();
+            let eDate = $('#sEndDate').val();
+
+            let divTable = $('#divSchedule');
+            divTable.empty();
+            $.ajax({
+                url: "getTableSchedule",
+                type: "POST",
+                data: {
+                    startDate: sDate,
+                    endDate: eDate
+                },
+                success: function(response) {
+                    divTable.html(response);
+                    // $('#tableCompleteActivities').DataTable({
+                    //     sort: false
+                    // });
+                }
+            });
+        }
 
         $('#btnAdd').on('click', function() {
             getNamaHari($('#date').val());
@@ -226,7 +234,7 @@
             $('#modalForm').modal('show');
         })
 
-        $('.btnEdit').on('click', function() {
+        $('#divSchedule').on('click', '.btnEdit', function() {
             $('#headerForm').text('Edit work schedule');
             $('#form_proses').val('edit');
             $('#eks_id').val($(this).data('id'));
@@ -239,7 +247,7 @@
             $('#modalForm').modal('show');
         })
 
-        $('.btnDelete').on('click', function() {
+        $('#divSchedule').on('click', '.btnDelete', function() {
             let id = $(this).data('id');
             $.post('deleteSchedule', {
                 id: id

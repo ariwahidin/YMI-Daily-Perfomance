@@ -234,7 +234,7 @@ class Outbound_m extends CI_Model
 
         // var_dump($sql);
 
-        
+
         $query = $this->db->query($sql);
         // var_dump($this->db->last_query());
         // die;
@@ -331,9 +331,21 @@ class Outbound_m extends CI_Model
         left join tb_out_temp c on a.id = c.no_pl
         left join tb_out d on a.id = d.pl_id";
 
-        if ($id != null) {
-            $sql .= " WHERE a.id = '$id'";
+        
+
+        if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
+            $startDate = $_POST['startDate'];
+            $endDate = $_POST['endDate'];
+            $sql .= " WHERE CONVERT(DATE, a.created_at) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
+        } else {
+            $sql .= " WHERE CONVERT(DATE, a.created_at) = CONVERT(DATE, GETDATE())";
         }
+
+        if ($id != null) {
+            $sql .= " AND a.id = '$id'";
+        }
+
+
 
         $sql .= " order by a.created_at desc";
 

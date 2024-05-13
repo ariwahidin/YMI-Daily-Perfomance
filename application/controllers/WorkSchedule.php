@@ -22,9 +22,17 @@ class WorkSchedule extends CI_Controller
         $data = array(
             'users' => $this->user_m->getUserActive(),
             'position' => $this->db->get('master_position'),
-            'work_schedule' => $this->work_schedule_m->getWorkSchedule()
+
         );
         $this->render('work_schedule/index', $data);
+    }
+
+    public function getTableSchedule()
+    {
+        $data = array(
+            'work_schedule' => $this->work_schedule_m->getWorkSchedule(),
+        );
+        $this->load->view('work_schedule/table_schedule', $data);
     }
 
     public function createSchedule()

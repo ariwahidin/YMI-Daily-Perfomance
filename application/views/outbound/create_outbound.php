@@ -79,36 +79,10 @@
                     <input type="hidden" id="id_task" name="id_task" class="form-control">
 
 
-                    <div class="row g-3 mb-2">
+                    <div class="row">
                         <div class="col-6 col-lg-3" id="divPLNo">
 
                         </div>
-                        <div class="col-6 col-lg-3">
-                            <label for="" class="form-label">Destination</label>
-                            <input type="text" id="dest" name="dest" class="form-control-sm" placeholder="" value="" required readonly>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <label for="" class="form-label">Dealer Code</label>
-                            <input type="text" id="dealer_code" name="dealer_code" class="form-control-sm" placeholder="" value="" readonly>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <label for="" class="form-label">Dealer / Depo</label>
-                            <input type="text" id="dealer_det" name="dealer_det" class="form-control-sm" placeholder="" value="" readonly>
-                        </div>
-                    </div>
-
-                    <div class="row g-2 mb-2">
-                        <div class="col-6 col-lg-3">
-                            <label for="priority-field" class="form-label">Total Qty</label>
-                            <input type="number" id="qty" name="qty" class="form-control-sm" placeholder="" value="" readonly>
-                        </div>
-
-
-                        <div class="col-6 col-lg-3">
-                            <label for="priority-field" class="form-label">No truck</label>
-                            <input type="text" id="no_truck" name="no_truck" class="form-control-sm" placeholder="" value="" readonly>
-                        </div>
-
                         <div class="col-6 col-lg-3">
                             <label for="priority-field" class="form-label">Ekspedisi</label><br>
                             <select class="form-control-sm" name="ekspedisi" id="ekspedisi" style="width: 150px;" disabled>
@@ -119,6 +93,38 @@
                             </select>
                         </div>
                         <div class="col-6 col-lg-3">
+                            <label for="" class="form-label">Destination</label>
+                            <input type="text" id="dest" name="dest" class="form-control" placeholder="" value="" required readonly>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <label for="" class="form-label">Dealer Code</label>
+                            <input type="text" id="dealer_code" name="dealer_code" class="form-control" placeholder="" value="" readonly>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <label for="" class="form-label">Dealer / Depo</label>
+                            <input type="text" id="dealer_det" name="dealer_det" class="form-control" placeholder="" value="" readonly>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <label for="priority-field" class="form-label">Total Qty</label>
+                            <input type="number" id="qty" name="qty" class="form-control" placeholder="" value="" readonly>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <label for="priority-field" class="form-label">No truck</label>
+                            <input type="text" id="no_truck" name="no_truck" class="form-control" placeholder="" value="" readonly>
+                        </div>
+
+
+                        <div class="col-6 col-lg-3">
+                            <label for="priority-field" class="form-label">Pintu Loading</label>
+                            <input type="text" id="pintu_loading" name="pintu_loading" class="form-control" value="">
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-12 col-lg-6">
                             <label for="priority-field" class="form-label">Picker</label>
                             <select style="background-color: blue !important;" class="js-example-basic-multiple form-control-sm" name="picker_id[]" multiple="multiple" id="picker_id" required>
                                 <option value="">Choose picker</option>
@@ -127,20 +133,14 @@
                                 <?php } ?>
                             </select>
                         </div>
-                    </div>
 
-                    <div class="row mb-3">
-
-
-                        <div class="col-lg-3">
-                            <label for="priority-field" class="form-label">Pintu Loading</label>
-                            <input type="text" id="pintu_loading" name="pintu_loading" class="form-control-sm" value="">
-                        </div>
-                        <div class="col-lg-9">
+                        <div class="col-lg-6">
                             <label for="priority-field" class="form-label">Remarks</label>
                             <input type="text" id="remarks" name="remarks" class="form-control" value="">
                         </div>
                     </div>
+
+                    <br>
 
                     <div class="hstack gap-2 justify-content-end">
                         <button type="button" class="btn btn-ghost-success" data-bs-dismiss="modal"><i class="ri-close-fill align-bottom"></i> Close</button>

@@ -17,8 +17,12 @@
 <div class="row">
     <div class="col col-md-12">
         <div class="card">
-            <div class="card-header bg-primary">
-                <button class="btn btn-info" id="btnAdd">Add new</button>
+            <div class="card-header bg-primary d-flex">
+                <input type="text" class="form-control" style="display:none; width: 200px; margin-right: 10px;" id="sChecker" placeholder="Checker">
+                <input type="date" class="form-control" style="width: 200px; margin-right: 10px;" id="sStartDate" placeholder="Start Date">
+                <input type="date" class="form-control" style="width: 200px; margin-right: 10px;" id="sEndDate" placeholder="End Date">
+                <button class="btn btn-outline-success" id="sButton"><i class="ri-filter-fill"></i></button>&nbsp;&nbsp;
+                <button class="btn btn-info" id="btnAdd">Add new</button>&nbsp;&nbsp;
                 <button class="btn btn-success" id="btnRefresh">Refresh</button>
             </div>
             <div class="card-body table-responsive" id="cardPL">
@@ -249,6 +253,13 @@
 
         getTablePickingList();
 
+        $('#sButton').on('click', function() {
+            getTablePickingList();
+        })
+
+
+
+
         $('#plForm').on('submit', function(e) {
             e.preventDefault();
             let formUser = new FormData(this);
@@ -318,13 +329,40 @@
         });
 
         function getTablePickingList() {
-            $.post('getTablePickingList', {}, function(response) {
-                if (response.success == true) {
-                    $('#cardPL').empty();
-                    $('#cardPL').html(response.table);
-                    $('#tablePL').dataTable();
+
+            var today = new Date().toISOString().split('T')[0];
+            if ($('#sStartDate').val() == '') {
+                $('#sStartDate').val(today)
+            }
+            if ($('#sEndDate').val() == '') {
+                $('#sEndDate').val(today)
+            }
+
+            let sDate = $('#sStartDate').val();
+            let eDate = $('#sEndDate').val();
+
+            let divTable = $('#divSchedule');
+            divTable.empty();
+            $.ajax({
+                url: "getTablePickingList",
+                type: "POST",
+                data: {
+                    startDate: sDate,
+                    endDate: eDate
+                },
+                dataType: 'JSON',
+                success: function(response) {
+                    if (response.success == true) {
+                        $('#cardPL').empty();
+                        $('#cardPL').html(response.table);
+                        $('#tablePL').dataTable();
+                    }
                 }
-            }, 'json');
+            });
+
+            // $.post('', {}, function(response) {
+
+            // }, 'json');
         }
 
         // $('#user-table').DataTable();
@@ -343,6 +381,22 @@
             $('#rec_pl_date').val(today);
             $('#rec_pl_time').val(currentTime);
             $('#pl_print_time').val(currentTime);
+
+
+            $('#pl_id').val('');
+            $('#pl_no').val('');
+            $('#dest').val('');
+            $('#tot_qty').val('');
+            $('#pintu_loading').val('');
+            $('#dealer_code').val('');
+            $('#dealer_det').val('');
+            $('#dock').val('');
+            $('#expedisi').val('');
+            $('#no_truck').val('');
+            $('#sj_no').val('');
+            $('#remarks').val('');
+
+
             $('#headerForm').text('Add new PL');
             $('#form_proses').val('add_new');
             $('#modalForm').modal('show');
