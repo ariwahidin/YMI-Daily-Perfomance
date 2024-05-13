@@ -36,6 +36,7 @@
                         <tr>
                             <th>#</th>
                             <th>Employee Name</th>
+                            <th>Day</th>
                             <th>Date</th>
                             <th>Start Time</th>
                             <th>End Time</th>
@@ -51,19 +52,13 @@
                             <tr>
                                 <td><?= $no++ ?></td>
                                 <td><?= $data->fullname ?></td>
+                                <td><?= date('l', strtotime($data->date)) ?></td>
                                 <td><?= $data->date ?></td>
                                 <td><?= date('H:i', strtotime($data->start_time)) ?></td>
                                 <td><?= date('H:i', strtotime($data->end_time)) ?></td>
                                 <td><?= $data->position_name ?></td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm btnEdit" 
-                                    data-id="<?= $data->id ?>" 
-                                    data-user-id="<?= $data->user_id ?>"
-                                    data-position-id="<?= $data->position_id ?>"
-                                    data-date="<?=$data->date?>"
-                                    data-start-time="<?= date('H:i', strtotime($data->start_time)) ?>"
-                                    data-end-time="<?= date('H:i', strtotime($data->end_time)) ?>"
-                                    >Edit</button>
+                                    <button class="btn btn-primary btn-sm btnEdit" data-id="<?= $data->id ?>" data-user-id="<?= $data->user_id ?>" data-position-id="<?= $data->position_id ?>" data-date="<?= $data->date ?>" data-start-time="<?= date('H:i', strtotime($data->start_time)) ?>" data-end-time="<?= date('H:i', strtotime($data->end_time)) ?>">Edit</button>
                                     <button class=" btn btn-danger btn-sm btnDelete" data-id="<?= $data->id ?>">Delete</button>
                                 </td>
                             </tr>
@@ -104,9 +99,15 @@
                                 <input type="hidden" id="eks_id" name="eks_id" val="" readonly>
                                 <input type="hidden" id="form_proses" name="form_proses" val="" readonly>
                             </div>
-                            <div class="form-group col">
-                                <label for="name" class="form-label">Date</label>
-                                <input type="date" class="form-control" id="date" name="date" value="<?= date('Y-m-d') ?>" placeholder="" required>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Day</label>
+                                    <input type="date" class="form-control" id="day" name="day" value="" placeholder="" required readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="date" name="date" value="<?= date('Y-m-d') ?>" placeholder="" required>
+                                </div>
                             </div>
                             <div>
                                 <label for="name" class="form-label">Start Time</label>

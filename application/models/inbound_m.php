@@ -80,21 +80,21 @@ class Inbound_m extends CI_Model
         // $sql = "select -- a.*, 
         // a.id,
         // a.sj_created_at,
-		// a.sj_send_date,
-		// a.unload_st_time,
-		// a.no_sj,
-		// a.sj_date,
-		// a.sj_time,
-		// a.no_truck,
-		// a.driver,
-		// a.alloc_code,
-		// a.pintu_unloading,
-		// a.qty,
-		// a.time_arival,
-		// a.unload_duration,
-		// a.checking_duration,
-		// a.putaway_duration,
-		// b.fullname as checker_name,
+        // a.sj_send_date,
+        // a.unload_st_time,
+        // a.no_sj,
+        // a.sj_date,
+        // a.sj_time,
+        // a.no_truck,
+        // a.driver,
+        // a.alloc_code,
+        // a.pintu_unloading,
+        // a.qty,
+        // a.time_arival,
+        // a.unload_duration,
+        // a.checking_duration,
+        // a.putaway_duration,
+        // b.fullname as checker_name,
         // a.unload_st_time as start_unload,
         // a.unload_fin_time as stop_unload,
         // a.checking_st_time as start_checking,
@@ -102,14 +102,14 @@ class Inbound_m extends CI_Model
         // a.putaway_st_time as start_putaway,
         // a.putaway_fin_time as stop_putaway,
         // c.name as factory_name, 
-		// d.name as ekspedisi_name
+        // d.name as ekspedisi_name
         // from tb_trans a 
         // inner join master_user b on a.checker_id = b.id
         // left join master_factory c on a.factory_code = c.id
         // left join master_ekspedisi d on a.ekspedisi = d.id
         // where a.is_deleted <> 'Y'";
 
-        $sql = "SELECT a.id, a.created_date as sj_created_at, a.sj_send_date, a.no_sj, a.sj_date, a.sj_time, a.no_truck, a.driver, a.alloc_code, a.pintu_unloading, a.qty, a.time_arival, null as unload_duration,
+        $sql = "SELECT * FROM (SELECT a.id, a.created_date as sj_created_at, a.sj_send_date, a.unload_seq, a.no_sj, a.sj_date, a.sj_time, a.no_truck, a.driver, a.alloc_code, a.pintu_unloading, a.qty, a.time_arival, null as unload_duration,
         null as checking_duration, null as putaway_duration, b.fullname as checker_name, a.start_unloading as start_unload, a.stop_unloading as stop_unload, a.start_checking, a.stop_checking, a.start_putaway, a.stop_putaway,
         c.name as factory_name, d.name as ekspedisi_name, null as [status]
         FROM tb_trans_temp a
@@ -121,6 +121,7 @@ class Inbound_m extends CI_Model
                 a.id,
                 a.sj_created_at,
                 a.sj_send_date,
+                a.unload_seq,
                 a.no_sj,
                 a.sj_date,
                 a.sj_time,
@@ -147,25 +148,25 @@ class Inbound_m extends CI_Model
                 inner join master_user b on a.checker_id = b.id
                 left join master_factory c on a.factory_code = c.id
                 left join master_ekspedisi d on a.ekspedisi = d.id
-                where a.is_deleted <> 'Y'";
+                where a.is_deleted <> 'Y')a";
 
         if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
             $startDate = $_POST['startDate'];
             $endDate = $_POST['endDate'];
-            $sql .= " AND CONVERT(DATE, created_date) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
+            $sql .= " WHERE CONVERT(DATE, sj_created_at) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
         } else {
-            $sql .= " AND CONVERT(DATE, created_date) = CONVERT(DATE, GETDATE())";
+            $sql .= " AND CONVERT(DATE, sj_created_at) = CONVERT(DATE, GETDATE())";
         }
 
         if (isset($_POST['checker'])) {
             if ($_POST['checker'] != '') {
                 $checker = $_POST['checker'];
-                $sql .= " AND checker like '%$checker%'";
+                $sql .= " WHERE checker like '%$checker%'";
             }
         }
 
 
-        $sql .= " order by sj_created_at desc";
+        $sql .= " order by a.sj_send_date desc";
 
         // print_r($sql);
 
@@ -257,6 +258,7 @@ class Inbound_m extends CI_Model
             $data1 = $this->getTempActivity($id)->row_array();
 
             $params_insert = array(
+                'unload_seq' => $data1['unload_seq'],
                 'no_sj' => $data1['no_sj'],
                 'no_truck' => $data1['no_truck'],
                 'qty' => $data1['qty'],

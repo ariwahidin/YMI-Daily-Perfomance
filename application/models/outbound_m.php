@@ -207,7 +207,10 @@ class Outbound_m extends CI_Model
 
         $sql .= " ORDER BY a.id DESC";
 
+        
         $query = $this->db->query($sql);
+        // var_dump($this->db->last_query());
+        // die;
         return $query;
     }
 

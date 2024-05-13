@@ -1,7 +1,7 @@
 <table style="font-size: 10px;" class="table table-bordered table-striped table-nowrap align-middle" id="tableCompleteActivities">
     <thead>
         <tr>
-            <th scope="col">NO.</th>
+            <th scope="col">NO UNLOAD.</th>
             <th scope="col">ACTIVITY DATE</th>
             <th scope="col">SENT DATE</th>
             <th scope="col">UNLOADING DATE</th>
@@ -35,7 +35,7 @@
         foreach ($completed->result() as $data) {
         ?>
             <tr>
-                <td><?= $no++ ?></td>
+                <td><?= $data->unload_seq ?></td>
                 <td><?= date('Y-m-d', strtotime($data->sj_created_at)) ?></td>
                 <td><?= date('Y-m-d', strtotime($data->sj_send_date)) ?></td>
                 <td><?= $data->start_unload == null ? '' : date('Y-m-d', strtotime($data->start_unload)) ?></td>

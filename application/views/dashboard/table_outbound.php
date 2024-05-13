@@ -1,4 +1,4 @@
-<table style="font-size: 12px;" class="table table-borderless table-centered align-middle table-nowrap mb-0">
+<table style="font-size: 12px;" class="table table-md table-borderless table-centered align-middle table-nowrap mb-0">
     <thead class="text-muted table-light">
         <tr>
             <th scope="col">Date</th>

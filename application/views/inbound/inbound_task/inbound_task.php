@@ -1,4 +1,4 @@
-<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+<link href="<?= base_url() ?>myassets/css/select2.min.css" rel="stylesheet" />
 <link href="<?= base_url() ?>myassets/css/jquery.dataTables.min.css" rel="stylesheet" />
 <script src="<?= base_url() ?>myassets/js/jquery-3.7.0.js"></script>
 <script src="<?= base_url() ?>myassets/js/jquery.dataTables.min.js"></script>
@@ -102,8 +102,8 @@
                         </div>
                     </div>
 
-                    <div class="row g-4 mb-3">
-                        <div class="col-lg-4">
+                    <div class="row mb-3">
+                        <div class="col col-lg-3">
                             <label for="task-status" class="form-label">No Truck</label>
                             <!-- <input type="text" id="no_truck" name="no_truck" class="form-control" value=""> -->
                             <select class="form-control" name="no_truck" id="no_truck" required>
@@ -113,7 +113,7 @@
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="col col-lg-4">
+                        <div class="col col-lg-3">
                             <label for="priority-field" class="form-label">Expedisi</label>
                             <select class="form-control" name="expedisi" id="expedisi" required>
                                 <option value="">Choose Ekspedisi</option>
@@ -122,9 +122,13 @@
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="col col-lg-4">
+                        <div class="col col-lg-3">
                             <label for="priority-field" class="form-label">Driver</label>
                             <input type="text" id="driver" name="driver" class="form-control" placeholder="" value="">
+                        </div>
+                        <div class="col col-lg-3">
+                            <label for="" class="form-label">Unloading Sequence Number</label>
+                            <input type="number" id="unloading_sequence" name="unloading_sequence" class="form-control" placeholder="" value="" required>
                         </div>
                     </div>
 
@@ -175,10 +179,9 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
+<script src="<?= base_url() ?>myassets/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
-
 
         $('#no_truck').select2({
             tags: true,
@@ -318,6 +321,7 @@
             $('#expedisi').val(task.ekspedisi);
             $('#no_truck').val(task.no_truck);
             $('#qty').val(task.qty);
+            $('#unloading_sequence').val(task.unload_seq);
             $('#sj').val(task.no_sj);
             $('#sj_date').val(task.sj_date);
             $('#sj_time').val(task.sj_time);

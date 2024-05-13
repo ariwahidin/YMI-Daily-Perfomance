@@ -46,8 +46,14 @@ class Inbound extends CI_Controller
     public function createTask()
     {
         $post = $this->input->post();
+
+        // var_dump($post);
+        // die;
+
+
         if ($post['proses'] === 'new_task') {
             $params = array(
+                'unload_seq' => $post['unloading_sequence'],
                 'no_sj' => $post['sj'],
                 'no_truck' => $post['no_truck'],
                 'qty' => $post['qty'],
@@ -87,9 +93,13 @@ class Inbound extends CI_Controller
     {
         $post = $this->input->post();
 
+        // var_dump($post);
+        // die;
+
         if ($post['proses'] === 'edit_task') {
             $id = $post['id_task'];
             $params = array(
+                'unload_seq' => $post['unloading_sequence'],
                 'no_sj' => $post['sj'],
                 'no_truck' => $post['no_truck'],
                 'qty' => $post['qty'],
@@ -279,7 +289,7 @@ class Inbound extends CI_Controller
         $no = 1;
         foreach ($rows as $val) {
             $row = array();
-            $row['NO'] = $no++;
+            $row['NO UNLOAD'] = $val->unload_seq;
             $row['TANGGAL AKTIVITAS'] = date('Y-m-d', strtotime($val->sj_created_at));
             $row['TANGGAL KIRIM'] = date('Y-m-d', strtotime($val->sj_send_date));
             $row['TANGGAL UNLOAD'] = date('Y-m-d', strtotime($val->sj_send_date));
