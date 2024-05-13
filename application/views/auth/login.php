@@ -98,7 +98,7 @@
                                             <div class="d-flex">
                                                 <h4 style="font-size: 40px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"><strong>YAMVAS</strong></h4>
                                             </div>
-                                            <p>Yamaha Visual Aplication System</p>
+                                            <p>Yamaha Visual Application System</p>
                                             <img id="logo" src="<?= base_url('jar/html/default/') ?>assets/images/small/yusen-logistics.png" alt="" height="50">
                                             &nbsp;
                                             <img id="logo" src="<?= base_url('jar/html/default/') ?>assets/images/small/yamaha-indonesia.png" alt="" height="70">
