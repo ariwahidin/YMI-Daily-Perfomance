@@ -16,7 +16,17 @@ class Ekspedisi_m extends CI_Model
         $sql = "SELECT a.id, a.name, a.position_id, b.name as position, a.no_truck, a.is_active 
         FROM master_ekspedisi a
         LEFT JOIN master_position b ON a.position_id = b.id
-        WHERE a.is_active = 'Y'";
+        WHERE a.is_active = 'Y' AND a.position_id = 1";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getEkspedisiForOutbound()
+    {
+        $sql = "SELECT a.id, a.name, a.position_id, b.name as position, a.no_truck, a.is_active 
+        FROM master_ekspedisi a
+        LEFT JOIN master_position b ON a.position_id = b.id
+        WHERE a.is_active = 'Y' AND a.position_id = 2";
         $query = $this->db->query($sql);
         return $query;
     }

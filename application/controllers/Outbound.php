@@ -483,7 +483,7 @@ class Outbound extends CI_Controller
     {
         $data = array(
             'picking_list' => $this->outbound_m->getAllPickingList(),
-            'ekspedisi' => $this->ekspedisi_m->getEkspedisi(),
+            'ekspedisi' => $this->ekspedisi_m->getEkspedisiForOutbound(),
             'dest' => $this->destination_m->getdestination(),
             'dealer' => $this->dealer_m->getDealer(),
         );

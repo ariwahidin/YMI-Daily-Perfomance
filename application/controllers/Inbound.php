@@ -137,7 +137,7 @@ class Inbound extends CI_Controller
     {
         $checker = $this->user_m->getOperatorForInbound();
         $factory = $this->factory_m->getFactory();
-        $ekspedisi = $this->ekspedisi_m->getEkspedisi();
+        $ekspedisi = $this->ekspedisi_m->getEkspedisiForInbound();
         $data = array(
             'checker' => $checker,
             'factory' => $factory,
