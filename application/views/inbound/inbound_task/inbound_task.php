@@ -28,7 +28,7 @@
     <div class="col-12">
         <div class="d-flex align-items-lg-center flex-lg-row flex-column">
             <div class="flex-grow-1">
-                <h4 class="card-title mb-0 flex-grow-1"><strong id="clock"></strong></h4>
+                <h4 class="card-title mb-0 flex-grow-1"></h4>
                 <!-- <h4 class="fs-16 mb-1">Hi , <?= $_SESSION['user_data']['fullname'] ?></h4> -->
                 <!-- <p class="text-muted mb-0">This is a task that you must complete.</p> -->
             </div>
@@ -538,30 +538,30 @@
             });
         }
 
-        function updateClock() {
-            var currentDate = new Date();
-            var hours = currentDate.getHours().toString().padStart(2, '0');
-            var minutes = currentDate.getMinutes().toString().padStart(2, '0');
-            var seconds = currentDate.getSeconds().toString().padStart(2, '0');
-            var day = currentDate.getDate().toString().padStart(2, '0');
-            var month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Bulan dimulai dari 0
-            var year = currentDate.getFullYear();
+        // function updateClock() {
+        //     var currentDate = new Date();
+        //     var hours = currentDate.getHours().toString().padStart(2, '0');
+        //     var minutes = currentDate.getMinutes().toString().padStart(2, '0');
+        //     var seconds = currentDate.getSeconds().toString().padStart(2, '0');
+        //     var day = currentDate.getDate().toString().padStart(2, '0');
+        //     var month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Bulan dimulai dari 0
+        //     var year = currentDate.getFullYear();
 
-            var dateString = year + '-' + month + '-' + day;
-            var timeString = hours + ':' + minutes + ':' + seconds;
-            var dateTimeString = dateString + ' ' + timeString;
+        //     var dateString = year + '-' + month + '-' + day;
+        //     var timeString = hours + ':' + minutes + ':' + seconds;
+        //     var dateTimeString = dateString + ' ' + timeString;
 
-            document.getElementById('clock').innerText = dateTimeString;
-        }
+        //     document.getElementById('clock').innerText = dateTimeString;
+        // }
 
-        function keepAlive() {
-            $.post('keepAlive', {}, function(response) {
-                console.log(response);
-            }, 'json');
-        }
+        // function keepAlive() {
+        //     $.post('keepAlive', {}, function(response) {
+        //         console.log(response);
+        //     }, 'json');
+        // }
 
-        setInterval(keepAlive, 180000);
-        setInterval(updateClock, 1000);
-        updateClock();
+        // setInterval(keepAlive, 180000);
+        // setInterval(updateClock, 1000);
+        // updateClock();
     });
 </script>

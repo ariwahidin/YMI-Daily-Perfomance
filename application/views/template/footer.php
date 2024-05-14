@@ -96,6 +96,35 @@
 
     // Mengaitkan fungsi toggleTheme() dengan sebuah tombol (misalnya, tombol dengan ID 'theme-toggle')
     document.getElementById('btnTheme').addEventListener('click', toggleTheme);
+
+    function updateClock() {
+        var currentDate = new Date();
+        var daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        var monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        var dayOfWeek = daysOfWeek[currentDate.getDay()];
+        var dayOfMonth = currentDate.getDate();
+        var monthOfYear = monthsOfYear[currentDate.getMonth()];
+        var year = currentDate.getFullYear();
+        var hours = currentDate.getHours().toString().padStart(2, '0');
+        var minutes = currentDate.getMinutes().toString().padStart(2, '0');
+        var seconds = currentDate.getSeconds().toString().padStart(2, '0');
+
+        var dateTimeString = dayOfWeek + ', ' + dayOfMonth + ' ' + monthOfYear + ', ' + year + ' ' + hours + ':' + minutes + ':' + seconds;
+
+        document.getElementById('clock').innerText = dateTimeString;
+    }
+
+
+    function keepAlive() {
+        $.post('keepAlive', {}, function(response) {
+            console.log(response);
+        }, 'json');
+    }
+
+    setInterval(keepAlive, 180000);
+    setInterval(updateClock, 1000);
+    updateClock();
 </script>
 </body>
 

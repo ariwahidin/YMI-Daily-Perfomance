@@ -1,6 +1,6 @@
 <div class="col-md-3">
     <div class="card">
-        <div class="card-header card-primary"><strong>Inbound Complete <?= date('Y-m-d') ?></strong></div>
+        <div class="card-header card-primary"><strong>Inbound Complete</strong></div>
         <div class="card-body table-responsive">
             <table class="table table-sm table-striped table-nowrap table-responsive table-bordered">
                 <thead>
@@ -35,7 +35,7 @@
 
 <div class="col-md-3">
     <div class="card">
-        <div class="card-header card-primary"><strong>User Inbound <?= date('Y-m-d') ?></strong></div>
+        <div class="card-header card-primary"><strong>User Inbound</strong></div>
         <div class="card-body table-responsive">
             <table class="table table-sm table-bordered table-striped">
                 <thead>
@@ -79,7 +79,7 @@
 
 <div class="col-md-3">
     <div class="card">
-        <div class="card-header card-success"><strong>User Outbound <?= date('Y-m-d') ?></strong></div>
+        <div class="card-header card-success"><strong>User Outbound</strong></div>
         <div class="card-body table-responsive">
             <table class="table table-sm table-bordered table-striped">
                 <thead>
