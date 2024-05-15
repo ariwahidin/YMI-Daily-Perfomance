@@ -117,7 +117,7 @@
 
 
     function keepAlive() {
-        $.post('keepAlive', {}, function(response) {
+        $.post('<?= base_url('Welcome/') ?>' + 'keepAlive', {}, function(response) {
             console.log(response);
         }, 'json');
     }

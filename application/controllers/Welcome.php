@@ -25,4 +25,13 @@ class Welcome extends CI_Controller
 		exit;
 		$this->load->view('welcome_message');
 	}
+
+	public function keepAlive()
+	{
+		$response = array(
+			'success' => true,
+			'message' => 'keep a live'
+		);
+		echo json_encode($response);
+	}
 }

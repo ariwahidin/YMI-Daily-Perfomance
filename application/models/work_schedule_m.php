@@ -13,6 +13,12 @@ class Work_schedule_m extends CI_Model
         left join master_position c on a.position_id = c.id
         WHERE a.is_deleted <> 'Y'";
 
+        $user_id = $_POST['sUser'];
+
+        if ($user_id != 'all') {
+            $sql .= " AND a.user_id = '$user_id'";
+        }
+
         if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
             $startDate = $_POST['startDate'];
             $endDate = $_POST['endDate'];

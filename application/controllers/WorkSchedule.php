@@ -39,16 +39,19 @@ class WorkSchedule extends CI_Controller
     {
         $post = $this->input->post();
 
-        $cek = $this->db->get_where('work_schedule', ['user_id' => $post['user_id'], 'date' => $post['date'], 'is_deleted' => 'N']);
+        // var_dump($post);
+        // die;
+
+        $cek = $this->db->get_where('work_schedule', ['user_id' => $post['user_id'], 'date' => $post['start_date'], 'is_deleted' => 'N']);
 
         if ($cek->num_rows() < 1) {
 
             $params = array(
                 'user_id' => $post['user_id'],
                 'position_id' => $post['position_id'],
-                'date' => $post['date'],
-                'start_time' => date('Y-m-d H:i:s', strtotime($post['date'] . $post['start_time'])),
-                'end_time' => date('Y-m-d H:i:s', strtotime($post['date'] . $post['end_time'])),
+                'date' => $post['start_date'],
+                'start_time' => date('Y-m-d H:i:s', strtotime($post['start_date'] . $post['start_time'])),
+                'end_time' => date('Y-m-d H:i:s', strtotime($post['end_date'] . $post['end_time'])),
                 'created_at' => currentDateTime(),
                 'created_by' => userId(),
                 'is_deleted' => 'N'
@@ -77,12 +80,48 @@ class WorkSchedule extends CI_Controller
         echo json_encode($response);
     }
 
+    public function createWithExcel()
+    {
+        $post = $this->input->post();
+        $schedule = json_decode($post['schedule'])->rows;
+        $params = array();
+
+        foreach ($schedule as $data) {
+            $param = array();
+            $param['user_id'] = $data->user_id;
+            $param['position_id'] = $data->position_id;
+            $param['date'] = date('Y-m-d', strtotime($data->start_time));
+            $param['start_time'] = date('Y-m-d H:i:s', strtotime($data->start_date . $data->start_time));
+            $param['end_time'] = date('Y-m-d H:i:s', strtotime($data->end_date . $data->end_time));
+            $param['created_at'] = currentDateTime();
+            $param['created_by'] = userId();
+            $param['is_deleted'] = 'N';
+            array_push($params, $param);
+        }
+
+        $this->db->insert_batch('work_schedule', $params);
+
+        if ($this->db->affected_rows() > 0) {
+            $response = array(
+                'success' => true,
+                'message' => 'upload schedule successfully'
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'failed to ulpload schedule'
+            );
+        }
+
+        echo json_encode($response);
+    }
+
     public function editSchedule()
     {
         $post = $this->input->post();
 
 
-        $cek = $this->db->get_where('work_schedule', ['user_id' => $post['user_id'], 'date' => $post['date'], 'is_deleted' => 'N', 'id !=' => $post['eks_id']]);
+        $cek = $this->db->get_where('work_schedule', ['user_id' => $post['user_id'], 'date' => $post['start_date'], 'is_deleted' => 'N', 'id !=' => $post['eks_id']]);
 
         // var_dump($this->db->last_query());
         // die;
@@ -92,9 +131,9 @@ class WorkSchedule extends CI_Controller
             $params = array(
                 'user_id' => $post['user_id'],
                 'position_id' => $post['position_id'],
-                'date' => $post['date'],
-                'start_time' => date('Y-m-d H:i:s', strtotime($post['date'] . $post['start_time'])),
-                'end_time' => date('Y-m-d H:i:s', strtotime($post['date'] . $post['end_time'])),
+                'date' => $post['start_date'],
+                'start_time' => date('Y-m-d H:i:s', strtotime($post['start_date'] . $post['start_time'])),
+                'end_time' => date('Y-m-d H:i:s', strtotime($post['end_date'] . $post['end_time'])),
                 'created_at' => currentDateTime(),
                 'created_by' => userId()
             );

@@ -25,7 +25,7 @@
 </div>
 
 <div class="row">
-    <div class="col col-md-8">
+    <div class="col col-md-12">
         <div class="card">
             <div class="card-header bg-primary">
                 <button class="btn btn-info" id="btnAdd">Add new ekspedisi</button>
