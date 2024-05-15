@@ -88,11 +88,12 @@ class Outbound_m extends CI_Model
             }
         }
 
-        if (isset($post['search'])) {
-            if ($post['search'] != '') {
-                $search = $post['search'];
-                $sql .= " WHERE a.pl_no LIKE '%$search%'";
-            }
+        if (isset($post['search']) && isset($post['searchDest'])) {
+            // if ($post['search'] != '') {
+            $search = $post['search'];
+            $searchDest = $post['searchDest'];
+            $sql .= " WHERE a.pl_no LIKE '%$search%' AND dest LIKE '%$searchDest%'";
+            // }
         }
 
         $sql .= " ORDER BY b.id DESC";
@@ -331,7 +332,7 @@ class Outbound_m extends CI_Model
         left join tb_out_temp c on a.id = c.no_pl
         left join tb_out d on a.id = d.pl_id";
 
-        
+
 
         if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
             $startDate = $_POST['startDate'];
@@ -348,6 +349,44 @@ class Outbound_m extends CI_Model
 
 
         $sql .= " order by a.created_at desc";
+
+        // print_r($sql);
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getAllPickingListByAdm($id = null)
+    {
+        $sql = "select a.*, b.name as ekspedisi_name, c.no_pl, d.no_pl,
+        case 
+        WHEN c.no_pl is null and d.no_pl is null then 'unprocessed' 
+        WHEN c.no_pl is not null and d.no_pl is null then 'processing' 
+        WHEN c.no_pl is null and d.no_pl is not null then 'done' end as [status]
+        from pl_h a
+        left join master_ekspedisi b on a.expedisi = b.id
+        left join tb_out_temp c on a.id = c.no_pl
+        left join tb_out d on a.id = d.pl_id";
+
+
+
+        // if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
+        //     $startDate = $_POST['startDate'];
+        //     $endDate = $_POST['endDate'];
+        //     $sql .= " WHERE CONVERT(DATE, a.created_at) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
+        // } else {
+        //     $sql .= " WHERE CONVERT(DATE, a.created_at) = CONVERT(DATE, GETDATE())";
+        // }
+
+        if ($id != null) {
+            $sql .= " WHERE a.id = '$id'";
+        }
+
+
+
+        $sql .= " order by a.created_at desc";
+
+        // print_r($sql);
 
         $query = $this->db->query($sql);
         return $query;

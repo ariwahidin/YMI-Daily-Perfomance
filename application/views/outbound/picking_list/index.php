@@ -84,7 +84,7 @@
                             <div class="form-group">
                                 <label for="name" class="form-label">Dealer Code : </label>
                                 <!-- <input type="text" class="form-control" id="dealer_code" name="dealer_code" placeholder=""> -->
-                                <select name="dealer_code" id="dealer_code">
+                                <select name="dealer_code" id="dealer_code" required>
                                     <option value="">Choose dealer code</option>
                                     <?php
                                     foreach ($dealer->result() as $data) {
@@ -100,7 +100,7 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Dealer / Depo : </label>
-                                <input type="text" class="form-control" id="dealer_det" name="dealer_det" placeholder="" readonly>
+                                <input type="text" class="form-control" id="dealer_det" name="dealer_det" placeholder="" readonly required>
                             </div>
                         </div>
 
@@ -121,7 +121,7 @@
                             <div class="form-group">
                                 <label for="name" class="form-label">Destination : </label>
                                 <!-- <input type="text" class="form-control" id="dest" name="dest" placeholder=""> -->
-                                <select name="dest" id="dest" class="form-control">
+                                <select name="dest" id="dest" class="form-control" required>
                                     <option value="">Choose destination</option>
                                     <?php
                                     foreach ($dest->result() as $data) {
@@ -168,7 +168,7 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Expedisi : </label>
-                                <select class="form-control" name="expedisi" id="expedisi">
+                                <select class="form-control" name="expedisi" id="expedisi" required>
                                     <option value="">Choose ekspedisi</option>
                                     <?php foreach ($ekspedisi->result() as $eks) { ?>
                                         <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
@@ -216,7 +216,7 @@
     $(document).ready(function() {
 
         $('#dest').select2({
-            tags: true,
+            // tags: true,
             dropdownParent: $("#modalForm")
         });
 
@@ -227,7 +227,7 @@
         })
 
         $('#dealer_code').select2({
-            tags: true,
+            // tags: true,
             dropdownParent: $("#modalForm")
         });
 
@@ -238,7 +238,7 @@
         })
 
         $('#no_truck').select2({
-            tags: true,
+            // tags: true,
             dropdownParent: $("#modalForm")
         });
 

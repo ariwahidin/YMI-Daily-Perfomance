@@ -184,7 +184,7 @@
     $(document).ready(function() {
 
         $('#no_truck').select2({
-            tags: true,
+            // tags: true,
             dropdownParent: $("#createTask")
         });
 

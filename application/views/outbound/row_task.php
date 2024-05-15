@@ -11,6 +11,7 @@
                     <div style="font-size: 11px;" class="row">
                         <div class="col-md-3 col-6 ps-3">
                             <p class="m-0">Date : <span><?= date('Y-m-d', strtotime($data->activity_date)) ?></span></p>
+                            <p class="m-0">Dest : <span style="font-size: 11px;" class="badge badge-pill bg-danger"><strong><?= $data->dest ?></strong></span></p>
                             <p class="m-0">PL No : <span class=""><strong><?= $data->no_pl ?></strong></span></p>
                             <p class="m-0">PL Date : <span><?= $data->adm_pl_date ?></span></p>
                             <p class="m-0">PL Time : <span><?= date('H:i', strtotime($data->adm_pl_time)) ?></span></p>

@@ -43,8 +43,9 @@
                     <div class="row">
                         <div class="col-sm-auto">
                             <div class="input-group">
-                                <input type="text" id="inSearch" class="form-control border-0 dash-filter-picker shadow" placeholder="Search picking list">
-                                <button class="btn btn-primary border-primary text-white" id="btnSearch">
+                                <input type="text" id="inSearchDest" class="form-control" placeholder="Destination">
+                                <input type="text" id="inSearch" class="form-control" placeholder="Picking list">
+                                <button class="btn btn-primary btn-sm border-primary text-white" id="btnSearch">
                                     <i class="ri-search-2-line"></i>
                                 </button>
                             </div>
@@ -193,7 +194,7 @@
                     // console.log(opt);
                     // .select2();
                     $('#no_pl').select2({
-                        tags: true,
+                        // tags: true,
                         dropdownParent: $("#createTask")
                     });
 
@@ -373,7 +374,7 @@
                 opt += `<option value="${task.pl_id}" selected>${task.no_pl}</option>`;
                 selPL.html(opt);
                 $('#no_pl').select2({
-                    tags: true,
+                    // tag : [],
                     dropdownParent: $("#createTask")
                 });
 
@@ -617,8 +618,10 @@
 
         function getAllRowTask() {
             let search = $('#inSearch').val();
+            let searchDest = $('#inSearchDest').val();
             $.post('getAllRowTask', {
-                search
+                search,
+                searchDest
             }, function(response) {
                 let content = $('#content');
                 content.empty();

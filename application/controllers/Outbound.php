@@ -153,6 +153,10 @@ class Outbound extends CI_Controller
     public function getAllRowTask()
     {
         $post = $this->input->post();
+
+        // var_dump($post);
+        // die;
+
         $task = $this->outbound_m->getTaskByUser($post);
         $data = array(
             'task' => $task
@@ -197,7 +201,22 @@ class Outbound extends CI_Controller
 
         if ($post['activity'] == 'checking') {
             $user_id = userId();
+            $id = $post['id'];
             $pl_id = $post['pl_id'];
+
+
+            $sql = "SELECT TOP 1 stop_picking FROM tb_out_temp WHERE id = '$id' AND stop_picking IS NULL";
+            $query = $this->db->query($sql);
+
+            if ($query->num_rows() > 0) {
+                $response = array(
+                    'success' => false,
+                    'message' => "Can not to checking proccess, Finish picking proccess first"
+                );
+                echo json_encode($response);
+                exit;
+            }
+
             $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
             $query = $this->db->query($sql);
 
@@ -226,8 +245,23 @@ class Outbound extends CI_Controller
         if ($post['activity'] == 'scanning') {
             $user_id = userId();
             $pl_id = $post['pl_id'];
+            $id = $post['id'];
+
+            $sql = "SELECT TOP 1 stop_checking FROM tb_out_temp WHERE id = '$id' AND stop_checking IS NULL";
+            $query = $this->db->query($sql);
+
+            if ($query->num_rows() > 0) {
+                $response = array(
+                    'success' => false,
+                    'message' => "Can not to scanning proccess, Finish checking proccess first"
+                );
+                echo json_encode($response);
+                exit;
+            }
+
             $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
             $query = $this->db->query($sql);
+
 
             if ($query->num_rows() > 0) {
                 $response = array(
@@ -598,7 +632,7 @@ class Outbound extends CI_Controller
     {
         $response = array(
             'success' => true,
-            'picking_list' => $this->outbound_m->getAllPickingList($_POST['id'])->row_array()
+            'picking_list' => $this->outbound_m->getAllPickingListByAdm($_POST['id'])->row_array()
         );
         echo json_encode($response);
     }
