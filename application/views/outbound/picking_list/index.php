@@ -439,27 +439,42 @@
             let id = $(this).data('id');
 
 
-            $.post('cekStatusPickingList', {
-                id: id
-            }, function(response) {
-                if (response.success == true) {
-                    if (response.data.status == 'unprocessed') {
-                        $.post('deletePickingList', {
-                            id: id
-                        }, function(response) {
-                            if (response.success == true) {
-                                getTablePickingList();
+            Swal.fire({
+                icon: "question",
+                title: "Do you want to delete this data?",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Delete!",
+                denyButtonText: `Don't save`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    startLoading();
+                    $.post('cekStatusPickingList', {
+                        id: id
+                    }, function(response) {
+                        stopLoading();
+                        if (response.success == true) {
+                            if (response.data.status == 'unprocessed') {
+                                $.post('deletePickingList', {
+                                    id: id
+                                }, function(response) {
+                                    if (response.success == true) {
+                                        getTablePickingList();
+                                    }
+                                }, 'json');
+                            } else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Not allowed',
+                                    text: 'Status picking list : ' + response.data.status
+                                });
                             }
-                        }, 'json');
-                    } else {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Not allowed',
-                            text: 'Status picking list : ' + response.data.status
-                        });
-                    }
+                        }
+                    }, 'json');
                 }
-            }, 'json');
+            });
+
+
+
 
             // $.post('deleteEkspedisi', {
             //     id: id

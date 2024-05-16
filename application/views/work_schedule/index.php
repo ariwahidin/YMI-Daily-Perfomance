@@ -142,7 +142,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="headerForm"></h5>
+                <button class="btn btn-success btn-sm" id="btnDownloadForm">Download Form</button>&nbsp;
+                <button onclick="window.location.href='<?php echo site_url('workschedule/formExample'); ?>'" class="btn btn-primary btn-sm">Download example</button>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -154,12 +155,22 @@
                             <input type="file" class="form-control" id="fileExcel" accept=".xls,.xlsx">
                             <!-- <button type="button" class="btn btn-primary" id="uploadExcel">Upload</button> -->
                         </div>
+                        <div class="form-group">
+                            <br>
+                            <p>Upload instructions : </p>
+                            <ul>
+                                <li>Gunakan form yang telah disediakan (Download form), Contoh form yang valid (Download example)</li>
+                                <li>Pastikan format excel harus sesuai pada setiap kolomnya, lihat pada form example</li>
+                                <li>Pastikan user_id, fullname, dan position_id sesuai dengan master user pada sheet master user</li>
+                                <li>Pastikan kolom yang mengandung nilai date dan time sudah valid ketika di lembar kerja excel</li>
+                            </ul>
+                        </div>
                         <div class="mt-2" id="divTable"></div>
 
                         <div class="col-lg-12">
                             <div class="hstack gap-2 justify-content-end pt-2">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" id="btnSubmitForm" class="btn btn-primary" style="display: none;">Submit</button>
                             </div>
                         </div>
                     </div>
@@ -170,9 +181,290 @@
 </div>
 
 <script></script>
-
+<script src="<?= base_url() ?>myassets/js/exceljs.min.js"></script>
 <script>
     $(document).ready(function() {
+
+
+        $('#btnDownloadForm').on('click', downloadExcelForm)
+
+        function downloadExcelForm() {
+            // startLoading();
+            setTimeout(async function() {
+                    // stopLoading();
+                    // let checker = $('#sChecker').val().trim();
+                    // let startDate = $('#sStartDate').val().trim();
+                    // let endDate = $('#sEndDate').val().trim();
+                    let dataToPost = {
+                        // checker: checker,
+                        // startDate: startDate,
+                        // endDate: endDate
+                    }
+                    let dataAct = await $.post('getDataExcelForm', dataToPost, function() {}, 'json');
+
+                    // console.log(dataAct);
+                    // return
+
+                    var headers = Object.keys(dataAct.header);
+                    var headers_users = Object.keys(dataAct.users[0]);
+                    var headers_example = Object.keys(dataAct.example[0]);
+
+                    // return;
+
+
+                    var workbook = new ExcelJS.Workbook();
+                    var sheet1 = workbook.addWorksheet('Form Schedule');
+                    var sheet2 = workbook.addWorksheet('Master User');
+                    var sheet3 = workbook.addWorksheet('Example');
+
+
+                    sheet1.addRow(headers).eachCell(function(row, rowNumber) {
+                        row.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFFF00'
+                            }
+                        };
+                    });
+
+                    sheet2.addRow(headers_users).eachCell(function(row, rowNumber) {
+                        row.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFFF00'
+                            }
+                        };
+                    });
+
+                    sheet3.addRow(headers_example).eachCell(function(row, rowNumber) {
+                        row.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: {
+                                argb: 'FFFF00'
+                            }
+                        };
+                    });
+
+                    // Menentukan lebar kolom berdasarkan isi
+                    // sheet1.columns.forEach(function(column) {
+                    //     var maxLength = 0;
+                    //     column.eachCell(function(cell) {
+                    //         var columnLength = cell.value ? cell.value.toString().length : 10;
+                    //         if (columnLength > maxLength) {
+                    //             maxLength = columnLength;
+                    //         }
+                    //     });
+                    //     column.width = maxLength < 10 ? 10 : maxLength;
+                    // });
+
+                    sheet2.columns.forEach(function(column) {
+                        var maxLength = 0;
+                        column.eachCell(function(cell) {
+                            var columnLength = cell.value ? cell.value.toString().length : 10;
+                            if (columnLength > maxLength) {
+                                maxLength = columnLength;
+                            }
+                        });
+                        column.width = maxLength < 10 ? 10 : maxLength;
+                    });
+
+                    // Menambahkan border ke seluruh tabel
+                    sheet1.eachRow(function(row) {
+                        row.eachCell(function(cell) {
+                            cell.border = {
+                                top: {
+                                    style: 'thin'
+                                },
+                                left: {
+                                    style: 'thin'
+                                },
+                                bottom: {
+                                    style: 'thin'
+                                },
+                                right: {
+                                    style: 'thin'
+                                }
+                            };
+                        });
+                    });
+
+                    sheet2.eachRow(function(row) {
+                        row.eachCell(function(cell) {
+                            cell.border = {
+                                top: {
+                                    style: 'thin'
+                                },
+                                left: {
+                                    style: 'thin'
+                                },
+                                bottom: {
+                                    style: 'thin'
+                                },
+                                right: {
+                                    style: 'thin'
+                                }
+                            };
+                        });
+                    });
+
+                    sheet3.eachRow(function(row) {
+                        row.eachCell(function(cell) {
+                            cell.border = {
+                                top: {
+                                    style: 'thin'
+                                },
+                                left: {
+                                    style: 'thin'
+                                },
+                                bottom: {
+                                    style: 'thin'
+                                },
+                                right: {
+                                    style: 'thin'
+                                }
+                            };
+                        });
+                    });
+
+                    // dataAct.header.forEach(function(row, ) {
+                    //     var rowData = headers.map(function(header) {
+                    //         return row[header];
+                    //     });
+
+                    //     sheet1.addRow(rowData);
+                    //     // Menentukan lebar kolom berdasarkan isi
+                    //     sheet1.columns.forEach(function(column) {
+                    //         var maxLength = 0;
+                    //         column.eachCell(function(cell) {
+                    //             var columnLength = cell.value ? cell.value.toString().length : 10;
+                    //             if (columnLength > maxLength) {
+                    //                 maxLength = columnLength;
+                    //             }
+                    //         });
+                    //         column.width = maxLength < 10 ? 10 : maxLength;
+                    //     });
+
+                    //     // Menambahkan border ke seluruh tabel
+                    //     sheet1.eachRow(function(row) {
+                    //         row.eachCell(function(cell) {
+                    //             cell.border = {
+                    //                 top: {
+                    //                     style: 'thin'
+                    //                 },
+                    //                 left: {
+                    //                     style: 'thin'
+                    //                 },
+                    //                 bottom: {
+                    //                     style: 'thin'
+                    //                 },
+                    //                 right: {
+                    //                     style: 'thin'
+                    //                 }
+                    //             };
+                    //         });
+                    //     });
+                    // });
+
+                    dataAct.users.forEach(function(row, ) {
+                        var rowData = headers_users.map(function(header) {
+                            return row[header];
+                        });
+                        sheet2.addRow(rowData);
+                        // Menentukan lebar kolom berdasarkan isi
+                        sheet2.columns.forEach(function(column) {
+                            var maxLength = 0;
+                            column.eachCell(function(cell) {
+                                var columnLength = cell.value ? cell.value.toString().length : 10;
+                                if (columnLength > maxLength) {
+                                    maxLength = columnLength;
+                                }
+                            });
+                            column.width = maxLength < 10 ? 10 : maxLength;
+                        });
+
+                        // Menambahkan border ke seluruh tabel
+                        sheet2.eachRow(function(row) {
+                            row.eachCell(function(cell) {
+                                cell.border = {
+                                    top: {
+                                        style: 'thin'
+                                    },
+                                    left: {
+                                        style: 'thin'
+                                    },
+                                    bottom: {
+                                        style: 'thin'
+                                    },
+                                    right: {
+                                        style: 'thin'
+                                    }
+                                };
+                            });
+                        });
+                    });
+
+                    dataAct.example.forEach(function(row, ) {
+
+
+                        var rowData = headers_example.map(function(header) {
+                            return row[header];
+                        });
+
+
+                        sheet3.addRow(rowData);
+                        // Menentukan lebar kolom berdasarkan isi
+                        sheet3.columns.forEach(function(column) {
+                            var maxLength = 0;
+                            column.eachCell(function(cell) {
+                                var columnLength = cell.value ? cell.value.toString().length : 10;
+                                if (columnLength > maxLength) {
+                                    maxLength = columnLength;
+                                }
+                            });
+                            column.width = maxLength < 10 ? 10 : maxLength;
+                        });
+
+                        // Menambahkan border ke seluruh tabel
+                        sheet3.eachRow(function(row) {
+                            row.eachCell(function(cell) {
+                                cell.border = {
+                                    top: {
+                                        style: 'thin'
+                                    },
+                                    left: {
+                                        style: 'thin'
+                                    },
+                                    bottom: {
+                                        style: 'thin'
+                                    },
+                                    right: {
+                                        style: 'thin'
+                                    }
+                                };
+                            });
+                        });
+                    });
+
+                    workbook.xlsx.writeBuffer().then(function(buffer) {
+                        var blob = new Blob([buffer], {
+                            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        });
+                        var url = window.URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = dataAct.file_name;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                    });
+                },
+                3000);
+        }
+
+
         $('#scheduleForm').on('submit', function(e) {
             e.preventDefault();
             let formUser = new FormData(this);
@@ -364,9 +656,10 @@
 
         // Objek yang menampung nama kolom yang ditentukan dari sistem
         var systemColumnNames = {
-            columnName1: "user_id",
-            columnName2: "fullname",
-            columnName3: "position_id",
+            columnName0: "user_id",
+            columnName1: "fullname",
+            columnName2: "position_id",
+            columnName3: "position_name",
             columnName4: "start_date",
             columnName5: "start_time",
             columnName6: "end_date",
@@ -378,6 +671,7 @@
         // });
 
         document.getElementById("fileExcel").addEventListener("change", function() {
+            jsonExcel = {};
             selectedFile = event.target.files[0];
             if (selectedFile) {
                 var fileReader = new FileReader();
@@ -394,22 +688,32 @@
                             totalQty: 0
                         };
 
+                        let maxSheet = 0;
                         workbook.SheetNames.forEach((sheet) => {
+                            if (maxSheet > 0) {
+                                return false;
+                            }
+
                             let table = document.createElement("table");
                             table.setAttribute("id", "excelTable");
+
                             let rowObject = XLSX.utils.sheet_to_row_object_array(
                                 workbook.Sheets[sheet]
                             );
+
                             var headers = Object.keys(rowObject[0]);
 
                             // Validasi nama kolom
-                            // var systemColumnKeys = Object.keys(systemColumnNames);
-                            // if (headers.length !== systemColumnKeys.length ||
-                            //     !systemColumnKeys.every(key => headers.includes(systemColumnNames[key]))) {
-
-                            //     alert("Column names do not match the system-defined column names.");
-                            //     return;
-                            // }
+                            var systemColumnKeys = Object.keys(systemColumnNames);
+                            if (headers.length !== systemColumnKeys.length ||
+                                !systemColumnKeys.every(key => headers.includes(systemColumnNames[key]))) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Column names do not match the system-defined column names.'
+                                });
+                                return;
+                            }
 
                             // Validasi kolom ketiga untuk format tanggal
                             var dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Format tanggal: YYYY-MM-DD
@@ -455,10 +759,11 @@
 
                                 excelData.rows.push(rowData);
 
-                                // Hitung total kuantitas
-                                // var qty = parseInt(rowData[systemColumnNames.columnName4]) || 0;
-                                // excelData.totalQty += qty;
+                                //     // Hitung total kuantitas
+                                //     // var qty = parseInt(rowData[systemColumnNames.columnName4]) || 0;
+                                //     // excelData.totalQty += qty;
                             });
+                            maxSheet = maxSheet + 1;
                         });
 
                         // Tampilkan tabel
@@ -466,9 +771,20 @@
 
                         console.log(excelData);
                         jsonExcel = excelData;
+                        if (jsonExcel.rows.length > 0) {
+                            $('#btnSubmitForm').css('display', 'block');
+                        } else {
+                            $('#btnSubmitForm').css('display', 'none');
+                        }
                     } catch (error) {
                         console.error("Error parsing Excel file:", error);
-                        alert("Error parsing Excel file. Please make sure the file is valid.");
+                        $('#btnSubmitForm').css('display', 'none');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error parsing Excel file. Please make sure the file is valid.'
+                        });
+                        // alert("Error parsing Excel file. Please make sure the file is valid.");
                     }
                 };
                 fileReader.readAsBinaryString(selectedFile);

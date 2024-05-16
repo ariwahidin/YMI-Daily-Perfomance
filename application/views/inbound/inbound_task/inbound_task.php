@@ -101,7 +101,7 @@
                             <input type="time" id="sj_time" name="sj_time" class="form-control" placeholder="" value="">
                         </div>
                     </div>
-                    
+
                     <div class="row form-group">
                         <div class="col col-lg-3 col-xs-6">
                             <label for="task-status" class="form-label">No Truck</label>
@@ -131,7 +131,7 @@
                             <input type="number" id="unloading_sequence" name="unloading_sequence" class="form-control" placeholder="" value="" required>
                         </div>
                     </div>
-                    
+
                     <div class="row">
 
                         <div class="col-6 col-lg-3">
@@ -337,17 +337,31 @@
         })
 
         $('#content').on('click', '.btnDelete', function() {
-            startLoading();
-            let id = $(this).data('id');
-            $.post('deleteTransTemp', {
-                id: id
-            }, function(response) {
-                stopLoading();
-                if (response.success == true) {
-                    getAllRowTask();
-                    socket.send('ping');
+
+
+            Swal.fire({
+                icon: "question",
+                title: "Do you want to delete this activity?",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Delete!",
+                denyButtonText: `Don't save`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    startLoading();
+                    let id = $(this).data('id');
+                    $.post('deleteTransTemp', {
+                        id: id
+                    }, function(response) {
+                        stopLoading();
+                        if (response.success == true) {
+                            getAllRowTask();
+                            socket.send('ping');
+                        }
+                    }, 'json');
                 }
-            }, 'json');
+            });
+
+
 
         });
 
@@ -355,9 +369,27 @@
             let id = $(this).data('id');
             let proses = $(this).data('proses');
             if (proses === 'start_unloading') {
-                startUnloading(id);
+                Swal.fire({
+                    icon: "question",
+                    title: "Ready to start unloading?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        startUnloading(id);
+                    }
+                });
             } else {
-                stopUnloading(id);
+                Swal.fire({
+                    icon: "question",
+                    title: "Are you sure to finish unloading?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        stopUnloading(id);
+                    }
+                });
             }
         })
 
@@ -415,9 +447,27 @@
             let id = $(this).data('id');
             let proses = $(this).data('proses');
             if (proses === 'start_checking') {
-                startChecking(id);
+                Swal.fire({
+                    icon: "question",
+                    title: "Ready to start checking?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        startChecking(id);
+                    }
+                });
             } else {
-                stopChecking(id);
+                Swal.fire({
+                    icon: "question",
+                    title: "Are you sure to start finish checking?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        stopChecking(id);
+                    }
+                });
             }
         })
 
@@ -473,9 +523,31 @@
             let id = $(this).data('id');
             let proses = $(this).data('proses');
             if (proses === 'start_putaway') {
-                startPutaway(id);
+
+                Swal.fire({
+                    icon: "question",
+                    title: "Ready to start putaway?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        startPutaway(id);
+                    }
+                });
+
             } else {
-                stopPutaway(id);
+
+                Swal.fire({
+                    icon: "question",
+                    title: "Are you to finish putaway?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        stopPutaway(id);
+                    }
+                });
+
             }
         })
 

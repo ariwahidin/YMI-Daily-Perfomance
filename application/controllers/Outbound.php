@@ -641,7 +641,7 @@ class Outbound extends CI_Controller
     {
         $post = $this->input->post();
         $id = $post['id'];
-        $rows = $this->outbound_m->getAllPickingList($id)->row();
+        $rows = $this->outbound_m->getAllPickingListByAdm($id)->row();
         $response = array(
             'success' => true,
             'data' => $rows

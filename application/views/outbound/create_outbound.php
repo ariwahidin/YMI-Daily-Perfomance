@@ -407,47 +407,62 @@
         })
 
         $('#content').on('click', '.btnDelete', function() {
-            startLoading();
             let id = $(this).data('id');
             let pl_id = $(this).data('pl-id');
-            $.post('deleteOut', {
-                id: id,
-                pl_id: pl_id
-            }, function(response) {
-                stopLoading();
-                if (response.success == true) {
-                    getAllRowTask();
-                    socket.send('ping');
+            Swal.fire({
+                icon: "question",
+                title: "Do you want to delete this activity?",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Delete!",
+                denyButtonText: `Don't save`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    startLoading();
+                    $.post('deleteOut', {
+                        id: id,
+                        pl_id: pl_id
+                    }, function(response) {
+                        stopLoading();
+                        if (response.success == true) {
+                            getAllRowTask();
+                            socket.send('ping');
+                        }
+                    }, 'json');
                 }
-            }, 'json');
-
+            });
         });
 
         $('#content').on('click', '.btnActivity', function() {
-            startLoading();
-            let dataToPost = {
-                id: $(this).data('id'),
-                pl_id: $(this).data('pl-id'),
-                activity: $(this).data('activity'),
-                proses: $(this).data('proses')
-            };
 
-            // console.log(dataToPost);
-            // return false;
-
-            $.post('prosesActivity', dataToPost, function(response) {
-                if (response.success == true) {
-                    getAllRowTask();
-                    stopLoading();
-                    socket.send('ping');
-                } else {
-                    stopLoading();
-                    Swal.fire({
-                        icon: 'error',
-                        title: response.message,
-                    })
+            Swal.fire({
+                icon: "question",
+                title: "Are u sure to " + $(this).data('proses') + " ?",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    startLoading();
+                    let dataToPost = {
+                        id: $(this).data('id'),
+                        pl_id: $(this).data('pl-id'),
+                        activity: $(this).data('activity'),
+                        proses: $(this).data('proses')
+                    };
+                    $.post('prosesActivity', dataToPost, function(response) {
+                        if (response.success == true) {
+                            getAllRowTask();
+                            stopLoading();
+                            socket.send('ping');
+                        } else {
+                            stopLoading();
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.message,
+                            })
+                        }
+                    }, 'json');
                 }
-            }, 'json');
+            });
         })
 
         $('#btnSearch').on('click', getAllRowTask);

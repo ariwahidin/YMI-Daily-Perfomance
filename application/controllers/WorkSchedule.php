@@ -35,6 +35,37 @@ class WorkSchedule extends CI_Controller
         $this->load->view('work_schedule/table_schedule', $data);
     }
 
+    public function formExample()
+    {
+        $file_path = 'file/form_example.xlsx'; // Ganti dengan path file Excel Anda
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="YMI_schedule_example.xlsx"'); // Nama file yang akan didownload
+        readfile($file_path);
+    }
+
+    public function getDataExcelForm()
+    {
+        $header = array(
+            'user_id' => 'kolom1',
+            'fullname' => 'kolom2',
+            'position_id' => 'kolom3',
+            'position_name' => 'kolom4',
+            'start_date' => 'kolom5',
+            'start_time' => 'kolom6',
+            'end_date' => 'kolom7',
+            'end_time' => 'kolom8',
+        );
+
+        $data = array(
+            'success' => true,
+            'example' => json_decode(file_get_contents('file/schedule_example.json'), true),
+            'header' => json_decode(json_encode($header)),
+            'users' => $this->work_schedule_m->getMasterUser()->result(),
+            'file_name' => 'YMI_schedule_form_' . date('YmdHis', strtotime(currentDateTime())) . '.xlsx'
+        );
+        echo json_encode($data);
+    }
+
     public function createSchedule()
     {
         $post = $this->input->post();

@@ -51,4 +51,16 @@ class Work_schedule_m extends CI_Model
         $this->db->where($where);
         $this->db->update('work_schedule', $params);
     }
+
+    public function getMasterUser()
+    {
+        $sql = "SELECT a.id as [user_id], fullname, position as position_id, 
+        b.name as position_name 
+        FROM master_user a
+        INNER JOIN master_position b ON a.position = b.id
+        WHERE a.is_active = 'Y' AND a.position is not null
+        order by a.id ASC";
+        $query = $this->db->query($sql);
+        return $query;
+    }
 }
