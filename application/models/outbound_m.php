@@ -244,14 +244,41 @@ class Outbound_m extends CI_Model
 
     public function getPresentaseOutbound()
     {
-        $sql = "SELECT 
-        (SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) AS outbound_proses,
-        (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) AS outbound_complete,
-        (SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) AS total_outbound,
-        CASE WHEN (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) <> 0 
-             THEN ((SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) / CAST(((SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())))   AS float)) * 100 
-             ELSE 0 
-        END AS presentase;";
+        // $sql = "SELECT 
+        // (SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) AS outbound_proses,
+        // (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) AS outbound_complete,
+        // (SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) AS total_outbound,
+        // CASE WHEN (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) <> 0 
+        //      THEN ((SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) / CAST(((SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())))   AS float)) * 100 
+        //      ELSE 0 
+        // END AS presentase;";
+
+        $sql = "WITH OutboundProses AS (
+            SELECT COUNT(*) AS count_proses
+            FROM tb_out_temp
+            WHERE CONVERT(date, created_date) = CONVERT(date, GETDATE())
+        ),
+        OutboundComplete AS (
+            SELECT COUNT(*) AS count_complete
+            FROM tb_out
+            WHERE CONVERT(date, created_date) = CONVERT(date, GETDATE())
+        ),
+        TotalOutbound AS (
+            SELECT 
+                (SELECT count_proses FROM OutboundProses) + 
+                (SELECT count_complete FROM OutboundComplete) AS total_count
+        )
+        SELECT 
+            (SELECT count_proses FROM OutboundProses) AS outbound_proses,
+            (SELECT count_complete FROM OutboundComplete) AS outbound_complete,
+            (SELECT total_count FROM TotalOutbound) AS total_outbound,
+            CASE 
+                WHEN (SELECT total_count FROM TotalOutbound) <> 0 THEN
+                    (CAST((SELECT count_complete FROM OutboundComplete) AS FLOAT) / 
+                     (SELECT total_count FROM TotalOutbound)) * 100
+                ELSE 0 
+            END AS presentase
+        ";
         $query = $this->db->query($sql);
         return $query;
     }

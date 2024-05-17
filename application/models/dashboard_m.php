@@ -37,13 +37,18 @@ class Dashboard_m extends CI_Model
 
     function getResumeUserInbound()
     {
-        $sql = "select TOP 10 a.*, b.fullname from 
-        (select count(a.no_sj) as tot_sj, sum(a.qty) as tot_qty, a.checker_id, CONVERT(date, a.created_date) as created_date
+
+        $post = $this->input->post();
+        $start_date = $post['start_date'];
+        $end_date = $post['end_date'];
+
+        $sql = "select a.*, b.fullname from 
+        (select count(a.no_sj) as tot_sj, sum(a.qty) as tot_qty, a.checker_id, convert(date, a.activity_date) as activity_date
         from tb_trans a
-        group by a.checker_id, CONVERT(date, a.created_date))a
+        group by a.checker_id, CONVERT(date, a.activity_date))a
         inner join master_user b on a.checker_id =  b.id
-        WHERE convert(date, a.created_date) = convert(date, getdate())
-        order by a.created_date desc";
+        WHERE convert(date, a.activity_date) between CONVERT(date, '$start_date') and CONVERT(date, '$end_date')
+        order by a.activity_date desc";
         $query = $this->db->query($sql);
         return $query;
     }

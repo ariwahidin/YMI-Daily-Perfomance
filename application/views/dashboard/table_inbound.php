@@ -1,7 +1,7 @@
 <table style="font-size: 12px;" class="table table-borderless table-centered align-middle table-nowrap mb-0">
     <thead class="text-muted table-light">
         <tr>
-            <th scope="col">Date</th>
+            <th scope="col">Activity Date</th>
             <th scope="col">Surat Jalan</th>
             <th scope="col">Checker</th>
             <th scope="col">Unloading</th>
@@ -25,7 +25,7 @@
             <tr>
                 <td>
                     <div class="d-flex align-items-center">
-                        <div class="flex-grow-1"><?= date('Y-m-d', strtotime($data->created_at)) ?></div>
+                        <div class="flex-grow-1"><?= $data->activity_date == null ? '' : date('Y-m-d', strtotime($data->activity_date)) ?></div>
                     </div>
                 </td>
                 <td><?= $data->no_sj ?></td>

@@ -68,6 +68,7 @@ class Inbound extends CI_Controller
                 'alloc_code' => $post['alocation'],
                 'pintu_unloading' => $post['pintu_unloading'],
                 'remarks' => $post['remarks'],
+                'activity_date' =>$post['activity_date'],
                 'created_date' => currentDateTime(),
                 'created_by' => userId()
             );
@@ -114,6 +115,7 @@ class Inbound extends CI_Controller
                 'sj_send_date' => $post['send_date'],
                 'time_arival' => $post['toa'],
                 'remarks' => $post['remarks'],
+                'activity_date' => $post['activity_date'],
             );
             $this->inbound_m->editTask($id, $params);
 
@@ -290,7 +292,7 @@ class Inbound extends CI_Controller
         foreach ($rows as $val) {
             $row = array();
             $row['NO UNLOAD'] = $val->unload_seq;
-            $row['TANGGAL AKTIVITAS'] = date('Y-m-d', strtotime($val->sj_created_at));
+            $row['TANGGAL AKTIVITAS'] = date('Y-m-d', strtotime($val->activity_date));
             $row['TANGGAL KIRIM'] = date('Y-m-d', strtotime($val->sj_send_date));
             $row['TANGGAL UNLOAD'] = date('Y-m-d', strtotime($val->sj_send_date));
             $row['FACTORY'] = $val->factory_name;

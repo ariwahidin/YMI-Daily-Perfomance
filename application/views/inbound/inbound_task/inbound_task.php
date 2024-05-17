@@ -163,6 +163,11 @@
                             </select>
                         </div>
 
+                        <div class="col col-lg-3">
+                            <label for="" class="form-label">Activity Date</label>
+                            <input type="date" id="activity_date" name="activity_date" class="form-control" value="" required>
+                        </div>
+
                         <div class="col-lg-6">
                             <label for="priority-field" class="form-label">Remarks</label>
                             <input type="text" id="remarks" name="remarks" class="form-control" value="">
@@ -295,12 +300,13 @@
             let currentTime = moment().format('HH:mm')
             $('#send_date').val(today);
             $('#sj_date').val(today);
+            $('#activity_date').val(today);
 
             $('#sj_time').val(currentTime);
             $('#toa').val(currentTime);
 
 
-            
+
             $('#checker').val('').change();
             $('#alocation').val('');
             $('#factory').val('');
@@ -345,6 +351,7 @@
             $('#send_date').val(task.sj_send_date);
             $('#toa').val(task.time_arival);
             $('#pintu_unloading').val(task.pintu_unloading);
+            $('#activity_date').val(task.activity_date);
             $('#btnTask').text('Edit');
             $('#createTaskLabel').text('Edit task');
             $('#createTask').modal('show');

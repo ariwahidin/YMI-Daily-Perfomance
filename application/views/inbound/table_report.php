@@ -36,7 +36,7 @@
         ?>
             <tr>
                 <td><?= $data->unload_seq ?></td>
-                <td><?= date('Y-m-d', strtotime($data->sj_created_at)) ?></td>
+                <td><?= $data->activity_date == null ? '' : date('Y-m-d', strtotime($data->activity_date)) ?></td>
                 <td><?= date('Y-m-d', strtotime($data->sj_send_date)) ?></td>
                 <td><?= $data->start_unload == null ? '' : date('Y-m-d', strtotime($data->start_unload)) ?></td>
                 <td><?= $data->factory_name ?></td>

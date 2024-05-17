@@ -3,7 +3,6 @@
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <h4 class="mb-sm-0">Dashboard</h4>
-
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
@@ -13,6 +12,36 @@
                 </ol>
             </div>
 
+        </div>
+    </div>
+</div>
+<div class="row mb-3 pb-1">
+    <div class="col-12">
+        <div class="d-flex align-items-lg-center flex-lg-row flex-column">
+            <div class="flex-grow-1">
+                <h4 class="card-title mb-0 flex-grow-1"><strong id="clock"></strong></h4>
+                <!-- <h4 class="fs-16 mb-1">Hi , Super Admin</h4> -->
+                <!-- <p class="text-muted mb-0">This is a task that you must complete.</p> -->
+            </div>
+            <div class="">
+                <form id="formSearchByDate">
+                    <div class="row">
+                        <div class="col-sm-12" style="display: contents;">
+                            <div class="input-group">
+                                <input type="date" id="startDate" class="form-control-sm">
+                                <span style="margin-top: 5px;"> &nbsp; to &nbsp;</span>
+                                <input type="date" id="endDate" class="form-control-sm d-inline">
+                                <button class="btn btn-primary btn-sm border-primary text-white" id="btnSearch">
+                                    <i class="ri-search-2-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- <div class="mt-3 ms-3 mt-lg-0">
+                <button class="btn btn-primary" id="btnCreate">Create new task</button>
+            </div> -->
         </div>
     </div>
 </div>
@@ -94,9 +123,9 @@
             <div class="card-header card-primary align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Inbound Proccess</h4>
                 <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-soft-info btn-sm">
+                    <!-- <button type="button" class="btn btn-soft-info btn-sm">
                         Today
-                    </button>
+                    </button> -->
                 </div>
             </div>
 
@@ -136,15 +165,72 @@
 
 <script>
     $(document).ready(function() {
-        getAllProccessInbound();
-        getUserProses();
+
 
 
         var socket;
         initWebSocket();
 
-        function getUserProses() {
-            $.get('getUserProses', {}, function(response) {
+
+        getAllByDate();
+
+        $('#formSearchByDate').on('submit', function(e) {
+            e.preventDefault();
+            getAllByDate();
+        })
+
+        function getAllByDate() {
+
+            var today = new Date().toISOString().split('T')[0];
+            if ($('#startDate').val() == '') {
+                $('#startDate').val(today)
+            }
+            if ($('#endDate').val() == '') {
+                $('#endDate').val(today)
+            }
+
+            let dataToPost = {
+                start_date: $('#startDate').val(),
+                end_date: $('#endDate').val(),
+            }
+
+            cartInbound(dataToPost);
+            getAllProccessInbound(dataToPost);
+
+            getUserProses(dataToPost);
+
+            cartOutbound();
+            getAllProccessOutbound();
+
+            // let sDate = $('#sStartDate').val();
+            // let eDate = $('#sEndDate').val();
+
+            // let divTable = $('#divSchedule');
+            // divTable.empty();
+            // $.ajax({
+            //     url: "getTablePickingList",
+            //     type: "POST",
+            //     data: {
+            //         startDate: sDate,
+            //         endDate: eDate
+            //     },
+            //     dataType: 'JSON',
+            //     success: function(response) {
+            //         if (response.success == true) {
+            //             $('#cardPL').empty();
+            //             $('#cardPL').html(response.table);
+            //             $('#tablePL').dataTable();
+            //         }
+            //     }
+            // });
+
+            // // $.post('', {}, function(response) {
+
+            // // }, 'json');
+        }
+
+        function getUserProses(dataToPost) {
+            $.post('getUserProses', dataToPost, function(response) {
                 if (response.success == true) {
                     $('#divUserProses').empty();
                     $('#divUserProses').html(response.table_user_proses);
@@ -163,11 +249,11 @@
             };
 
             socket.onmessage = function(event) {
-                getAllProccessInbound();
-                cartInbound();
-                getAllProccessOutbound();
-                cartOutbound();
-                getUserProses();
+                // getAllProccessInbound();
+                // cartInbound();
+                // getAllProccessOutbound();
+                // cartOutbound();
+                // getUserProses();
                 // console.log('Received message: ' + event.data);
                 // Handle received message
             };
@@ -185,15 +271,13 @@
             };
         }
 
-        function getAllProccessInbound() {
-            $.post('getAllProccessInbound', function(response) {
+        function getAllProccessInbound(dataToPost) {
+            $.post('getAllProccessInbound', dataToPost, function(response) {
                 let divInbound = $('#divInbound');
                 divInbound.empty();
                 divInbound.html(response);
             });
         }
-
-        getAllProccessOutbound();
 
         function getAllProccessOutbound() {
             $.post('getAllProccessOutbound', function(response) {
@@ -203,12 +287,9 @@
             });
         }
 
-        cartInbound();
+        function cartInbound(dataToPost) {
 
-
-        function cartInbound() {
-
-            $.post('getPresentaseInbound', {}, function(response) {
+            $.post('getPresentaseInbound', dataToPost, function(response) {
 
                 let data = response.data;
 
@@ -263,9 +344,6 @@
                 chart.render();
             }, 'json');
         }
-
-
-        cartOutbound();
 
         function cartOutbound() {
 

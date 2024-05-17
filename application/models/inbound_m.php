@@ -78,7 +78,7 @@ class Inbound_m extends CI_Model
     public function getCompletedActivity()
     {
 
-        $sql = "SELECT * FROM (SELECT a.id, a.created_date as sj_created_at, a.sj_send_date, a.unload_seq, a.no_sj, a.sj_date, a.sj_time, a.no_truck, a.driver, a.alloc_code, a.pintu_unloading, a.qty, a.time_arival, null as unload_duration,
+        $sql = "SELECT * FROM (SELECT a.id, a.activity_date, a.created_date as sj_created_at, a.sj_send_date, a.unload_seq, a.no_sj, a.sj_date, a.sj_time, a.no_truck, a.driver, a.alloc_code, a.pintu_unloading, a.qty, a.time_arival, null as unload_duration,
         null as checking_duration, null as putaway_duration, b.fullname as checker_name, a.start_unloading as start_unload, a.stop_unloading as stop_unload, a.start_checking, a.stop_checking, a.start_putaway, a.stop_putaway,
         c.name as factory_name, d.name as ekspedisi_name, null as [status]
         FROM tb_trans_temp a
@@ -88,6 +88,7 @@ class Inbound_m extends CI_Model
         union
         select  
                 a.id,
+                a.activity_date,
                 a.sj_created_at,
                 a.sj_send_date,
                 a.unload_seq,
@@ -253,6 +254,7 @@ class Inbound_m extends CI_Model
                 'putaway_st_time' => $data1['start_putaway'],
                 'putaway_fin_time' => $data1['stop_putaway'],
                 'putaway_duration' => countDuration($data1['start_putaway'], $data1['stop_putaway']),
+                'activity_date' => $data1['activity_date'],
                 'created_date' => $this->currentDateTime(),
                 'created_by' => $data1['created_by']
             );
@@ -393,34 +395,72 @@ class Inbound_m extends CI_Model
 
     public function getAllInboundProccess()
     {
+        $post = $this->input->post();
+        $start_date = $post['start_date'];
+        $end_date = $post['end_date'];
+
         $sql = "select * from (
             select a.no_sj, b.fullname as checker_name,
             start_unloading as start_unload, stop_unloading as stop_unload,
-            start_checking, stop_checking, start_putaway, stop_putaway, created_date as created_at
+            start_checking, stop_checking, start_putaway, stop_putaway, created_date as created_at, activity_date
             from tb_trans_temp a 
             inner join  master_user b on a.checker_id = b.id
             union all
             SELECT no_sj, b.fullname as checker_name, a.unload_st_time as start_unload,
             a.unload_fin_time as stop_unload, a.checking_st_time as start_checking, a.checking_fin_time as stop_checking,
-            a.putaway_st_time as start_putaway, a.putaway_fin_time as stop_putaway, a.sj_created_at as created_at
+            a.putaway_st_time as start_putaway, a.putaway_fin_time as stop_putaway, a.sj_created_at as created_at, activity_date
             FROM tb_trans a
-            INNER JOIN master_user b ON a.checker_id = b.id) ss
-            WHERE CONVERT(DATE, created_at) = CONVERT(DATE, GETDATE())
-            order by created_at desc";
+            INNER JOIN master_user b ON a.checker_id = b.id)ss
+            WHERE CONVERT(DATE, ss.activity_date) between CONVERT(date, '$start_date') and CONVERT(date, '$end_date')
+            ORDER BY ss.activity_date DESC";
+
+            // print_r($sql);
         $query = $this->db->query($sql);
         return $query;
     }
 
     public function getPresentaseInbound()
     {
-        $sql = "SELECT 
-        (SELECT COUNT(*) FROM tb_trans_temp WHERE convert(date, created_date) = convert(date, getdate())) AS inbound_proses,
-        (SELECT COUNT(*) FROM tb_trans WHERE convert(date, created_date) = convert(date, getdate())) AS inbound_complete,
-        (SELECT COUNT(*) FROM tb_trans_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_trans WHERE convert(date, created_date) = convert(date, getdate())) AS total_inbound,
-        CASE WHEN (SELECT COUNT(*) FROM tb_trans WHERE convert(date, created_date) = convert(date, getdate())) <> 0 
-             THEN ((SELECT COUNT(*) FROM tb_trans WHERE convert(date, created_date) = convert(date, getdate())) / CAST(((SELECT COUNT(*) FROM tb_trans_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_trans WHERE convert(date, created_date) = convert(date, getdate())))   AS float)) * 100 
-             ELSE 0 
-        END AS presentase";
+        // $sql = "SELECT 
+        // (SELECT COUNT(*) FROM tb_trans_temp WHERE convert(date, created_date) = convert(date, getdate())) AS inbound_proses,
+        // (SELECT COUNT(*) FROM tb_trans WHERE convert(date, created_date) = convert(date, getdate())) AS inbound_complete,
+        // (SELECT COUNT(*) FROM tb_trans_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_trans WHERE convert(date, created_date) = convert(date, getdate())) AS total_inbound,
+        // CASE WHEN (SELECT COUNT(*) FROM tb_trans WHERE convert(date, created_date) = convert(date, getdate())) <> 0 
+        //      THEN ((SELECT COUNT(*) FROM tb_trans WHERE convert(date, created_date) = convert(date, getdate())) / CAST(((SELECT COUNT(*) FROM tb_trans_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_trans WHERE convert(date, created_date) = convert(date, getdate())))   AS float)) * 100 
+        //      ELSE 0 
+        // END AS presentase";
+
+
+        $post = $this->input->post();
+        $start_date = $post['start_date'];
+        $end_date = $post['end_date'];
+
+        $sql = "WITH 
+        InboundProses AS (
+            SELECT COUNT(*) AS count_proses
+            FROM tb_trans_temp
+            WHERE CONVERT(date, activity_date) between CONVERT(date, '$start_date') and CONVERT(date, '$end_date')
+        ),
+        InboundComplete AS (
+            SELECT COUNT(*) AS count_complete
+            FROM tb_trans
+            WHERE CONVERT(date, activity_date) between CONVERT(date, '$start_date') and CONVERT(date, '$end_date')
+        ),
+        TotalInbound AS (
+            SELECT 
+                (SELECT count_proses FROM InboundProses) + 
+                (SELECT count_complete FROM InboundComplete) AS total_count
+        )
+        SELECT 
+            (SELECT count_proses FROM InboundProses) AS inbound_proses,
+            (SELECT count_complete FROM InboundComplete) AS inbound_complete,
+            (SELECT total_count FROM TotalInbound) AS total_inbound,
+            CASE 
+                WHEN (SELECT total_count FROM TotalInbound) <> 0 THEN
+                    (CAST((SELECT count_complete FROM InboundComplete) AS FLOAT) / 
+                     (SELECT total_count FROM TotalInbound)) * 100
+                ELSE 0 
+            END AS presentase";
         $query = $this->db->query($sql);
         return $query;
     }

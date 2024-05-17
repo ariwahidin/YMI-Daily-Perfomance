@@ -9,7 +9,7 @@
                         <th>Checker</th>
                         <th>SJ</th>
                         <th>Qty</th>
-                        <th>Date</th>
+                        <th>Activity Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -22,7 +22,7 @@
                             <td><?= $data->fullname ?></td>
                             <td><?= $data->tot_sj ?></td>
                             <td><?= $data->tot_qty ?></td>
-                            <td><?= $data->created_date ?></td>
+                            <td><?= $data->activity_date ?></td>
                         </tr>
                     <?php
                     }

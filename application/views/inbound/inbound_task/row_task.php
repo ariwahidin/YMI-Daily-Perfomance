@@ -6,7 +6,7 @@
                     <div style="font-size: 11px;" class="row">
                         <div class="col-md-3 col-6 ps-3">
                             <p class="m-0">Unloading Sequence : <span><strong><?= $data->unload_seq ?></strong></span></p>
-                            <p class="m-0">Activity Date : <span><?= date('Y-m-d', strtotime($data->created_date)) ?></span></p>
+                            <p class="m-0">Activity Date : <span><?= $data->activity_date == null ? '' : date('Y-m-d', strtotime($data->activity_date)) ?></span></p>
                             <p class="m-0">Sent Date : <span><?= date('Y-m-d', strtotime($data->sj_send_date)) ?></span></p>
                             <p class="m-0">SJ No : <span class=""><strong><?= $data->no_sj ?></strong></span></p>
                             <p class="m-0">SJ Date : <span><?= $data->sj_date == null ? '' : date('Y-m-d', strtotime($data->sj_date)) ?></span></p>
