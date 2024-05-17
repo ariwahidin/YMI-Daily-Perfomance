@@ -56,7 +56,11 @@ class Dashboard_m extends CI_Model
         inner join master_user b on a.user_id = b.id
         inner join master_position c on a.position_id = c.id
         left join tb_trans_temp d on a.user_id = d.checker_id
-        WHERE a.is_deleted <> 'Y' and a.date = convert(date, getdate()) AND c.id = 1";
+        WHERE a.is_deleted <> 'Y' 
+        -- AND a.date = convert(date, getdate())
+        AND getdate() > a.start_time
+        AND getdate() < a.end_time 
+        AND c.id = 1";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -67,7 +71,11 @@ class Dashboard_m extends CI_Model
         from work_schedule a
         inner join master_user b on a.user_id = b.id
         inner join master_position c on a.position_id = c.id
-        WHERE a.is_deleted <> 'Y' and a.date = convert(date, getdate()) AND c.id = 2";
+        WHERE a.is_deleted <> 'Y' 
+        -- AND a.date = convert(date, getdate()) 
+        AND getdate() > a.start_time
+        AND getdate() < a.end_time  
+        AND c.id = 2";
         $query = $this->db->query($sql);
         return $query;
     }

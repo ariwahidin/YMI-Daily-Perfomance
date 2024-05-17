@@ -411,11 +411,17 @@ class Outbound extends CI_Controller
             $row['QTY'] = $data->{'QTY'};
             $row['JAM CETAK PL'] = $data->{'JAM CETAK PL'} == null ? '' : date('H:i', strtotime($data->{'JAM CETAK PL'}));
             $row['JAM AMANO'] = $data->{'JAM AMANO'} == null ? '' : date('H:i', strtotime($data->{'JAM AMANO'}));
+            $row['ORIGIN MULAI DORONG'] = $data->{'MULAI DORONG'} == null ? '' : date('Y-m-d H:i:s', strtotime($data->{'MULAI DORONG'}));
             $row['MULAI DORONG'] = $data->{'MULAI DORONG'} == null ? '' : date('H:i', strtotime($data->{'MULAI DORONG'}));
+            $row['ORIGIN SELESAI DORONG'] = $data->{'SELESAI DORONG'} == null ? '' :  date('Y-m-d H:i:s', strtotime($data->{'SELESAI DORONG'}));
             $row['SELESAI DORONG'] = $data->{'SELESAI DORONG'} == null ? '' :  date('H:i', strtotime($data->{'SELESAI DORONG'}));
+            $row['ORIGIN MULAI CHECK'] = $data->{'MULAI CHECK'} == null ? '' : date('Y-m-d H:i:s', strtotime($data->{'MULAI CHECK'}));
             $row['MULAI CHECK'] = $data->{'MULAI CHECK'} == null ? '' : date('H:i', strtotime($data->{'MULAI CHECK'}));
+            $row['ORIGIN SELESAI CHECK'] = $data->{'SELESAI CHECK'} == null ? '' : date('Y-m-d H:i:s', strtotime($data->{'SELESAI CHECK'}));
             $row['SELESAI CHECK'] = $data->{'SELESAI CHECK'} == null ? '' : date('H:i', strtotime($data->{'SELESAI CHECK'}));
+            $row['ORIGIN MULAI SCAN'] = $data->{'MULAI SCAN'} == null ? '' : date('Y-m-d H:i:s', strtotime($data->{'MULAI SCAN'}));
             $row['MULAI SCAN'] = $data->{'MULAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'MULAI SCAN'}));
+            $row['ORIGIN SELESAI SCAN'] = $data->{'SELESAI SCAN'} == null ? '' : date('Y-m-d H:i:s', strtotime($data->{'SELESAI SCAN'}));
             $row['SELESAI SCAN'] = $data->{'SELESAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'SELESAI SCAN'}));
             $row['JAM TERIMA SJ'] = $data->{'JAM TERIMA SJ'} == null ? '' : date('H:i', strtotime($data->{'JAM TERIMA SJ'}));
             $row['PINTU LOADING'] =  $data->{'PINTU LOADING'};

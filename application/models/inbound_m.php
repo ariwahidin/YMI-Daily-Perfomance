@@ -77,37 +77,6 @@ class Inbound_m extends CI_Model
 
     public function getCompletedActivity()
     {
-        // $sql = "select -- a.*, 
-        // a.id,
-        // a.sj_created_at,
-        // a.sj_send_date,
-        // a.unload_st_time,
-        // a.no_sj,
-        // a.sj_date,
-        // a.sj_time,
-        // a.no_truck,
-        // a.driver,
-        // a.alloc_code,
-        // a.pintu_unloading,
-        // a.qty,
-        // a.time_arival,
-        // a.unload_duration,
-        // a.checking_duration,
-        // a.putaway_duration,
-        // b.fullname as checker_name,
-        // a.unload_st_time as start_unload,
-        // a.unload_fin_time as stop_unload,
-        // a.checking_st_time as start_checking,
-        // a.checking_fin_time as stop_checking,
-        // a.putaway_st_time as start_putaway,
-        // a.putaway_fin_time as stop_putaway,
-        // c.name as factory_name, 
-        // d.name as ekspedisi_name
-        // from tb_trans a 
-        // inner join master_user b on a.checker_id = b.id
-        // left join master_factory c on a.factory_code = c.id
-        // left join master_ekspedisi d on a.ekspedisi = d.id
-        // where a.is_deleted <> 'Y'";
 
         $sql = "SELECT * FROM (SELECT a.id, a.created_date as sj_created_at, a.sj_send_date, a.unload_seq, a.no_sj, a.sj_date, a.sj_time, a.no_truck, a.driver, a.alloc_code, a.pintu_unloading, a.qty, a.time_arival, null as unload_duration,
         null as checking_duration, null as putaway_duration, b.fullname as checker_name, a.start_unloading as start_unload, a.stop_unloading as stop_unload, a.start_checking, a.stop_checking, a.start_putaway, a.stop_putaway,
