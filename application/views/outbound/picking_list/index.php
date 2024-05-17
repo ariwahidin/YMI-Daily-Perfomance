@@ -33,7 +33,7 @@
 </div>
 
 <!-- Grids in modals -->
-<div class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="exampleModalgridLabel" aria-modal="true">
+<div class="modal fade" id="modalForm" aria-labelledby="exampleModalgridLabel" aria-modal="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -46,10 +46,10 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">PL No : </label>
-                                <input type="text" class="form-control" id="pl_no" name="pl_no" placeholder="" required>
-                                <input type="hidden" id="form_proses" name="form_proses" val="" readonly>
-                                <input type="hidden" id="pl_id" name="pl_id" val="" readonly>
+                                <input type="text" class="form-control" id="pl_no" name="pl_no" placeholder="" required autocomplete="off">
                             </div>
+                            <input type="hidden" id="form_proses" name="form_proses" val="" readonly>
+                            <input type="hidden" id="pl_id" name="pl_id" val="" readonly>
                         </div>
 
 
@@ -194,7 +194,7 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Remarks : </label>
-                                <input type="text" class="form-control" name="remarks" id="remarks">
+                                <input type="text" class="form-control" name="remarks" id="remarks" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -245,7 +245,7 @@
         $('#no_truck').on('change', function() {
             let kode = $(this).val();
             let id = $(this).children('option:selected').data('id');
-            console.log(id);
+            // console.log(id);
             $('#expedisi').val(id);
         })
 
@@ -283,7 +283,13 @@
                             }).then(function() {
                                 // window.location.href = 'pickingList';
                                 getTablePickingList();
+                                // $('#pl_no').focus().trigger();
+                                
+                                // $('#modalForm').modal('hide');
+
+                            }).then(function(){
                                 $('#modalForm').modal('hide');
+                                // loadModalAdd();
                             })
                         } else {
                             Swal.fire({
@@ -373,7 +379,11 @@
             stopLoading();
         })
 
-        $('#btnAdd').on('click', function() {
+        $('#btnAdd').click(function() {
+            loadModalAdd();
+        });
+
+        function loadModalAdd() {
             moment.tz.setDefault('Asia/Jakarta');
             let today = moment().format('YYYY-MM-DD');
             let currentTime = moment().format('HH:mm');
@@ -383,24 +393,31 @@
             $('#pl_print_time').val(currentTime);
 
 
+            $('#remarks').val('');
             $('#pl_id').val('');
             $('#pl_no').val('');
-            $('#dest').val('');
+            $('#dest').val('').change();
             $('#tot_qty').val('');
             $('#pintu_loading').val('');
-            $('#dealer_code').val('');
+            $('#dealer_code').val('').change();
             $('#dealer_det').val('');
             $('#dock').val('');
             $('#expedisi').val('');
-            $('#no_truck').val('');
+            $('#no_truck').val('').change();
             $('#sj_no').val('');
-            $('#remarks').val('');
 
 
             $('#headerForm').text('Add new PL');
             $('#form_proses').val('add_new');
             $('#modalForm').modal('show');
-        })
+
+            $('#modalForm').on('shown.bs.modal', function() {
+                $('#pl_no').focus();
+            });
+
+        }
+
+
 
         $('#cardPL').on('click', '.btnEdit', function() {
             let pl_id = $(this).data('id');
@@ -412,17 +429,17 @@
                 $('#form_proses').val('edit');
                 $('#pl_id').val(data.id);
                 $('#pl_no').val(data.pl_no);
-                $('#dest').val(data.dest);
+                $('#dest').val(data.dest).change();
                 $('#tot_qty').val(data.tot_qty);
                 $('#pintu_loading').val(data.pintu_loading);
-                $('#dealer_code').val(data.dealer_code);
+                $('#dealer_code').val(data.dealer_code).change();
                 $('#dealer_det').val(data.dealer_det);
                 $('#dock').val(data.dock);
                 $('#pl_print_time').val(data.pl_print_time);
                 $('#rec_pl_date').val(data.adm_pl_date);
                 $('#rec_pl_time').val(data.adm_pl_time);
                 $('#expedisi').val(data.expedisi);
-                $('#no_truck').val(data.no_truck);
+                $('#no_truck').val(data.no_truck).change();
                 $('#sj_no').val(data.sj_no);
                 $('#sj_time').val(data.sj_time);
                 $('#remarks').val(data.remarks);

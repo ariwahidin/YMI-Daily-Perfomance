@@ -299,6 +299,21 @@
             $('#sj_time').val(currentTime);
             $('#toa').val(currentTime);
 
+
+            
+            $('#checker').val('').change();
+            $('#alocation').val('');
+            $('#factory').val('');
+            $('#expedisi').val('');
+            $('#no_truck').val('').change();
+            $('#qty').val('');
+            $('#unloading_sequence').val('');
+            $('#sj').val('');
+            $('#driver').val('');
+            $('#remarks').val('');
+            $('#pintu_unloading').val('');
+
+
             $('#createTaskLabel').text('Create new task');
             $('#btnTask').text('Submit');
             $('#proses').val('new_task');
@@ -319,7 +334,7 @@
             $('#alocation').val(task.alloc_code);
             $('#factory').val(task.factory_code);
             $('#expedisi').val(task.ekspedisi);
-            $('#no_truck').val(task.no_truck);
+            $('#no_truck').val(task.no_truck).change();
             $('#qty').val(task.qty);
             $('#unloading_sequence').val(task.unload_seq);
             $('#sj').val(task.no_sj);
