@@ -249,6 +249,7 @@
             };
 
             socket.onmessage = function(event) {
+                getAllByDate();
                 // getAllProccessInbound();
                 // cartInbound();
                 // getAllProccessOutbound();
