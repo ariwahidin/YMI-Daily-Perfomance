@@ -1,4 +1,4 @@
-<div class="col-md-3">
+<div class="col-md-4">
     <div class="card">
         <div class="card-header card-primary"><strong>Inbound Complete</strong></div>
         <div class="card-body table-responsive">
@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-4">
     <div class="card">
         <div class="card-header card-primary"><strong>User Inbound</strong></div>
         <div class="card-body table-responsive">
@@ -77,7 +77,7 @@
     </div>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-4">
     <div class="card">
         <div class="card-header card-success"><strong>User Outbound</strong></div>
         <div class="card-body table-responsive">
