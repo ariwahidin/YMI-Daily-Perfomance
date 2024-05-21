@@ -22,10 +22,12 @@ class Work_schedule_m extends CI_Model
         if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
             $startDate = $_POST['startDate'];
             $endDate = $_POST['endDate'];
-            $sql .= " AND a.date between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
-        } else {
-            $sql .= " AND a.date = CONVERT(DATE, GETDATE())";
-        }
+            $sql .= " AND CONVERT(DATE, a.start_time) between CONVERT(DATE, '$startDate') AND CONVERT(DATE, '$endDate')";
+        } 
+        
+        // else {
+        //     $sql .= " AND a.date = CONVERT(DATE, GETDATE())";
+        // }
 
 
         $sql .= " ORDER BY a.date DESC";

@@ -29,7 +29,7 @@
     <div class="col-12 col-md-12">
         <div class="card">
             <div class="card-header">
-                <span style="margin-top: 8px;">Start Date : </span>&nbsp;
+                <span style="margin-top: 8px;">Date : </span>&nbsp;
                 <input type="date" class="form-control d-inline" style="width: 150px; margin-right: 10px;" id="sStartDate" placeholder="Start Date">
                 <span style="margin-top: 8px;">to : </span>&nbsp;
                 <input type="date" class="form-control d-inline" style="width: 150px; margin-right: 10px;" id="sEndDate" placeholder="End Date">
