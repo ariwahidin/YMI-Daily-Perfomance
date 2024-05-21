@@ -5,8 +5,8 @@ class Ekspedisi_model extends CI_Model
 {
 
     var $table = 'master_ekspedisi a';
-    var $column_order = array('a.name', 'b.name', 'a.no_truck'); //set column field database for datatable orderable
-    var $column_search = array('a.name', 'b.name', 'a.no_truck'); //set column field database for datatable searchable 
+    var $column_order = array(null, 'a.name', 'b.name', 'a.no_truck', 'a.id'); //set column field database for datatable orderable
+    var $column_search = array('a.id', 'a.name', 'b.name', 'a.no_truck'); //set column field database for datatable searchable 
     var $order = array('a.id' => 'desc'); // default order 
 
     public function __construct()
@@ -43,6 +43,24 @@ class Ekspedisi_model extends CI_Model
                     $this->db->group_end();
             }
             $i++;
+        }
+
+        // // Pencarian global
+        // if ($_POST['search']['value']) {
+        //     $this->db->group_start(); // Mulai grup pencarian
+        //     foreach ($this->column_search as $item) {
+        //         $this->db->or_like($item, $_POST['search']['value']);
+        //     }
+        //     $this->db->group_end(); // Akhiri grup pencarian
+        // }
+
+        // Individual column search
+
+        // var_dump($_POST['columns']);
+        foreach ($_POST['columns'] as $col => $data) {
+            if (!empty($data['search']['value'])) {
+                $this->db->like($this->column_search[$col], $data['search']['value']);
+            }
         }
 
         if (isset($_POST['order'])) {

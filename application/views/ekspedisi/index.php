@@ -40,6 +40,13 @@
                             <th>No Truck</th>
                             <th>Action</th>
                         </tr>
+                        <tr>
+                            <th></th>
+                            <th><input type="text" placeholder="Search Name" class="column_search form-control-sm"></th>
+                            <th><input type="text" placeholder="Search Position" class="column_search form-control-sm"></th>
+                            <th><input type="text" placeholder="Search No Truck" class="column_search form-control-sm"></th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
                     </tbody>
@@ -159,6 +166,11 @@
                 "targets": [0], //first column / numbering column
                 "orderable": false, //set not orderable
             }, ],
+        });
+
+        // Individual column search
+        $('.column_search').on('keyup change', function() {
+            table.column($(this).parent().index()).search(this.value).draw();
         });
 
 
