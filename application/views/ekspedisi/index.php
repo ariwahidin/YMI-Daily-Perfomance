@@ -25,10 +25,35 @@
 </div>
 
 <div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <button class="btn btn-info" id="btnAdd">Add new ekspedisi</button>
+            </div>
+            <div class="card-body">
+                <table id="tableEkpedisi" class="display table-sm" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th style="white-space: nowrap;">Name</th>
+                            <th>Position</th>
+                            <th>No Truck</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 
+<div class="row">
     <div class="col col-md-12">
         <div class="card">
             <div class="card-header bg-primary">
-                <button class="btn btn-info" id="btnAdd">Add new ekspedisi</button>
+
             </div>
             <div class="card-body">
                 <table id="user-table" class="table table-striped table-sm table-bordered" style="width:100%">
@@ -64,7 +89,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Grids in modals -->
 <div class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="exampleModalgridLabel" aria-modal="true">
@@ -122,6 +147,21 @@
 
 <script>
     $(document).ready(function() {
+
+        var table = $('#tableEkpedisi').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "<?php echo site_url('ekspedisi/ajax_list') ?>",
+                "type": "POST"
+            },
+            "columnDefs": [{
+                "targets": [0], //first column / numbering column
+                "orderable": false, //set not orderable
+            }, ],
+        });
+
+
         $('#ekpsedisiForm').on('submit', function(e) {
             e.preventDefault();
             let formUser = new FormData(this);
@@ -143,7 +183,9 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             }).then(function() {
-                                window.location.href = 'index';
+                                // window.location.href = 'index';
+                                table.ajax.reload(null, false); // user paging is not reset on reload
+                                $('#modalForm').modal('hide');
                             })
                         } else {
                             Swal.fire({
@@ -171,7 +213,8 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             }).then(function() {
-                                window.location.href = 'index';
+                                table.ajax.reload(null, false); // user paging is not reset on reload
+                                $('#modalForm').modal('hide');
                             })
                         } else {
                             Swal.fire({
@@ -186,7 +229,6 @@
             }
         });
 
-        $('#user-table').DataTable();
 
         $('#btnAdd').on('click', function() {
             $('#headerForm').text('Add new ekspedisi');
@@ -194,7 +236,7 @@
             $('#modalForm').modal('show');
         })
 
-        $('.btnEdit').on('click', function() {
+        $('#tableEkpedisi').on('click', '.btnEdit', function() {
             $('#headerForm').text('Edit ekspedisi');
             $('#form_proses').val('edit');
             $('#eks_id').val($(this).data('id'));
@@ -204,7 +246,7 @@
             $('#modalForm').modal('show');
         })
 
-        $('.btnDelete').on('click', function() {
+        $('#tableEkpedisi').on('click', '.btnDelete', function() {
             let id = $(this).data('id');
             $.post('deleteEkspedisi', {
                 id: id

@@ -1,4 +1,5 @@
-<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+<!-- <link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" /> -->
+<link href="<?= base_url() ?>myassets/css/select2.min.css" rel="stylesheet" />
 <div class="row">
     <div class="col col-md-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -211,7 +212,8 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script> -->
+<script src="<?= base_url() ?>myassets/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
 
@@ -284,10 +286,10 @@
                                 // window.location.href = 'pickingList';
                                 getTablePickingList();
                                 // $('#pl_no').focus().trigger();
-                                
+
                                 // $('#modalForm').modal('hide');
 
-                            }).then(function(){
+                            }).then(function() {
                                 $('#modalForm').modal('hide');
                                 // loadModalAdd();
                             })

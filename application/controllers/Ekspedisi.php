@@ -7,7 +7,7 @@ class Ekspedisi extends CI_Controller
     {
         parent::__construct();
         is_not_logged_in();
-        $this->load->model(['user_m', 'role_m', 'ekspedisi_m']);
+        $this->load->model(['user_m', 'role_m', 'ekspedisi_m', 'ekspedisi_model']);
     }
 
     public function render($view, array $data = null)
@@ -15,6 +15,38 @@ class Ekspedisi extends CI_Controller
         $this->load->view('template/header');
         $this->load->view($view, $data);
         $this->load->view('template/footer');
+    }
+
+    public function ajax_list()
+    {
+        $list = $this->ekspedisi_model->get_datatables();
+
+        // print_r($this->db->last_query());
+        // exit;
+
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $ekspedisi) {
+            $no++;
+            $row = array();
+            $row[] = $no;
+            $row[] = $ekspedisi->name;
+            $row[] = $ekspedisi->position;
+            $row[] = $ekspedisi->no_truck;
+            $row[] = '<button class="btn btn-primary btn-sm btnEdit" data-id="'. $ekspedisi->id .'" data-name="'. $ekspedisi->name .'" data-position="'. $ekspedisi->position_id .'" data-notruck="'. $ekspedisi->no_truck .'">Edit</button>
+            <button class=" btn btn-danger btn-sm btnDelete" data-id="'. $ekspedisi->id .'">Delete</button>';
+
+            $data[] = $row;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->ekspedisi_model->count_all(),
+            "recordsFiltered" => $this->ekspedisi_model->count_filtered(),
+            "data" => $data,
+        );
+        //output to json format
+        echo json_encode($output);
     }
 
     public function index()
