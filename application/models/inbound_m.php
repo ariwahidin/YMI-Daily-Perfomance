@@ -123,9 +123,9 @@ class Inbound_m extends CI_Model
         if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
             $startDate = $_POST['startDate'];
             $endDate = $_POST['endDate'];
-            $sql .= " WHERE CONVERT(DATE, sj_created_at) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
+            $sql .= " WHERE CONVERT(DATE, activity_date) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
         } else {
-            $sql .= " AND CONVERT(DATE, sj_created_at) = CONVERT(DATE, GETDATE())";
+            $sql .= " AND CONVERT(DATE, activity_date) = CONVERT(DATE, GETDATE())";
         }
 
         if (isset($_POST['checker'])) {
@@ -136,7 +136,7 @@ class Inbound_m extends CI_Model
         }
 
 
-        $sql .= " order by a.sj_send_date desc";
+        $sql .= " order by sj_created_at desc, unload_seq desc";
 
         // print_r($sql);
 
