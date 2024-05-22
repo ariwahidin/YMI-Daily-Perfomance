@@ -73,4 +73,33 @@ class Dashboard extends CI_Controller
         );
         echo json_encode($response);
     }
+
+    public function getMonthlyInbound()
+    {
+        $monthYear = $this->input->post('month');
+        $dateParts = explode('-', $monthYear);
+        $year = $dateParts[0];
+        $month = $dateParts[1];
+
+        // Query untuk mendapatkan total qty berdasarkan bulan dan tahun yang dipilih
+        $sql = "SELECT 
+            SUM(qty) AS total_qty,
+            FORMAT(activity_date, 'd-MMM') AS formatted_date
+        FROM tb_trans
+        WHERE 
+        YEAR(activity_date) = ? AND
+        MONTH(activity_date) = ?
+        GROUP BY activity_date
+        ORDER BY activity_date ASC";
+        $query = $this->db->query($sql, array($year, $month));
+
+        // var_dump($query->result());
+
+        $response = array(
+            'success' => true,
+            'inbound' => $query->result()
+        );
+
+        echo json_encode($response);
+    }
 }

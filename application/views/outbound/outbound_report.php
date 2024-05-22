@@ -9,6 +9,18 @@
 <script src="<?= base_url() ?>myassets/js/jquery-3.7.0.js"></script>
 <script src="<?= base_url() ?>myassets/js/jquery.dataTables.min.js"></script>
 
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-pills nav-success mb-3" role="tablist">
+            <li class="nav-item waves-effect waves-light" role="presentation">
+                <a class="nav-link active" data-bs-toggle="tab" href="#outbound-1" role="tab" aria-selected="false" tabindex="-1">Outbound Summary</a>
+            </li>
+            <li class="nav-item waves-effect waves-light" role="presentation">
+                <a class="nav-link" data-bs-toggle="tab" href="#picker-1" role="tab" aria-selected="false" tabindex="-1">Picker Detail</a>
+            </li>
+        </ul>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-12">
@@ -65,7 +77,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </div>

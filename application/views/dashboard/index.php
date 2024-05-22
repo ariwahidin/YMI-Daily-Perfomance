@@ -15,156 +15,223 @@
         </div>
     </div>
 </div>
-<div class="row mb-3 pb-1">
-    <div class="col-12">
-        <div class="d-flex align-items-lg-center flex-lg-row flex-column">
-            <div class="flex-grow-1">
-                <h4 class="card-title mb-0 flex-grow-1"><strong id="clock"></strong></h4>
-                <!-- <h4 class="fs-16 mb-1">Hi , Super Admin</h4> -->
-                <!-- <p class="text-muted mb-0">This is a task that you must complete.</p> -->
+
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-pills nav-success mb-3" role="tablist">
+            <li class="nav-item waves-effect waves-light" role="presentation">
+                <a class="nav-link active btnDash" data-bs-toggle="tab" href="#" data-tab="DashboardDaily" role="tab" aria-selected="false" tabindex="-1">Daily</a>
+            </li>
+            <li class="nav-item waves-effect waves-light" role="presentation">
+                <a class="nav-link btnDash" data-bs-toggle="tab" href="#" role="tab" data-tab="DashboardMonthly" aria-selected="false" tabindex="-1">Monthly</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div style="display: block;" class="col-md-12 tab-pane active show tabDash" id="DashboardDaily">
+        <div class="row mb-3 pb-1">
+            <div class="col-12">
+                <div class="d-flex align-items-lg-center flex-lg-row flex-column">
+                    <div class="flex-grow-1">
+                        <h4 class="card-title mb-0 flex-grow-1"><strong id="clock"></strong></h4>
+                        <!-- <h4 class="fs-16 mb-1">Hi , Super Admin</h4> -->
+                        <!-- <p class="text-muted mb-0">This is a task that you must complete.</p> -->
+                    </div>
+                    <div class="">
+                        <form id="formSearchByDate">
+                            <div class="row">
+                                <div class="col-sm-12" style="display: contents;">
+                                    <div class="input-group">
+                                        <input type="date" id="startDate" class="form-control-sm">
+                                        <span style="margin-top: 5px;"> &nbsp; to &nbsp;</span>
+                                        <input type="date" id="endDate" class="form-control-sm d-inline">
+                                        <button class="btn btn-primary btn-sm border-primary text-white" id="btnSearch">
+                                            <i class="ri-search-2-line"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- <div class="mt-3 ms-3 mt-lg-0">
+                <button class="btn btn-primary" id="btnCreate">Create new task</button>
+            </div> -->
+                </div>
             </div>
-            <div class="">
-                <form id="formSearchByDate">
-                    <div class="row">
-                        <div class="col-sm-12" style="display: contents;">
-                            <div class="input-group">
-                                <input type="date" id="startDate" class="form-control-sm">
-                                <span style="margin-top: 5px;"> &nbsp; to &nbsp;</span>
-                                <input type="date" id="endDate" class="form-control-sm d-inline">
-                                <button class="btn btn-primary btn-sm border-primary text-white" id="btnSearch">
-                                    <i class="ri-search-2-line"></i>
-                                </button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-animate overflow-hidden">
+                    <div class="card-header card-primary align-items-center d-flex">
+                        <h4 class="card-title mb-0 flex-grow-1">Inbound Summary </h4>
+                    </div>
+                    <div class="card-body" style="z-index:1 ;">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Proccess</p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="spInboundProses">0</span>
+                                </h4>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Complete</p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="spInboundComplete">0</span>
+                                </h4>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Total </p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="spInboundTotal">0</span>
+                                </h4>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <div id="cartInbound"></div>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
-            <!-- <div class="mt-3 ms-3 mt-lg-0">
-                <button class="btn btn-primary" id="btnCreate">Create new task</button>
-            </div> -->
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        <div class="card card-animate overflow-hidden">
-            <div class="card-header card-primary align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Inbound Summary </h4>
-            </div>
-            <div class="card-body" style="z-index:1 ;">
-                <div class="d-flex align-items-center">
-                    <div class="flex-grow-1 overflow-hidden">
-                        <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Proccess</p>
-                        <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                            <span id="spInboundProses">0</span>
-                        </h4>
+            <div class="col-md-6">
+                <div class="card card-animate overflow-hidden">
+                    <div class="card-header card-success align-items-center d-flex">
+                        <h4 class="card-title mb-0 flex-grow-1">Outbound Summary</h4>
                     </div>
-                    <div class="flex-grow-1 overflow-hidden">
-                        <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Complete</p>
-                        <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                            <span id="spInboundComplete">0</span>
-                        </h4>
-                    </div>
-                    <div class="flex-grow-1 overflow-hidden">
-                        <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Total </p>
-                        <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                            <span id="spInboundTotal">0</span>
-                        </h4>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <div id="cartInbound"></div>
+                    <div class="card-body" style="z-index:1 ;">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Proccess</p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="spOutboundProses">0</span>
+                                </h4>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Complete</p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="spOutboundComplete">0</span>
+                                </h4>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Total </p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="spOutboundTotal">0</span>
+                                </h4>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <div id="cartOutbound"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card card-animate overflow-hidden">
-            <div class="card-header card-success align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Outbound Summary</h4>
-            </div>
-            <div class="card-body" style="z-index:1 ;">
-                <div class="d-flex align-items-center">
-                    <div class="flex-grow-1 overflow-hidden">
-                        <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Proccess</p>
-                        <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                            <span id="spOutboundProses">0</span>
-                        </h4>
-                    </div>
-                    <div class="flex-grow-1 overflow-hidden">
-                        <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Complete</p>
-                        <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                            <span id="spOutboundComplete">0</span>
-                        </h4>
-                    </div>
-                    <div class="flex-grow-1 overflow-hidden">
-                        <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Total </p>
-                        <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                            <span id="spOutboundTotal">0</span>
-                        </h4>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <div id="cartOutbound"></div>
-                    </div>
-                </div>
-            </div>
+
+        <div class="row" id="divUserProses">
         </div>
-    </div>
-</div>
 
-<div class="row" id="divUserProses">
-
-
-</div>
-
-<div class="row project-wrapper">
-    <div class="col-xl-6">
-        <div class="card">
-            <div class="card-header card-primary align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Inbound Proccess</h4>
-                <div class="flex-shrink-0">
-                    <!-- <button type="button" class="btn btn-soft-info btn-sm">
+        <div class="row project-wrapper">
+            <div class="col-xl-6">
+                <div class="card">
+                    <div class="card-header card-primary align-items-center d-flex">
+                        <h4 class="card-title mb-0 flex-grow-1">Inbound Proccess</h4>
+                        <div class="flex-shrink-0">
+                            <!-- <button type="button" class="btn btn-soft-info btn-sm">
                         Today
                     </button> -->
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive table-card" id="divInbound">
+
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card-body">
-                <div class="table-responsive table-card" id="divInbound">
+            <div class="col-xl-6">
+                <div class="card">
+                    <div class="card-header card-success align-items-center d-flex">
+                        <h4 class="card-title mb-0 flex-grow-1">Outbound Proccess</h4>
+                        <div class="flex-shrink-0">
+                            <button type="button" class="btn btn-soft-info btn-sm">
+                                <!-- <i class="ri-file-list-3-line align-middle"></i>  -->
+                                Today
+                            </button>
+                        </div>
+                    </div>
 
+                    <div class="card-body">
+                        <div class="table-responsive table-card" id="divOutbound">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="col-xl-6">
-        <div class="card">
-            <div class="card-header card-success align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Outbound Proccess</h4>
-                <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-soft-info btn-sm">
-                        <!-- <i class="ri-file-list-3-line align-middle"></i>  -->
-                        Today
-                    </button>
+    <div style="display: none;" class="col-md-12 tab-pane tabDash" id="DashboardMonthly">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title mb-0">Monthly Inbound Chart</span>
+                    <div class="form-group">
+                        <label for="">Activity Date : </label>
+                        <input type="month" class="form-control-sm" id="inputMonthInbound">
+                        <button class="btn btn-sm btn-success" id="btnRefreshInboundMonthly">Refresh</button>
+                    </div>
+                </div>
+                <div class="card-body card-responsive">
+                    <div id="inboundMonthly" class="e-charts"></div>
                 </div>
             </div>
-
-            <div class="card-body">
-                <div class="table-responsive table-card" id="divOutbound">
-                </div>
-            </div>
+            <!-- end card -->
         </div>
     </div>
 </div>
 
+<!-- echarts js -->
+<script src="<?= base_url('jar/html/default/') ?>assets/libs/echarts/echarts.min.js"></script>
 
-<script>
-
-</script>
 
 
 <script>
     $(document).ready(function() {
+
+        var date = new Date();
+        var month = date.getMonth() + 1; // getMonth() returns month from 0-11
+        var year = date.getFullYear();
+        if (month < 10) month = '0' + month; // Add leading zero to single digit months
+        var currentMonth = year + '-' + month;
+        $('#inputMonthInbound').val(currentMonth);
+
+
+        $('.btnDash').on('click', function(e) {
+            e.preventDefault();
+            let tab = $(this).data('tab');
+            $('.tabDash').css('display', 'none');
+            $('#' + tab).css('display', 'block');
+
+            if (tab == "DashboardMonthly") {
+                // let xInboundData = ['2012', '2013', '2014', '2015', '2016'];
+                // let yInboundData = [1320, 1332, 1301, 1334, 1390];
+                // cartInboundMonthly(xInboundData, yInboundData);
+                getInboundMonthly();
+            }
+        })
+
+
+        $('#btnRefreshInboundMonthly').on('click', function() {
+            getInboundMonthly();
+        })
+
+        // $('#DasboardMonthly').on('click', function(){
+        //     $('#DasboardMonthly').css('display', 'block');
+        //     $('#DashboardDaily').css('display', 'none');
+        // })
+
 
 
 
@@ -402,6 +469,187 @@
                 var chart = new ApexCharts(document.querySelector("#ctro"), options);
                 chart.render();
             }, 'json');
+        }
+
+        function getInboundMonthly() {
+            let month = $('#inputMonthInbound').val();
+            let xInboundData = [];
+            let yInboundData = [];
+
+            $.post('getMonthlyInbound', {
+                month
+            }, function(response) {
+                let data = response.inbound;
+                $.each(data, function(index, obj) {
+                    xInboundData.push(obj.formatted_date);
+                    yInboundData.push(obj.total_qty);
+                });
+
+                renderChartInboundMonthly(xInboundData, yInboundData);
+            }, 'json');
+        }
+
+        function renderChartInboundMonthly(xInboundData, yInboundData) {
+            var app = {};
+
+            var chartDom = document.getElementById('inboundMonthly');
+
+            // console.log(echarts);
+
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            const posList = [
+                'left',
+                'right',
+                'top',
+                'bottom',
+                'inside',
+                'insideTop',
+                'insideLeft',
+                'insideRight',
+                'insideBottom',
+                'insideTopLeft',
+                'insideTopRight',
+                'insideBottomLeft',
+                'insideBottomRight'
+            ];
+            app.configParameters = {
+                rotate: {
+                    min: -90,
+                    max: 90
+                },
+                align: {
+                    options: {
+                        left: 'left',
+                        center: 'center',
+                        right: 'right'
+                    }
+                },
+                verticalAlign: {
+                    options: {
+                        top: 'top',
+                        middle: 'middle',
+                        bottom: 'bottom'
+                    }
+                },
+                position: {
+                    options: posList.reduce(function(map, pos) {
+                        map[pos] = pos;
+                        return map;
+                    }, {})
+                },
+                distance: {
+                    min: 0,
+                    max: 100
+                }
+            };
+            app.config = {
+                rotate: 90,
+                align: 'left',
+                verticalAlign: 'middle',
+                position: 'insideBottom',
+                distance: 15,
+                onChange: function() {
+                    const labelOption = {
+                        rotate: app.config.rotate,
+                        align: app.config.align,
+                        verticalAlign: app.config.verticalAlign,
+                        position: app.config.position,
+                        distance: app.config.distance
+                    };
+                    myChart.setOption({
+                        series: [{
+                                label: labelOption
+                            },
+                            {
+                                label: labelOption
+                            },
+                            {
+                                label: labelOption
+                            },
+                            {
+                                label: labelOption
+                            }
+                        ]
+                    });
+                }
+            };
+            const labelOption = {
+                show: true,
+                position: app.config.position,
+                distance: app.config.distance,
+                align: app.config.align,
+                verticalAlign: app.config.verticalAlign,
+                rotate: app.config.rotate,
+                formatter: '{c}  {name|{a}}',
+                fontSize: 16,
+                rich: {
+                    name: {}
+                }
+            };
+            option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+                },
+                toolbox: {
+                    show: false,
+                    orient: 'vertical',
+                    left: 'right',
+                    top: 'center',
+                    feature: {
+                        mark: {
+                            show: true
+                        },
+                        dataView: {
+                            show: true,
+                            readOnly: false
+                        },
+                        magicType: {
+                            show: true,
+                            type: ['line', 'bar', 'stack']
+                        },
+                        restore: {
+                            show: true
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                xAxis: [{
+                    type: 'category',
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 30
+                    },
+                    data: xInboundData,
+                }],
+                yAxis: [{
+                    type: 'value'
+                }],
+                series: [{
+                    name: '',
+                    type: 'bar',
+                    barGap: 0,
+                    label: labelOption,
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: yInboundData
+                }, ]
+            };
+
+            option && myChart.setOption(option);
         }
     });
 </script>
