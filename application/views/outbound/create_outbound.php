@@ -35,8 +35,6 @@
         <div class="d-flex align-items-lg-center flex-lg-row flex-column">
             <div class="flex-grow-1">
                 <h4 class="card-title mb-0 flex-grow-1"><strong id="clock"></strong></h4>
-                <!-- <h4 class="fs-16 mb-1">Hi , <?= $_SESSION['user_data']['fullname'] ?></h4> -->
-                <!-- <p class="text-muted mb-0">This is a task that you must complete.</p> -->
             </div>
             <div class="mt-3 mt-lg-0">
                 <form action="javascript:void(0);">
@@ -89,7 +87,7 @@
                             <select class="form-control-sm" name="ekspedisi" id="ekspedisi" style="width: 150px;" disabled>
                                 <option value="">Choose ekspedisi</option>
                                 <?php foreach ($ekspedisi->result() as $eks) { ?>
-                                    <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
+                                    <!-- <option value="<?= $eks->id ?>"><?= $eks->name ?></option> -->
                                 <?php } ?>
                             </select>
                         </div>
@@ -163,10 +161,6 @@
         initWebSocket();
 
         $('.js-example-basic-multiple').select2();
-
-
-
-        // $('#createTask').modal('show');
 
         $('#btnCreate').on('click', function() {
 
@@ -269,10 +263,6 @@
             };
         }
 
-        // $("input[type='text']").on("input", function() {
-        //     $(this).val($(this).val().toUpperCase());
-        // });
-
         $("#creatask").on("keypress", "input", function(event) {
             if (event.which === 13) {
                 event.preventDefault(); // Prevent default behavior of Enter key
@@ -329,22 +319,6 @@
             }
 
         })
-
-        // $('#btnCreate').on('click', function() {
-        //     moment.tz.setDefault('Asia/Jakarta');
-        //     let today = moment().format('YYYY-MM-DD');
-        //     let currentTime = moment().format('HH:mm')
-        //     $('#send_date').val(today);
-        //     $('#sj_date').val(today);
-
-        //     $('#sj_time').val(currentTime);
-        //     $('#toa').val(currentTime);
-
-        //     $('#createTaskLabel').text('Create new task');
-        //     $('#btnTask').text('Submit');
-        //     $('#proses').val('new_task');
-        //     $('#createTask').modal('show');
-        // })
 
         $('#content').on('click', '.btnEdit', async function() {
             startLoading();
@@ -467,170 +441,6 @@
 
         $('#btnSearch').on('click', getAllRowTask);
 
-        // function startUnloading(id) {
-        //     startLoading();
-        //     $.post('startUnloading', {
-        //         id
-        //     }, function(response) {
-        //         stopLoading();
-        //         if (response.success == false) {
-        //             Swal.fire({
-        //                 icon: 'warning',
-        //                 title: response.message,
-        //                 showCancelButton: true,
-        //                 confirmButtonText: "Reload",
-        //             }).then((result) => {
-        //                 if (result.isConfirmed) {
-        //                     window.location.href = 'task'
-        //                 }
-        //             });
-        //         } else {
-        //             getAllRowTask();
-        //             socket.send('ping');
-        //         }
-        //     }, 'json');
-        // }
-
-        // function stopUnloading(id) {
-        //     startLoading();
-        //     $.post('stopUnloading', {
-        //         id
-        //     }, function(response) {
-        //         stopLoading();
-        //         if (response.success == false) {
-        //             Swal.fire({
-        //                 icon: 'warning',
-        //                 title: response.message,
-        //                 showCancelButton: true,
-        //                 confirmButtonText: "Reload",
-        //             }).then((result) => {
-        //                 if (result.isConfirmed) {
-        //                     window.location.href = 'task'
-        //                 }
-        //             });
-        //         } else {
-        //             getAllRowTask();
-        //             socket.send('ping');
-        //         }
-        //     }, 'json');
-        // }
-
-        // $('#content').on('click', '.btnChecking', function() {
-        //     let id = $(this).data('id');
-        //     let proses = $(this).data('proses');
-        //     if (proses === 'start_checking') {
-        //         startChecking(id);
-        //     } else {
-        //         stopChecking(id);
-        //     }
-        // })
-
-        // function startChecking(id) {
-        //     startLoading();
-        //     $.post('startChecking', {
-        //         id
-        //     }, function(response) {
-        //         stopLoading();
-        //         if (response.success == false) {
-        //             Swal.fire({
-        //                 icon: 'warning',
-        //                 title: response.message,
-        //                 showCancelButton: true,
-        //                 confirmButtonText: "Reload",
-        //             }).then((result) => {
-        //                 if (result.isConfirmed) {
-        //                     window.location.href = 'task'
-        //                 }
-        //             });
-        //         } else {
-        //             getAllRowTask();
-        //             socket.send('ping');
-        //         }
-        //     }, 'json');
-        // }
-
-        // function stopChecking(id) {
-        //     startLoading();
-        //     $.post('stopChecking', {
-        //         id
-        //     }, function(response) {
-        //         stopLoading();
-        //         if (response.success == false) {
-        //             Swal.fire({
-        //                 icon: 'warning',
-        //                 title: response.message,
-        //                 showCancelButton: true,
-        //                 confirmButtonText: "Reload",
-        //             }).then((result) => {
-        //                 if (result.isConfirmed) {
-        //                     window.location.href = 'task'
-        //                 }
-        //             });
-        //         } else {
-        //             getAllRowTask();
-        //             socket.send('ping');
-        //         }
-        //     }, 'json');
-        // }
-
-        // $('#content').on('click', '.btnPutaway', function() {
-        //     let id = $(this).data('id');
-        //     let proses = $(this).data('proses');
-        //     if (proses === 'start_putaway') {
-        //         startPutaway(id);
-        //     } else {
-        //         stopPutaway(id);
-        //     }
-        // })
-
-        // function startPutaway(id) {
-        //     startLoading();
-        //     $.post('startPutaway', {
-        //         id
-        //     }, function(response) {
-        //         stopLoading();
-        //         if (response.success == false) {
-        //             Swal.fire({
-        //                 icon: 'warning',
-        //                 title: response.message,
-        //                 showCancelButton: true,
-        //                 confirmButtonText: "Reload",
-        //             }).then((result) => {
-        //                 if (result.isConfirmed) {
-        //                     window.location.href = 'task'
-        //                 }
-        //             });
-        //         } else {
-        //             getAllRowTask();
-        //             socket.send('ping');
-        //         }
-        //     }, 'json');
-        // }
-
-        // function stopPutaway(id) {
-        //     startLoading();
-        //     $.post('stopPutaway', {
-        //         id
-        //     }, function(response) {
-        //         stopLoading();
-        //         if (response.success == false) {
-        //             Swal.fire({
-        //                 icon: 'warning',
-        //                 title: response.message,
-        //                 showCancelButton: true,
-        //                 confirmButtonText: "Reload",
-        //             }).then((result) => {
-        //                 if (result.isConfirmed) {
-        //                     window.location.href = 'task'
-        //                 }
-        //             });
-        //         } else {
-        //             getAllRowTask();
-        //             socket.send('ping');
-        //         }
-        //     }, 'json');
-        // }
-
         function getAllRowTask() {
             let search = $('#inSearch').val();
             let searchDest = $('#inSearchDest').val();
@@ -668,30 +478,14 @@
             return formattedTime;
         }
 
-        // function updateClock() {
-        //     var currentDate = new Date();
-        //     var hours = currentDate.getHours().toString().padStart(2, '0');
-        //     var minutes = currentDate.getMinutes().toString().padStart(2, '0');
-        //     var seconds = currentDate.getSeconds().toString().padStart(2, '0');
-        //     var day = currentDate.getDate().toString().padStart(2, '0');
-        //     var month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Bulan dimulai dari 0
-        //     var year = currentDate.getFullYear();
+        getOptionEkspedisi();
 
-        //     var dateString = year + '-' + month + '-' + day;
-        //     var timeString = hours + ':' + minutes + ':' + seconds;
-        //     var dateTimeString = dateString + ' ' + timeString;
-
-        //     document.getElementById('clock').innerText = dateTimeString;
-        // }
-
-        // function keepAlive() {
-        //     $.post('keepAlive', {}, function(response) {
-        //         console.log(response);
-        //     }, 'json');
-        // }
-
-        // setInterval(keepAlive, 180000);
-        // setInterval(updateClock, 1000);
-        // updateClock();
+        function getOptionEkspedisi() {
+            $.post('getOptionEkspedisi', {}, function(response) {
+                let selOptEkspedisi = $('#ekspedisi');
+                selOptEkspedisi.empty();
+                selOptEkspedisi.html(response.option_ekspedisi);
+            }, 'json');
+        }
     });
 </script>

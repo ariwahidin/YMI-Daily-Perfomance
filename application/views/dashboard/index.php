@@ -596,7 +596,7 @@
                     }
                 },
                 legend: {
-                    data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+                    data: ['Unit']
                 },
                 toolbox: {
                     show: false,
@@ -626,7 +626,7 @@
                 xAxis: [{
                     type: 'category',
                     axisTick: {
-                        show: false
+                        show: true
                     },
                     axisLabel: {
                         interval: 0,

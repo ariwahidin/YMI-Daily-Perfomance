@@ -30,6 +30,20 @@ class Outbound extends CI_Controller
         $this->render('outbound/create_outbound', $data);
     }
 
+    public function getOptionEkspedisi()
+    {
+        $ekspedisi = $this->ekspedisi_m->getEkspedisi();
+        $data = array(
+            'ekspedisi' => $ekspedisi
+        );
+        $response = array(
+            'success' => true,
+            'option_no_truck' => $this->load->view('outbound/picking_list/option_no_truck', $data, true),
+            'option_ekspedisi' => $this->load->view('outbound/picking_list/option_ekspedisi', $data, true),
+        );
+        echo json_encode($response);
+    }
+
     public function createTask()
     {
         $post = $this->input->post();

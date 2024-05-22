@@ -157,11 +157,10 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">No Truck : </label>
-                                <!-- <input type="text" class="form-control" id="no_truck" name="no_truck" placeholder=""> -->
                                 <select class="form-control" name="no_truck" id="no_truck" required>
                                     <option value="">Choose No Truck</option>
                                     <?php foreach ($ekspedisi->result() as $eks) { ?>
-                                        <option value="<?= $eks->no_truck ?>" data-id="<?= $eks->id ?>"><?= $eks->no_truck ?></option>
+                                        <!-- <option value="<?= $eks->no_truck ?>" data-id="<?= $eks->id ?>"><?= $eks->no_truck ?></option> -->
                                     <?php } ?>
                                 </select>
                             </div>
@@ -172,7 +171,7 @@
                                 <select class="form-control" name="expedisi" id="expedisi" required>
                                     <option value="">Choose ekspedisi</option>
                                     <?php foreach ($ekspedisi->result() as $eks) { ?>
-                                        <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
+                                        <!-- <option value="<?= $eks->id ?>"><?= $eks->name ?></option> -->
                                     <?php } ?>
                                 </select>
                             </div>
@@ -222,6 +221,7 @@
             dropdownParent: $("#modalForm")
         });
 
+
         $('#dest').on('change', function() {
             let kode = $(this).val();
             let name = $(this).children('option:selected').data('name');
@@ -262,8 +262,14 @@
 
 
 
+        let isSubmitting = false;
         $('#plForm').on('submit', function(e) {
             e.preventDefault();
+            if (isSubmitting) {
+                return;
+            }
+            isSubmitting = true;
+            startLoading();
             let formUser = new FormData(this);
             let form_proses = $('#form_proses').val();
 
@@ -281,19 +287,17 @@
                                 icon: "success",
                                 title: response.message,
                                 showConfirmButton: false,
-                                timer: 1500
+                                timer: 1000
                             }).then(function() {
-                                // window.location.href = 'pickingList';
                                 getTablePickingList();
-                                // $('#pl_no').focus().trigger();
-
-                                // $('#modalForm').modal('hide');
-
                             }).then(function() {
+                                isSubmitting = false;
                                 $('#modalForm').modal('hide');
-                                // loadModalAdd();
+                                stopLoading();
                             })
                         } else {
+                            isSubmitting = false;
+                            stopLoading();
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Failed',
@@ -317,13 +321,16 @@
                                 icon: "success",
                                 title: response.message,
                                 showConfirmButton: false,
-                                timer: 1500
+                                timer: 1000
                             }).then(function() {
-                                // window.location.href = 'pickingList';
+                                isSubmitting = false;
                                 getTablePickingList();
                                 $('#modalForm').modal('hide');
+                                stopLoading();
                             })
                         } else {
+                            isSubmitting = false;
+                            stopLoading();
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Failed',
@@ -517,5 +524,18 @@
             //     }
             // }, 'json');
         })
+
+        getOptionEkspedisi();
+
+        function getOptionEkspedisi() {
+            $.post('getOptionEkspedisi', {}, function(response) {
+                let selOptNoTruck = $('#no_truck');
+                let selOptEkspedisi = $('#expedisi');
+                selOptNoTruck.empty();
+                selOptNoTruck.html(response.option_no_truck);
+                selOptEkspedisi.empty();
+                selOptEkspedisi.html(response.option_ekspedisi);
+            }, 'json');
+        }
     });
 </script>
