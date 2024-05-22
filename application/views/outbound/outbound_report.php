@@ -9,18 +9,6 @@
 <script src="<?= base_url() ?>myassets/js/jquery-3.7.0.js"></script>
 <script src="<?= base_url() ?>myassets/js/jquery.dataTables.min.js"></script>
 
-<div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-pills nav-success mb-3" role="tablist">
-            <li class="nav-item waves-effect waves-light" role="presentation">
-                <a class="nav-link active" data-bs-toggle="tab" href="#outbound-1" role="tab" aria-selected="false" tabindex="-1">Outbound Summary</a>
-            </li>
-            <li class="nav-item waves-effect waves-light" role="presentation">
-                <a class="nav-link" data-bs-toggle="tab" href="#picker-1" role="tab" aria-selected="false" tabindex="-1">Picker Detail</a>
-            </li>
-        </ul>
-    </div>
-</div>
 
 <div class="row">
     <div class="col-12">
@@ -77,92 +65,13 @@
                     </div>
                 </div>
             </div>
-
+            
         </div>
     </div>
 </div>
 
 
 
-
-<div class="modal fade" id="createTask" tabindex="-1" aria-labelledby="createTaskLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0">
-            <div class="modal-header p-3 bg-success-subtle">
-                <h5 class="modal-title" id="createTaskLabel">Create Activity Outbound</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" id="createTaskBtn-close" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="task-error-msg" class="alert alert-danger py-2"></div>
-                <form autocomplete="off" action="#" id="creatask">
-                    <input type="hidden" id="proses" name="proses" class="form-control">
-                    <input type="hidden" id="id_task" name="id_task" class="form-control">
-
-
-                    <div class="row g-4 mb-3">
-                        <div class="col col-lg-4">
-                            <label for="" class="form-label">No picking list</label>
-                            <input type="text" id="no_pl" name="no_pl" class="form-control" placeholder="" value="" required>
-                        </div>
-                        <div class="col col-lg-4">
-                            <label for="" class="form-label">Picking list date</label>
-                            <input type="date" id="pl_date" name="pl_date" class="form-control" placeholder="" value="" required>
-                        </div>
-                        <div class="col col-lg-4">
-                            <label for="" class="form-label">Picking list time</label>
-                            <input type="time" id="pl_time" name="pl_time" class="form-control" placeholder="" value="">
-                        </div>
-                    </div>
-
-                    <div class="row g-4 mb-3">
-                        <div class="col col-lg-3">
-                            <label for="priority-field" class="form-label">Checker</label>
-                            <select class="form-control" name="checker_id" id="checker_id" required>
-                                <option value="">Choose checker</option>
-                                <?php foreach ($checker->result() as $check) { ?>
-                                    <option value="<?= $check->id ?>"><?= $check->fullname ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                        <div class="col col-lg-3">
-                            <label for="priority-field" class="form-label">No truck</label>
-                            <input type="text" id="no_truck" name="no_truck" class="form-control" placeholder="" value="">
-                        </div>
-                        <div class="col col-lg-3">
-                            <label for="priority-field" class="form-label">Driver</label>
-                            <input type="text" id="driver" name="driver" class="form-control" placeholder="" value="">
-                        </div>
-                        <div class="col col-lg-3">
-                            <label for="priority-field" class="form-label">Ekspedisi</label>
-                            <select class="form-control" name="ekspedisi" id="ekspedisi" required>
-                                <option value="">Choose ekspedisi</option>
-                                <?php foreach ($ekspedisi->result() as $eks) { ?>
-                                    <option value="<?= $eks->id ?>"><?= $eks->name ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row g-4 mb-3">
-                        <div class="col col-lg-4">
-                            <label for="priority-field" class="form-label">Qty</label>
-                            <input type="number" id="qty" name="qty" class="form-control" placeholder="" value="">
-                        </div>
-                        <div class="col-lg-8">
-                            <label for="priority-field" class="form-label">Remarks</label>
-                            <input type="text" id="remarks" name="remarks" class="form-control" value="">
-                        </div>
-                    </div>
-
-                    <div class="hstack gap-2 justify-content-end">
-                        <button type="button" class="btn btn-ghost-success" data-bs-dismiss="modal"><i class="ri-close-fill align-bottom"></i> Close</button>
-                        <button type="submit" class="btn btn-primary" id="btnTask">Create</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script src="<?= base_url() ?>myassets/js/exceljs.min.js"></script>
 
@@ -208,25 +117,7 @@
             }, 'json');
         });
 
-        $('#creatask').on('submit', function(e) {
-            e.preventDefault();
-            let form = new FormData(this);
-            let proses = $('#proses').val();
-            $.ajax({
-                url: 'editTaskCompleted',
-                type: 'POST',
-                data: form,
-                processData: false,
-                contentType: false,
-                dataType: 'JSON',
-                success: function(response) {
-                    if (response.success == true) {
-                        getRowComplete();
-                        $('#createTask').modal('hide');
-                    }
-                }
-            });
-        })
+    
 
         $('#tablePlace').on('click', '.btnDelete', function() {
             let id = $(this).data('id');

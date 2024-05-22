@@ -44,6 +44,20 @@ class Outbound extends CI_Controller
         echo json_encode($response);
     }
 
+    public function getOptionDealerAndDest()
+    {
+        $data = array(
+            'dest' => $this->destination_m->getdestination(),
+            'dealer' => $this->dealer_m->getDealer(),
+        );
+        $response = array(
+            'success' => true,
+            'option_dest' => $this->load->view('outbound/picking_list/option_dest', $data, true),
+            'option_dealer' => $this->load->view('outbound/picking_list/option_dealer', $data, true),
+        );
+        echo json_encode($response);
+    }
+
     public function createTask()
     {
         $post = $this->input->post();

@@ -84,16 +84,8 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Dealer Code : </label>
-                                <!-- <input type="text" class="form-control" id="dealer_code" name="dealer_code" placeholder=""> -->
                                 <select name="dealer_code" id="dealer_code" required>
                                     <option value="">Choose dealer code</option>
-                                    <?php
-                                    foreach ($dealer->result() as $data) {
-                                    ?>
-                                        <option value="<?= $data->code ?>" data-name="<?= $data->name ?>"><?= $data->code ?></option>
-                                    <?php
-                                    }
-                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -121,16 +113,8 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Destination : </label>
-                                <!-- <input type="text" class="form-control" id="dest" name="dest" placeholder=""> -->
                                 <select name="dest" id="dest" class="form-control" required>
                                     <option value="">Choose destination</option>
-                                    <?php
-                                    foreach ($dest->result() as $data) {
-                                    ?>
-                                        <option value="<?= $data->code ?>" data-name="<?= $data->name ?>"><?= $data->code ?></option>
-                                    <?php
-                                    }
-                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -159,9 +143,6 @@
                                 <label for="name" class="form-label">No Truck : </label>
                                 <select class="form-control" name="no_truck" id="no_truck" required>
                                     <option value="">Choose No Truck</option>
-                                    <?php foreach ($ekspedisi->result() as $eks) { ?>
-                                        <!-- <option value="<?= $eks->no_truck ?>" data-id="<?= $eks->id ?>"><?= $eks->no_truck ?></option> -->
-                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
@@ -170,9 +151,6 @@
                                 <label for="name" class="form-label">Expedisi : </label>
                                 <select class="form-control" name="expedisi" id="expedisi" required>
                                     <option value="">Choose ekspedisi</option>
-                                    <?php foreach ($ekspedisi->result() as $eks) { ?>
-                                        <!-- <option value="<?= $eks->id ?>"><?= $eks->name ?></option> -->
-                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
@@ -211,7 +189,6 @@
         </div>
     </div>
 </div>
-<!-- <script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script> -->
 <script src="<?= base_url() ?>myassets/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -380,8 +357,6 @@
             // }, 'json');
         }
 
-        // $('#user-table').DataTable();
-
         $('#btnRefresh').on('click', async function() {
             startLoading();
             await getTablePickingList();
@@ -535,6 +510,19 @@
                 selOptNoTruck.html(response.option_no_truck);
                 selOptEkspedisi.empty();
                 selOptEkspedisi.html(response.option_ekspedisi);
+            }, 'json');
+        }
+
+        getOptionDealerAndDest();
+
+        function getOptionDealerAndDest() {
+            $.post('getOptionDealerAndDest', {}, function(response) {
+                let selOptDealer = $('#dealer_code');
+                let selOptDest = $('#dest');
+                selOptDealer.empty();
+                selOptDealer.html(response.option_dealer);
+                selOptDest.empty();
+                selOptDest.html(response.option_dest);
             }, 'json');
         }
     });
