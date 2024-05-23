@@ -169,7 +169,13 @@
                     </div>
 
                     <div class="row mt-2">
-                        <div class="col">
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Activity Date : </label>
+                                <input type="date" class="form-control" name="activity_date" id="activity_date" required>
+                            </div>
+                        </div>
+                        <div class="col-9">
                             <div class="form-group">
                                 <label for="name" class="form-label">Remarks : </label>
                                 <input type="text" class="form-control" name="remarks" id="remarks" autocomplete="off">
@@ -373,6 +379,7 @@
             let currentTime = moment().format('HH:mm');
             $('#sj_time').val('');
             $('#rec_pl_date').val(today);
+            $('#activity_date').val(today);
             $('#rec_pl_time').val(currentTime);
             $('#pl_print_time').val(currentTime);
 
@@ -426,6 +433,7 @@
                 $('#no_truck').val(data.no_truck).change();
                 $('#sj_no').val(data.sj_no);
                 $('#sj_time').val(data.sj_time);
+                $('#activity_date').val(data.activity_date);
                 $('#remarks').val(data.remarks);
                 $('#headerForm').text('Edit PL');
                 $('#form_proses').val('edit');

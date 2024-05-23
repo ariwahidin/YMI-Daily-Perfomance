@@ -428,6 +428,7 @@ class Outbound extends CI_Controller
         foreach ($rows as $data) {
             $row = array();
             $row['NO'] = $no++;
+            $row['ACTIVITY DATE'] = $data->{'ACTIVITY DATE'};
             $row['TANGGAL'] = $data->{'TANGGAL'};
             $row['NO PL'] = $data->{'NO PL'};
             $row['NO SJ'] = $data->{'NO SJ'};
@@ -573,6 +574,8 @@ class Outbound extends CI_Controller
     public function createPickingList()
     {
         $post = $this->input->post();
+        // var_dump($post);
+        // exit;
         $params = array(
             'transaction_number' => $this->outbound_m->generateTransactionNumber(),
             'pl_no' => $post['pl_no'],
@@ -590,6 +593,7 @@ class Outbound extends CI_Controller
             'pl_print_time' => $post['pl_print_time'] == '' ? null : $post['pl_print_time'],
             'adm_pl_date' => $post['rec_pl_date'],
             'adm_pl_time' => $post['rec_pl_time'] == '' ? null : $post['rec_pl_time'],
+            'activity_date' => $post['activity_date'],
             'created_at' => currentDateTime(),
             'created_by' => userId()
         );
@@ -628,6 +632,7 @@ class Outbound extends CI_Controller
             'dock' => $post['dock'],
             'pintu_loading' => $post['pintu_loading'],
             'no_truck' => $post['no_truck'],
+            'activity_date' => $post['activity_date'],
             'remarks' => $post['remarks'],
             'pl_print_time' => $post['pl_print_time'] == '' ? null : $post['pl_print_time'],
             'adm_pl_date' => $post['rec_pl_date'],

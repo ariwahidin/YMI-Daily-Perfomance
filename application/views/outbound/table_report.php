@@ -2,7 +2,8 @@
     <thead>
         <tr>
             <th scope="col">NO.</th>
-            <th scope="col">TANGGAL</th>
+            <th scope="col">ACTIVITY DATE</th>
+            <th scope="col">CREATED</th>
             <th scope="col">NO PL</th>
             <th scope="col">NO SJ</th>
             <th scope="col">TUJUAN</th>
@@ -37,6 +38,7 @@
         ?>
             <tr>
                 <td><?= $no++ ?></td>
+                <td><?= $data->{'ACTIVITY DATE'} ?></td>
                 <td><?= $data->{'TANGGAL'} ?></td>
                 <td><?= $data->{'NO PL'} ?></td>
                 <td><?= $data->{'NO SJ'} ?></td>

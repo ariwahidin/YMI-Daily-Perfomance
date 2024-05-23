@@ -199,7 +199,7 @@ class Outbound_m extends CI_Model
         // left join master_ekspedisi d on c.expedisi = d.id  where a.is_deleted <> 'Y' ";
 
         $sql = "select * from
-        (select CONVERT(DATE, a.created_date) as TANGGAL, c.pl_no AS [NO PL], c.sj_no AS [NO SJ], c.dest as TUJUAN, c.no_truck as [NO TRUCK], 
+        (select c.activity_date as [ACTIVITY DATE], CONVERT(DATE, a.created_date) as TANGGAL, c.pl_no AS [NO PL], c.sj_no AS [NO SJ], c.dest as TUJUAN, c.no_truck as [NO TRUCK], 
         c.dealer_code as [KODE DEALER], d.name AS EXPEDISI, c.dock as [MD/DDS], c.tot_qty as QTY, c.pintu_loading as [PINTU LOADING],
         c.pl_print_time as [JAM CETAK PL],
         c.adm_pl_time as [JAM AMANO], 
@@ -215,7 +215,7 @@ class Outbound_m extends CI_Model
         left join master_ekspedisi d on c.expedisi = d.id  
         where a.is_deleted <> 'Y'
         union all
-        select CONVERT(DATE, a.created_date) as [TANGGAL], b.pl_no as [NO PL], b.sj_no as [NO SJ], b.dest as [TUJUAN], b.no_truck as [NO TRUCK],b.dealer_code as [KODE DEALER],
+        select b.activity_date as [ACTIVITY DATE], CONVERT(DATE, a.created_date) as [TANGGAL], b.pl_no as [NO PL], b.sj_no as [NO SJ], b.dest as [TUJUAN], b.no_truck as [NO TRUCK],b.dealer_code as [KODE DEALER],
         c.name as [EXPEDISI], b.dock as [MD/DDS], b.tot_qty as [QTY],
         b.pintu_loading as [PINTU LOADING], b.pl_print_time as [JAM CETAK PL], b.adm_pl_time as [JAM AMANO], a.start_picking as [MULAI DORONG], a.stop_picking as [SELESAI DORONG],
         a.start_checking as [MULAI CHECK], a.stop_checking as [SELESAI CHECK], a.start_scanning as [MULAI SCAN], a.stop_scanning as [SELESAI SCAN], b.sj_time as [JAM TERIMA SJ], b.remarks as [REMARKS]

@@ -3,7 +3,8 @@
         <tr>
             <th>#</th>
             <th>PL No</th>
-            <th>Created</th>
+            <th>Activity Date</th>
+            <th>Created Date</th>
             <th>Status</th>
             <th>SJ No</th>
             <th>SJ Time</th>
@@ -30,6 +31,7 @@
             <tr>
                 <td><?= $no++ ?></td>
                 <td><?= $data->pl_no ?></td>
+                <td><?= $data->activity_date ?></td>
                 <td><?= date('Y-m-d H:i:s', strtotime($data->created_at)) ?></td>
                 <td><?= $data->status ?></td>
                 <td><?= $data->sj_no ?></td>
