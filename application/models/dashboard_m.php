@@ -61,7 +61,7 @@ class Dashboard_m extends CI_Model
         inner join master_user b on a.user_id = b.id
         inner join master_position c on a.position_id = c.id
         left join tb_trans_temp d on a.user_id = d.checker_id
-        WHERE a.is_deleted <> 'Y' 
+        WHERE a.is_deleted <> 'Y' AND a.is_active = 'Y'
         -- AND a.date = convert(date, getdate())
         AND getdate() > a.start_time
         AND getdate() < a.end_time 
@@ -76,7 +76,7 @@ class Dashboard_m extends CI_Model
         from work_schedule a
         inner join master_user b on a.user_id = b.id
         inner join master_position c on a.position_id = c.id
-        WHERE a.is_deleted <> 'Y' 
+        WHERE a.is_deleted <> 'Y' AND a.is_active = 'Y'
         -- AND a.date = convert(date, getdate()) 
         AND getdate() > a.start_time
         AND getdate() < a.end_time  

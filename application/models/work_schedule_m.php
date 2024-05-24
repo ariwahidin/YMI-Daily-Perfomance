@@ -7,7 +7,8 @@ class Work_schedule_m extends CI_Model
         // var_dump($_POST);
         // die;
 
-        $sql = "select a.id, a.user_id, a.position_id, b.fullname, a.date, a.start_time, a.end_time, c.name as position_name  
+        $sql = "select a.id, a.user_id, a.position_id, b.fullname, a.date, a.start_time, a.end_time, c.name as position_name,
+        a.is_active, a.remarks  
         from work_schedule a
         inner join master_user b on a.user_id = b.id
         left join master_position c on a.position_id = c.id

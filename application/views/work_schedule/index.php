@@ -99,12 +99,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <!-- <div class="form-group row">
-                                <div class="col-md-6">
-                                    <label for="name" class="form-label">Day</label>
-                                    <input type="text" class="form-control" id="day" name="day" value="<?= date('l') ?>" placeholder="" required readonly>
-                                </div>
-                            </div> -->
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="name" class="form-label">Start Date</label>
@@ -122,6 +116,18 @@
                                     <label for="name" class="form-label">End Time</label>
                                     <input type="time" class="form-control" id="end_time" value="17:00" name="end_time" placeholder="" required>
                                 </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="form-label">Status</label>
+                                <select class="form-control" name="in_status" id="in_status">
+                                    <option value="">--Choose Status--</option>
+                                    <option value="Y">Active</option>
+                                    <option value="N">Not Active</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="form-label">Remarks</label>
+                                <input type="text" class="form-control" id="remarks" name="remarks">
                             </div>
                         </div>
 
@@ -935,6 +941,8 @@
             $('#start_time').val($(this).data('start-time'));
             $('#end_time').val($(this).data('end-time'));
             $('#position_id').val($(this).data('position-id'));
+            $('#in_status').val($(this).data('status'));
+            $('#remarks').val($(this).data('remarks'));
             $('#modalForm').modal('show');
         })
 

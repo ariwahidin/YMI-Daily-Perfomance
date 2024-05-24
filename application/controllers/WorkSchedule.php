@@ -83,6 +83,8 @@ class WorkSchedule extends CI_Controller
                 'date' => $post['start_date'],
                 'start_time' => date('Y-m-d H:i:s', strtotime($post['start_date'] . $post['start_time'])),
                 'end_time' => date('Y-m-d H:i:s', strtotime($post['end_date'] . $post['end_time'])),
+                'is_active' => 'Y',
+                'remarks' => $post['remarks'],
                 'created_at' => currentDateTime(),
                 'created_by' => userId(),
                 'is_deleted' => 'N'
@@ -124,6 +126,7 @@ class WorkSchedule extends CI_Controller
             $param['date'] = date('Y-m-d', strtotime($data->start_time));
             $param['start_time'] = date('Y-m-d H:i:s', strtotime($data->start_date . $data->start_time));
             $param['end_time'] = date('Y-m-d H:i:s', strtotime($data->end_date . $data->end_time));
+            $param['is_active'] = 'Y';
             $param['created_at'] = currentDateTime();
             $param['created_by'] = userId();
             $param['is_deleted'] = 'N';
@@ -165,6 +168,8 @@ class WorkSchedule extends CI_Controller
                 'date' => $post['start_date'],
                 'start_time' => date('Y-m-d H:i:s', strtotime($post['start_date'] . $post['start_time'])),
                 'end_time' => date('Y-m-d H:i:s', strtotime($post['end_date'] . $post['end_time'])),
+                'is_active' => $post['in_status'],
+                'remarks' => $post['remarks'],
                 'created_at' => currentDateTime(),
                 'created_by' => userId()
             );
