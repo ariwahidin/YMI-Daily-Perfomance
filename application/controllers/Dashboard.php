@@ -77,6 +77,8 @@ class Dashboard extends CI_Controller
     public function getMonthlyInbound()
     {
         $monthYear = $this->input->post('month');
+        $dates = generateDates($monthYear);
+
         $dateParts = explode('-', $monthYear);
         $year = $dateParts[0];
         $month = $dateParts[1];
@@ -84,7 +86,8 @@ class Dashboard extends CI_Controller
         // Query untuk mendapatkan total qty berdasarkan bulan dan tahun yang dipilih
         $sql = "SELECT 
             SUM(qty) AS total_qty,
-            FORMAT(activity_date, 'd-MMM') AS formatted_date
+            FORMAT(activity_date, 'd-MMM') AS formatted_date,
+            CONVERT(date, activity_date) AS activity_date
         FROM tb_trans
         WHERE 
         YEAR(activity_date) = ? AND
@@ -92,12 +95,80 @@ class Dashboard extends CI_Controller
         GROUP BY activity_date
         ORDER BY activity_date ASC";
         $query = $this->db->query($sql, array($year, $month));
+        $result = $query->result_array();
 
-        // var_dump($query->result());
+        foreach ($dates as $key => $val) {
+            $found = false;
+            foreach ($result as $k => $v) {
+                if ($v['activity_date'] == $val) {
+                    $dates[$key] = $v;
+                    $found = true;
+                    break; // Menghentikan loop jika ditemukan kecocokan untuk menghemat waktu
+                }
+            }
+
+            if (!$found) {
+                $dates[$key] = array(
+                    'total_qty' => 0,
+                    'formatted_date' => date('d-M', strtotime($val)),
+                    'activity_date' => $val
+                );
+            }
+        }
 
         $response = array(
             'success' => true,
-            'inbound' => $query->result()
+            'inbound' => $dates
+        );
+
+        echo json_encode($response);
+    }
+
+    public function getMonthlyOutbound()
+    {
+        $monthYear = $this->input->post('month');
+        $dates = generateDates($monthYear);
+
+        $dateParts = explode('-', $monthYear);
+        $year = $dateParts[0];
+        $month = $dateParts[1];
+
+        // Query untuk mendapatkan total qty berdasarkan bulan dan tahun yang dipilih
+        $sql = "SELECT 
+            SUM(CONVERT(INT,tot_qty)) AS total_qty,
+            FORMAT(activity_date, 'd-MMM') AS formatted_date,
+            CONVERT(date, activity_date) AS activity_date
+        FROM pl_h
+        WHERE 
+        YEAR(activity_date) = ? AND
+        MONTH(activity_date) = ?
+        GROUP BY activity_date
+        ORDER BY activity_date ASC";
+        $query = $this->db->query($sql, array($year, $month));
+        $result = $query->result_array();
+
+        foreach ($dates as $key => $val) {
+            $found = false;
+            foreach ($result as $k => $v) {
+                if ($v['activity_date'] == $val) {
+                    $dates[$key] = $v;
+                    $found = true;
+                    break; // Menghentikan loop jika ditemukan kecocokan untuk menghemat waktu
+                }
+            }
+
+            if (!$found) {
+                $dates[$key] = array(
+                    'total_qty' => 0,
+                    'formatted_date' => date('d-M', strtotime($val)),
+                    'activity_date' => $val
+                );
+            }
+        }
+
+        $response = array(
+            'success' => true,
+            'outbound' => $dates
         );
 
         echo json_encode($response);

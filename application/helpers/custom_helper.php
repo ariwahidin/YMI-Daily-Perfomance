@@ -138,3 +138,25 @@ function getScanner($pl_id)
     $query = $CI->db->query($sql);
     return $query;
 }
+
+function generateDates($input)
+{
+    // Memastikan format input adalah 'YYYY-MM'
+    if (!preg_match('/^\d{4}-\d{2}$/', $input)) {
+        return "Format input tidak valid. Harus 'YYYY-MM'.";
+    }
+
+    // Memisahkan tahun dan bulan dari input
+    list($year, $month) = explode('-', $input);
+
+    // Mendapatkan jumlah hari dalam bulan tersebut
+    $numDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+
+    // Membuat array tanggal
+    $dates = [];
+    for ($day = 1; $day <= $numDays; $day++) {
+        $dates[] = sprintf('%s-%02d-%02d', $year, $month, $day);
+    }
+
+    return $dates;
+}

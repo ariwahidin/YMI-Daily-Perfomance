@@ -158,10 +158,6 @@
                     <div class="card-header card-success align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Outbound Proccess</h4>
                         <div class="flex-shrink-0">
-                            <button type="button" class="btn btn-soft-info btn-sm">
-                                <!-- <i class="ri-file-list-3-line align-middle"></i>  -->
-                                Today
-                            </button>
                         </div>
                     </div>
 
@@ -174,21 +170,46 @@
         </div>
     </div>
     <div style="display: none;" class="col-md-12 tab-pane tabDash" id="DashboardMonthly">
-        <div class="col-xl-12">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title mb-0">Monthly Inbound Chart</span>
-                    <div class="form-group">
-                        <label for="">Activity Date : </label>
-                        <input type="month" class="form-control-sm" id="inputMonthInbound">
-                        <button class="btn btn-sm btn-success" id="btnRefreshInboundMonthly">Refresh</button>
+        <div class="d-felx">
+            <!-- <label for="">Activity Date : </label>
+            <input type="month" class="form-control-sm" id="inputMonthInbound">
+            <button class="btn btn-sm btn-success" id="btnRefreshInboundMonthly">Refresh</button> -->
+        </div>
+
+        <div class="row mb-3 pb-1">
+            <div class="col-12">
+                <div class="d-flex align-items-lg-center flex-lg-row flex-column">
+                    <div class="flex-grow-1">
+                        <h4 class="card-title mb-0 flex-grow-1"><strong id="clock"></strong></h4>
                     </div>
-                </div>
-                <div class="card-body card-responsive">
-                    <div id="inboundMonthly" class="e-charts"></div>
+                    <input type="month" class="form-control-sm" id="inputMonthInbound">
                 </div>
             </div>
-            <!-- end card -->
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title mb-0">Monthly Inbound Chart</span>
+                    </div>
+                    <div class="card-body card-responsive">
+                        <div id="inboundMonthly" class="e-charts"></div>
+                    </div>
+                </div>
+                <!-- end card -->
+            </div>
+            <div class="col-12 col-xl-12">
+                <div class="card card-responsive">
+                    <div class="card-header">
+                        <span class="card-title mb-0">Monthly Outbound Chart</span>
+                    </div>
+                    <div class="card-body card-responsive">
+                        <div id="outboundMonthly" class="e-charts"></div>
+                    </div>
+                </div>
+                <!-- end card -->
+            </div>
         </div>
     </div>
 </div>
@@ -220,12 +241,14 @@
                 // let yInboundData = [1320, 1332, 1301, 1334, 1390];
                 // cartInboundMonthly(xInboundData, yInboundData);
                 getInboundMonthly();
+                getOutboundMonthly();
             }
         })
 
 
-        $('#btnRefreshInboundMonthly').on('click', function() {
+        $('#inputMonthInbound').on('change', function() {
             getInboundMonthly();
+            getOutboundMonthly();
         })
 
         var socket;
@@ -472,6 +495,8 @@
 
         function getInboundMonthly() {
             let month = $('#inputMonthInbound').val();
+            let elementID = 'inboundMonthly';
+            let colorData = 'rgb(64 81 137)';
             let xInboundData = [];
             let yInboundData = [];
 
@@ -484,14 +509,34 @@
                     yInboundData.push(obj.total_qty);
                 });
 
-                renderChartInboundMonthly(xInboundData, yInboundData);
+                renderChartMonthly(xInboundData, yInboundData, elementID, colorData);
             }, 'json');
         }
 
-        function renderChartInboundMonthly(xInboundData, yInboundData) {
+        function getOutboundMonthly() {
+            let month = $('#inputMonthInbound').val();
+            let elementID = 'outboundMonthly';
+            let colorData = 'rgb(10 179 156)';
+            let xData = [];
+            let yData = [];
+
+            $.post('getMonthlyOutbound', {
+                month
+            }, function(response) {
+                let data = response.outbound;
+                $.each(data, function(index, obj) {
+                    xData.push(obj.formatted_date);
+                    yData.push(obj.total_qty);
+                });
+
+                renderChartMonthly(xData, yData, elementID, colorData);
+            }, 'json');
+        }
+
+        function renderChartMonthly(xData, yData, elementID, colorData) {
             var app = {};
 
-            var chartDom = document.getElementById('inboundMonthly');
+            var chartDom = document.getElementById(elementID);
 
             // console.log(echarts);
 
@@ -631,7 +676,7 @@
                         interval: 0,
                         rotate: 30
                     },
-                    data: xInboundData,
+                    data: xData,
                 }],
                 yAxis: [{
                     type: 'value'
@@ -639,12 +684,13 @@
                 series: [{
                     name: '',
                     type: 'bar',
+                    color: colorData,
                     barGap: 0,
                     label: labelOption,
                     emphasis: {
                         focus: 'series'
                     },
-                    data: yInboundData
+                    data: yData
                 }, ]
             };
 
