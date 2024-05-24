@@ -437,12 +437,14 @@ class Inbound_m extends CI_Model
 
         $sql = "WITH 
         InboundProses AS (
-            SELECT COUNT(*) AS count_proses
+            SELECT COUNT(*) AS count_proses,
+			CASE WHEN SUM(CONVERT(INT,qty)) IS NULL THEN 0 ELSE SUM(CONVERT(INT,qty)) END as qty_proses
             FROM tb_trans_temp
             WHERE CONVERT(date, activity_date) between CONVERT(date, '$start_date') and CONVERT(date, '$end_date')
         ),
         InboundComplete AS (
-            SELECT COUNT(*) AS count_complete
+            SELECT COUNT(*) AS count_complete,
+			CASE WHEN SUM(CONVERT(INT,qty)) IS NULL THEN 0 ELSE SUM(CONVERT(INT,qty)) END as qty_complete
             FROM tb_trans
             WHERE CONVERT(date, activity_date) between CONVERT(date, '$start_date') and CONVERT(date, '$end_date')
         ),
@@ -450,10 +452,18 @@ class Inbound_m extends CI_Model
             SELECT 
                 (SELECT count_proses FROM InboundProses) + 
                 (SELECT count_complete FROM InboundComplete) AS total_count
+        ),
+		TotalQty AS (
+            SELECT 
+                (SELECT qty_proses FROM InboundProses) + 
+                (SELECT qty_complete FROM InboundComplete) AS total_qty
         )
         SELECT 
             (SELECT count_proses FROM InboundProses) AS inbound_proses,
+			(SELECT qty_proses FROM InboundProses) AS qty_proses,
             (SELECT count_complete FROM InboundComplete) AS inbound_complete,
+			(SELECT qty_complete FROM InboundComplete) AS qty_complete,
+			(SELECT total_qty FROM TotalQty) AS total_qty,
             (SELECT total_count FROM TotalInbound) AS total_inbound,
             CASE 
                 WHEN (SELECT total_count FROM TotalInbound) <> 0 THEN

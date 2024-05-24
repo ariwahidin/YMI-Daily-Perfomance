@@ -36,8 +36,6 @@
                 <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                     <div class="flex-grow-1">
                         <h4 class="card-title mb-0 flex-grow-1"><strong id="clock"></strong></h4>
-                        <!-- <h4 class="fs-16 mb-1">Hi , Super Admin</h4> -->
-                        <!-- <p class="text-muted mb-0">This is a task that you must complete.</p> -->
                     </div>
                     <div class="">
                         <form id="formSearchByDate">
@@ -55,9 +53,6 @@
                             </div>
                         </form>
                     </div>
-                    <!-- <div class="mt-3 ms-3 mt-lg-0">
-                <button class="btn btn-primary" id="btnCreate">Create new task</button>
-            </div> -->
                 </div>
             </div>
         </div>
@@ -73,20 +68,23 @@
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Proccess</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                                    <span id="spInboundProses">0</span>
+                                    <span id="spInboundProses">0</span><span class="fs-10 text-muted mb-0"> SJ</span>
                                 </h4>
+                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_proses_in">0</span> Unit</p>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Complete</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                                    <span id="spInboundComplete">0</span>
+                                    <span id="spInboundComplete">0</span><span class="fs-10 text-muted mb-0"> SJ</span>
                                 </h4>
+                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_complete_in">0</span> Unit</p>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Total </p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                                    <span id="spInboundTotal">0</span>
+                                    <span id="spInboundTotal">0</span><span class="fs-10 text-muted mb-0"> SJ</span>
                                 </h4>
+                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_total_in">0</span> Unit</p>
                             </div>
                             <div class="flex-shrink-0">
                                 <div id="cartInbound"></div>
@@ -105,20 +103,23 @@
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Proccess</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                                    <span id="spOutboundProses">0</span>
+                                    <span id="spOutboundProses">0</span><span class="fs-10 text-muted mb-0"> PL</span>
                                 </h4>
+                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_proses_out">0</span> Unit</p>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Complete</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                                    <span id="spOutboundComplete">0</span>
+                                    <span id="spOutboundComplete">0</span><span class="fs-10 text-muted mb-0"> PL</span>
                                 </h4>
+                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_complete_out">0</span> Unit</p>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Total </p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                                    <span id="spOutboundTotal">0</span>
+                                    <span id="spOutboundTotal">0</span><span class="fs-10 text-muted mb-0"> PL</span>
                                 </h4>
+                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_total_out">0</span> Unit</p>
                             </div>
                             <div class="flex-shrink-0">
                                 <div id="cartOutbound"></div>
@@ -227,14 +228,6 @@
             getInboundMonthly();
         })
 
-        // $('#DasboardMonthly').on('click', function(){
-        //     $('#DasboardMonthly').css('display', 'block');
-        //     $('#DashboardDaily').css('display', 'none');
-        // })
-
-
-
-
         var socket;
         initWebSocket();
 
@@ -266,8 +259,8 @@
 
             getUserProses(dataToPost);
 
-            cartOutbound();
-            getAllProccessOutbound();
+            cartOutbound(dataToPost);
+            getAllProccessOutbound(dataToPost);
 
             // let sDate = $('#sStartDate').val();
             // let eDate = $('#sEndDate').val();
@@ -347,8 +340,8 @@
             });
         }
 
-        function getAllProccessOutbound() {
-            $.post('getAllProccessOutbound', function(response) {
+        function getAllProccessOutbound(dataToPost) {
+            $.post('getAllProccessOutbound', dataToPost, function(response) {
                 let divOutbound = $('#divOutbound');
                 divOutbound.empty();
                 divOutbound.html(response);
@@ -366,6 +359,9 @@
                 $('#spInboundProses').text(data.inbound_proses);
                 $('#spInboundComplete').text(data.inbound_complete);
                 $('#spInboundTotal').text(data.total_inbound);
+                $('#sp_qty_proses_in').text(data.qty_proses);
+                $('#sp_qty_complete_in').text(data.qty_complete);
+                $('#sp_qty_total_in').text(data.total_qty);
 
                 $('#cartInbound').empty();
                 $('#cartInbound').html(`<div id="ctr" class="apex-charts"></div>`);
@@ -413,9 +409,9 @@
             }, 'json');
         }
 
-        function cartOutbound() {
+        function cartOutbound(dataToPost) {
 
-            $.post('getPresentaseOutbound', {}, function(response) {
+            $.post('getPresentaseOutbound', dataToPost, function(response) {
 
                 let data = response.data;
 
@@ -424,6 +420,9 @@
                 $('#spOutboundProses').text(data.outbound_proses);
                 $('#spOutboundComplete').text(data.outbound_complete);
                 $('#spOutboundTotal').text(data.total_outbound);
+                $('#sp_qty_proses_out').text(data.qty_proses);
+                $('#sp_qty_complete_out').text(data.qty_complete);
+                $('#sp_qty_total_out').text(data.total_qty);
 
                 $('#cartOutbound').empty();
                 $('#cartOutbound').html(`<div id="ctro" class="apex-charts"></div>`);

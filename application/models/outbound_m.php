@@ -244,41 +244,78 @@ class Outbound_m extends CI_Model
 
     public function getPresentaseOutbound()
     {
-        // $sql = "SELECT 
-        // (SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) AS outbound_proses,
-        // (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) AS outbound_complete,
-        // (SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) AS total_outbound,
-        // CASE WHEN (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) <> 0 
-        //      THEN ((SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())) / CAST(((SELECT COUNT(*) FROM tb_out_temp WHERE convert(date, created_date) = convert(date, getdate())) + (SELECT COUNT(*) FROM tb_out WHERE convert(date, created_date) = convert(date, getdate())))   AS float)) * 100 
-        //      ELSE 0 
-        // END AS presentase;";
+        $post = $this->input->post();
+        // var_dump($post);
+        $start_date = $post['start_date'];
+        $end_date = $post['end_date'];
 
+        // $sql = "WITH OutboundProses AS (
+        //     SELECT COUNT(*) AS count_proses,
+		// 	CASE WHEN SUM(CONVERT(INT,tot_qty)) IS NULL THEN 0 ELSE SUM(CONVERT(INT,tot_qty)) END as qty_proses
+        //     FROM tb_out_temp a 
+		// 	INNER JOIN pl_h b ON a.no_pl = b.id 
+        //     WHERE CONVERT(date, b.activity_date) BETWEEN CONVERT(date, '$start_date') AND CONVERT(date, '$end_date')
+        // ),
+        // OutboundComplete AS (
+        //     SELECT COUNT(*) AS count_complete,
+		// 	CASE WHEN SUM(CONVERT(INT,tot_qty)) IS NULL THEN 0 ELSE SUM(CONVERT(INT,tot_qty)) END as qty_complete
+        //     FROM tb_out a
+		// 	INNER JOIN pl_h b ON a.pl_id = b.id
+        //     WHERE CONVERT(date, b.activity_date) BETWEEN CONVERT(date, '$start_date') AND CONVERT(date, '$end_date')
+        // ),
+        // TotalOutbound AS (
+        //     SELECT 
+        //         (SELECT count_proses FROM OutboundProses) + 
+        //         (SELECT count_complete FROM OutboundComplete) AS total_count
+        // ),
+		// TotalQty AS (
+        //     SELECT 
+        //         (SELECT qty_proses FROM OutboundProses) + 
+        //         (SELECT qty_complete FROM OutboundComplete) AS total_qty
+        // )
+        // SELECT 
+        //     (SELECT count_proses FROM OutboundProses) AS outbound_proses,
+		// 	(SELECT qty_proses FROM OutboundProses) AS qty_proses,
+        //     (SELECT count_complete FROM OutboundComplete) AS outbound_complete,
+		// 	(SELECT qty_complete FROM OutboundComplete) AS qty_complete,
+        //     (SELECT total_count FROM TotalOutbound) AS total_outbound,
+		// 	(SELECT total_qty FROM TotalQty) AS total_qty,
+        //     CASE 
+        //         WHEN (SELECT total_count FROM TotalOutbound) <> 0 THEN
+        //             (CAST((SELECT count_complete FROM OutboundComplete) AS FLOAT) / 
+        //              (SELECT total_count FROM TotalOutbound)) * 100
+        //         ELSE 0 
+        //     END AS presentase";
+
+        // Optimized Query
         $sql = "WITH OutboundProses AS (
-            SELECT COUNT(*) AS count_proses
-            FROM tb_out_temp
-            WHERE CONVERT(date, created_date) = CONVERT(date, GETDATE())
+            SELECT COUNT(*) AS count_proses,
+                COALESCE(SUM(CONVERT(INT, tot_qty)), 0) AS qty_proses
+            FROM tb_out_temp a 
+            INNER JOIN pl_h b ON a.no_pl = b.id 
+            WHERE b.activity_date BETWEEN '$start_date' AND '$end_date'
         ),
         OutboundComplete AS (
-            SELECT COUNT(*) AS count_complete
-            FROM tb_out
-            WHERE CONVERT(date, created_date) = CONVERT(date, GETDATE())
-        ),
-        TotalOutbound AS (
-            SELECT 
-                (SELECT count_proses FROM OutboundProses) + 
-                (SELECT count_complete FROM OutboundComplete) AS total_count
+            SELECT COUNT(*) AS count_complete,
+                COALESCE(SUM(CONVERT(INT, tot_qty)), 0) AS qty_complete
+            FROM tb_out a
+            INNER JOIN pl_h b ON a.pl_id = b.id
+            WHERE b.activity_date BETWEEN '$start_date' AND '$end_date'
         )
         SELECT 
-            (SELECT count_proses FROM OutboundProses) AS outbound_proses,
-            (SELECT count_complete FROM OutboundComplete) AS outbound_complete,
-            (SELECT total_count FROM TotalOutbound) AS total_outbound,
+            op.count_proses AS outbound_proses,
+            op.qty_proses AS qty_proses,
+            oc.count_complete AS outbound_complete,
+            oc.qty_complete AS qty_complete,
+            (op.count_proses + oc.count_complete) AS total_outbound,
+            (op.qty_proses + oc.qty_complete) AS total_qty,
             CASE 
-                WHEN (SELECT total_count FROM TotalOutbound) <> 0 THEN
-                    (CAST((SELECT count_complete FROM OutboundComplete) AS FLOAT) / 
-                     (SELECT total_count FROM TotalOutbound)) * 100
+                WHEN (op.count_proses + oc.count_complete) <> 0 THEN
+                    (CAST(oc.count_complete AS FLOAT) / 
+                     (op.count_proses + oc.count_complete)) * 100
                 ELSE 0 
             END AS presentase
-        ";
+        FROM OutboundProses op, OutboundComplete oc;";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -286,23 +323,35 @@ class Outbound_m extends CI_Model
 
     public function getAllOutboundProccess()
     {
+
+        // var_dump($_POST);
+        // exit;
+
+        $post = $this->input->post();
+        $start_date = $post['start_date'];
+        $end_date = $post['end_date'];
+
         $sql = "SELECT *,
-        CASE WHEN start_picking is null and stop_picking is null and start_scanning is null and start_scanning is null and start_checking is null and stop_checking is null then '' ELSE
-        CASE WHEN start_picking is not null and stop_picking is not null and start_scanning is not null and stop_scanning is not null and start_checking is not null and stop_checking is not null then 'Done' ELSE
-        'Processing' END END AS [status]
+        CASE 
+            WHEN start_picking IS NULL AND stop_picking IS NULL AND start_scanning IS NULL AND stop_scanning IS NULL AND start_checking IS NULL AND stop_checking IS NULL THEN ''
+            WHEN start_picking IS NOT NULL AND stop_picking IS NOT NULL AND start_scanning IS NOT NULL AND stop_scanning IS NOT NULL AND start_checking IS NOT NULL AND stop_checking IS NOT NULL THEN 'Done'
+            ELSE 'Processing'
+        END AS [status]
         FROM
-        (SELECT a.id as pl_id, pl_no, b.start_picking, b.stop_picking,
-        b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, b.created_date
-        FROM pl_h a
-        INNER JOIN tb_out_temp b on a.id = b.no_pl
-        union
-        SELECT a.id as pl_id, b.no_pl as pl_no, b.start_picking, b.stop_picking,
-        b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, b.activity_created_date as created_date
-        FROM pl_h a
-        INNER JOIN tb_out b ON a.id = b.pl_id
-        )a 
-        WHERE CONVERT(DATE, created_date) = CONVERT(DATE, getdate())
-        order by created_date desc";
+        (
+            SELECT a.id AS pl_id, a.pl_no, b.start_picking, b.stop_picking,
+                   b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, b.created_date, a.activity_date
+            FROM pl_h a
+            INNER JOIN tb_out_temp b ON a.id = b.no_pl
+            UNION
+            SELECT a.id AS pl_id, b.no_pl AS pl_no, b.start_picking, b.stop_picking,
+                   b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, b.activity_created_date AS created_date, a.activity_date
+            FROM pl_h a
+            INNER JOIN tb_out b ON a.id = b.pl_id
+        ) a 
+        WHERE CONVERT(DATE, activity_date) between CONVERT(DATE, '$start_date') and CONVERT(DATE, '$end_date')
+        ORDER BY created_date DESC;
+        ";
 
         $query = $this->db->query($sql);
         return $query;
