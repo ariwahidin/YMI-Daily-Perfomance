@@ -292,14 +292,14 @@ class Outbound_m extends CI_Model
             SELECT COUNT(*) AS count_proses,
                 COALESCE(SUM(CONVERT(INT, tot_qty)), 0) AS qty_proses
             FROM tb_out_temp a 
-            INNER JOIN pl_h b ON a.no_pl = b.id 
+            LEFT JOIN pl_h b ON a.no_pl = b.id 
             WHERE b.activity_date BETWEEN '$start_date' AND '$end_date'
         ),
         OutboundComplete AS (
             SELECT COUNT(*) AS count_complete,
                 COALESCE(SUM(CONVERT(INT, tot_qty)), 0) AS qty_complete
             FROM tb_out a
-            INNER JOIN pl_h b ON a.pl_id = b.id
+            RIGHT JOIN pl_h b ON a.pl_id = b.id
             WHERE b.activity_date BETWEEN '$start_date' AND '$end_date'
         )
         SELECT 
