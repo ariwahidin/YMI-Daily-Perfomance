@@ -1,4 +1,4 @@
-<table style="font-size: 10px;" class="table table-bordered table-striped table-nowrap align-middle" id="tableCompleteActivities">
+<table style="font-size: 10px;" class="table table-bordered table-striped table-nowrap display compact" id="tableCompleteActivities">
     <thead>
         <tr>
             <th scope="col">NO UNLOAD.</th>

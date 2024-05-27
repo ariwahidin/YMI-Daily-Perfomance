@@ -31,7 +31,7 @@
                 <button class="btn btn-info" id="btnAdd">Add new factory</button>
             </div>
             <div class="card-body">
-                <table id="user-table" class="display table table-sm table-bordered" style="width:100%">
+                <table id="user-table" class="display table table-sm table-bordered compact" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>

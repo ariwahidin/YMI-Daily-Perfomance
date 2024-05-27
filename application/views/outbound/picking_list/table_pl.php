@@ -1,4 +1,4 @@
-<table id="tablePL" class="table table-sm table-nowrap table-striped table-bordered" style="width:100%">
+<table id="tablePL" class="table table-sm table-nowrap table-striped table-bordered compact" style="width:100%">
     <thead>
         <tr>
             <th>#</th>

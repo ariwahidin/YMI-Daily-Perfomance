@@ -1,4 +1,4 @@
-<table style="font-size: 10px;" class="table table-bordered table-striped table-nowrap align-middle mb-0" id="tableOutboundActivities">
+<table style="font-size: 10px;" class="table table-bordered table-striped table-nowrap display compact" id="tableOutboundActivities">
     <thead>
         <tr>
             <th scope="col">NO.</th>

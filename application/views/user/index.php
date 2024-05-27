@@ -28,7 +28,7 @@
                 <button class="btn btn-info" id="btnAdd">Add new user</button>
             </div>
             <div class="card-body">
-                <table id="user-table" class="table table-striped table-bordered table-sm" style="width:100%">
+                <table id="user-table" class="table table-striped table-bordered table-sm display compact" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>

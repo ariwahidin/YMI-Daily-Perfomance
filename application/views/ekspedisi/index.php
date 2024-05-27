@@ -31,7 +31,7 @@
                 <button class="btn btn-info" id="btnAdd">Add new ekspedisi</button>
             </div>
             <div class="card-body table-responsive">
-                <table id="tableEkpedisi" class="display table-sm" style="width:100%">
+                <table id="tableEkpedisi" class="display table-sm compact table-bordered" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>

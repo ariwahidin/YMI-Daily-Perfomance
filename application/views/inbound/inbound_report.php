@@ -1,8 +1,8 @@
 <style>
-    table tr td {
+    /* table tr td {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
-    }
+    } */
 </style>
 
 <link href="<?= base_url() ?>myassets/css/jquery.dataTables.min.css" rel="stylesheet" />

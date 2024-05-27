@@ -25,13 +25,13 @@
 </div>
 
 <div class="row">
-    <div class="col col-md-6">
+    <div class="col col-md-10">
         <div class="card">
             <div class="card-header">
                 <button class="btn btn-primary" id="btnAdd">Add new dealer</button>
             </div>
             <div class="card-body">
-                <table id="user-table" class="display table table bordered" style="width:100%">
+                <table id="user-table" class="display table table-bordered compact" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>
