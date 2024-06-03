@@ -154,8 +154,20 @@ class WorkSchedule extends CI_Controller
     {
         $post = $this->input->post();
 
+        // var_dump($post);
+        // die;
 
-        $cek = $this->db->get_where('work_schedule', ['user_id' => $post['user_id'], 'date' => $post['start_date'], 'is_deleted' => 'N', 'id !=' => $post['eks_id']]);
+
+        $cek = $this->db->get_where('work_schedule', 
+        [
+            'user_id' => $post['user_id'], 
+            'convert(date, start_time) = ' => $post['start_date'], 
+            'convert(time, start_time) = ' => $post['start_time'],
+            'convert(date, end_time) = ' => $post['end_date'], 
+            'convert(time, end_time) = ' => $post['end_time'], 
+            'is_deleted' => 'N', 
+            'id !=' => $post['eks_id']
+        ]);
 
         // var_dump($this->db->last_query());
         // die;

@@ -137,7 +137,7 @@
             <div class="col-xl-6">
                 <div class="card">
                     <div class="card-header card-primary align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Inbound Proccess</h4>
+                        <h4 class="card-title mb-0 flex-grow-1">Inbound Detail</h4>
                         <div class="flex-shrink-0">
                             <!-- <button type="button" class="btn btn-soft-info btn-sm">
                         Today
@@ -156,7 +156,7 @@
             <div class="col-xl-6">
                 <div class="card">
                     <div class="card-header card-success align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Outbound Proccess</h4>
+                        <h4 class="card-title mb-0 flex-grow-1">Outbound Detail</h4>
                         <div class="flex-shrink-0">
                         </div>
                     </div>
