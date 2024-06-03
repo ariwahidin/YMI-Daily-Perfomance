@@ -25,6 +25,132 @@
 </div>
 
 
+<div class="modal fade" id="createTask" tabindex="-1" aria-labelledby="createTaskLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header p-3 bg-success-subtle">
+                <h5 class="modal-title" id="createTaskLabel">Create Activity</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" id="createTaskBtn-close" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="task-error-msg" class="alert alert-danger py-2"></div>
+                <form autocomplete="off" action="#" id="creatask">
+                    <input type="hidden" id="proses" name="proses" class="form-control">
+                    <input type="hidden" id="id_task" name="id_task" class="form-control">
+
+
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-6">
+                            <label for="priority-field" class="form-label">Factory Code</label>
+                            <!-- <input type="text" id="factory" name="factory" class="form-control" value=""> -->
+                            <select class="form-control" name="factory" id="factory" required>
+                                <option value="">Choose Factory</option>
+                                <?php foreach ($factory->result() as $f) { ?>
+                                    <option value="<?= $f->id ?>"><?= $f->name ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col col-lg-3 col-xs-6">
+                            <label for="task-title-input" class="form-label">SJ No</label>
+                            <input type="text" id="sj" name="sj" class="form-control" placeholder="" value="" required>
+                        </div>
+                        <div class="col col-lg-2">
+                            <label for="task-title-input" class="form-label">SJ Send Date</label>
+                            <input type="date" id="send_date" name="send_date" class="form-control" placeholder="" value="" required>
+                        </div>
+                        <div class="col col-lg-2">
+                            <label for="priority-field" class="form-label">SJ Date</label>
+                            <input type="date" id="sj_date" name="sj_date" class="form-control" placeholder="" value="">
+                        </div>
+                        <div class="col col-lg-2">
+                            <label for="priority-field" class="form-label">SJ Time</label>
+                            <input type="time" id="sj_time" name="sj_time" class="form-control" placeholder="" value="">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col col-lg-3 col-xs-6">
+                            <label for="task-status" class="form-label">No Truck</label>
+                            <!-- <input type="text" id="no_truck" name="no_truck" class="form-control" value=""> -->
+                            <select class="form-control" name="no_truck" id="no_truck" required>
+                                <option value="">Choose No Truck</option>
+                                <?php foreach ($ekspedisi->result() as $e) { ?>
+                                    <option value="<?= $e->no_truck ?>" data-id="<?= $e->id ?>"> <?= $e->no_truck ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col col-lg-3 col-xs-6">
+                            <label for="priority-field" class="form-label">Expedisi</label>
+                            <select class="form-control" name="expedisi" id="expedisi" required>
+                                <option value="">Choose Ekspedisi</option>
+                                <?php foreach ($ekspedisi->result() as $e) { ?>
+                                    <option value="<?= $e->id ?>"><?= $e->name ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-6">
+                            <label for="priority-field" class="form-label">Driver</label>
+                            <input type="text" id="driver" name="driver" class="form-control" placeholder="" value="">
+                        </div>
+                        <div class="form-group col-lg-3 col-6">
+                            <label for="" class="form-label">Unloading Sequence Number</label>
+                            <input type="number" id="unloading_sequence" name="unloading_sequence" class="form-control" placeholder="" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-6 col-lg-3">
+                            <label for="task-status" class="form-label">Alocation Code</label>
+                            <input type="text" id="alocation" name="alocation" class="form-control" value="">
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <label for="task-assign-input" class="form-label">Pintu Unloading</label>
+                            <input type="text" id="pintu_unloading" name="pintu_unloading" class="form-control" value="">
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <label for="task-status" class="form-label">Qty</label>
+                            <input type="number" id="qty" name="qty" class="form-control" placeholder="" value="">
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <label for="task-status" class="form-label">Time of arival</label>
+                            <input type="time" id="toa" name="toa" class="form-control" placeholder="" value="">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-lg-3">
+                            <label for="task-assign-input" class="form-label">Checker</label>
+                            <select class="form-control" name="checker" id="checker" required>
+                                <option value="">Choose Checker</option>
+                                <?php foreach ($checker->result() as $c) { ?>
+                                    <option value="<?= $c->id ?>"><?= $c->fullname ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                        <div class="col col-lg-3">
+                            <label for="" class="form-label">Activity Date</label>
+                            <input type="date" id="activity_date" name="activity_date" class="form-control" value="" required>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="priority-field" class="form-label">Remarks</label>
+                            <input type="text" id="remarks" name="remarks" class="form-control" value="">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="hstack gap-2 justify-content-end">
+                        <button type="button" class="btn btn-ghost-success" data-bs-dismiss="modal"><i class="ri-close-fill align-bottom"></i> Close</button>
+                        <button type="submit" class="btn btn-primary" id="btnTask">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 
@@ -53,6 +179,8 @@
 </div>
 
 
+
+
 <script src="<?= base_url() ?>myassets/js/exceljs.min.js"></script>
 
 
@@ -79,6 +207,8 @@
                 id: id
             }, function(response) {}, 'json');
 
+            // alert('test')
+
             let task = result.task;
             $('#proses').val('edit_task');
             $('#id_task').val(id);
@@ -97,9 +227,11 @@
             $('#remarks').val(task.remarks);
             $('#pintu_unloading').val(task.pintu_unloading);
             $('#btnTask').text('Edit');
+            $('#unloading_sequence').val(task.unload_seq);
+            $('#activity_date').val(task.activity_date);
             $('#createTaskLabel').text('Edit task');
-            $('#createTask').modal('show');
             stopLoading();
+            $('#createTask').modal('show');
         });
 
         $('#creatask').on('submit', function(e) {

@@ -324,6 +324,7 @@ class Inbound extends CI_Controller
             $row['STOP PUTAWAY'] = $val->stop_putaway == null ? '' : date('H:i', strtotime($val->stop_putaway));
             $row['PUTAWAY DURATION'] = $val->stop_putaway == null ? '' : countDuration(date('Y-m-d H:i:s', strtotime($val->start_putaway)), date('Y-m-d H:i:s', strtotime($val->stop_putaway)));
             $row['LEAD TIME PUTAWAY'] = $val->stop_putaway == null ? '' : roundMinutes($row['PUTAWAY DURATION']);
+            $row['REMAKRS'] = $val->remarks;
             array_push($dataExcel, $row);
         }
 
@@ -369,9 +370,13 @@ class Inbound extends CI_Controller
     public function editTaskCompleted()
     {
         $post = $this->input->post();
+        // var_dump($post);
+        // exit;
         $id = $post['id_task'];
         $params = array(
             'no_sj' => $post['sj'],
+            'unload_seq' => $post['unloading_sequence'],
+            'activity_date' => $post['activity_date'],
             'no_truck' => $post['no_truck'],
             'qty' => $post['qty'],
             'checker_id' => $post['checker'],

@@ -80,7 +80,7 @@ class Inbound_m extends CI_Model
 
         $sql = "SELECT * FROM (SELECT a.id, a.activity_date, a.created_date as sj_created_at, a.sj_send_date, a.unload_seq, a.no_sj, a.sj_date, a.sj_time, a.no_truck, a.driver, a.alloc_code, a.pintu_unloading, a.qty, a.time_arival, null as unload_duration,
         null as checking_duration, null as putaway_duration, b.fullname as checker_name, a.start_unloading as start_unload, a.stop_unloading as stop_unload, a.start_checking, a.stop_checking, a.start_putaway, a.stop_putaway,
-        c.name as factory_name, d.name as ekspedisi_name, null as [status]
+        c.name as factory_name, d.name as ekspedisi_name, null as [status], a.remarks
         FROM tb_trans_temp a
         left join master_user b on a.checker_id =b.id
         left join master_factory c on a.factory_code = c.id
@@ -113,7 +113,8 @@ class Inbound_m extends CI_Model
                 a.putaway_fin_time as stop_putaway,
                 c.name as factory_name, 
                 d.name as ekspedisi_name,
-                'complete' as [status]
+                'complete' as [status],
+                a.remarks
                 from tb_trans a 
                 inner join master_user b on a.checker_id = b.id
                 left join master_factory c on a.factory_code = c.id

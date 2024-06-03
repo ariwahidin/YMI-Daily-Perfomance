@@ -26,6 +26,7 @@
             <th scope="col">PUTAWAY START</th>
             <th scope="col">PUTAWAY STOP</th>
             <th scope="col">PUTAWAY DURATION</th>
+            <th scope="col">REMARKS</th>
             <th scope="col">ACTION</th>
         </tr>
     </thead>
@@ -60,6 +61,7 @@
                 <td><?= $data->start_putaway == null ? '' : date('H:i', strtotime($data->start_putaway)) ?></td>
                 <td><?= $data->stop_putaway == null ? '' : date('H:i', strtotime($data->stop_putaway)) ?></td>
                 <td><?= $data->putaway_duration ?></td>
+                <td><?= $data->remarks ?></td>
                 <td>
                     <?php
                     if ($data->status == 'complete') {
