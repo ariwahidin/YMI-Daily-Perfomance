@@ -42,6 +42,7 @@
                             <div class="row">
                                 <div class="col-sm-12" style="display: contents;">
                                     <div class="input-group">
+                                        <span style="margin-top: 5px;"> &nbsp; Activity Date &nbsp;</span>
                                         <input type="date" id="startDate" class="form-control-sm">
                                         <span style="margin-top: 5px;"> &nbsp; to &nbsp;</span>
                                         <input type="date" id="endDate" class="form-control-sm d-inline">
@@ -99,27 +100,41 @@
                         <h4 class="card-title mb-0 flex-grow-1">Outbound Summary</h4>
                     </div>
                     <div class="card-body" style="z-index:1 ;">
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex">
                             <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Proccess</p>
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Unproccess</p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="spOutboundUnproses">0</span><span class="fs-10 text-muted mb-0"> PL</span>
+                                </h4>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_unproses_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Proccess</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
                                     <span id="spOutboundProses">0</span><span class="fs-10 text-muted mb-0"> PL</span>
                                 </h4>
-                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_proses_out">0</span> Unit</p>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_proses_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Complete</p>
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Complete</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
                                     <span id="spOutboundComplete">0</span><span class="fs-10 text-muted mb-0"> PL</span>
                                 </h4>
-                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_complete_out">0</span> Unit</p>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_complete_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Total </p>
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Total PL </p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
                                     <span id="spOutboundTotal">0</span><span class="fs-10 text-muted mb-0"> PL</span>
                                 </h4>
-                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_total_out">0</span> Unit</p>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_total_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p>
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Man Power </p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="sp_plan">0</span><span class="fs-10 text-muted mb-0"> Total Alokasi MP</span>
+                                </h4>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_actual">0</span><span class="fs-10 text-muted mb-0"> Actual Alokasi MP</span></p>
                             </div>
                             <div class="flex-shrink-0">
                                 <div id="cartOutbound"></div>
@@ -385,50 +400,51 @@
                 $('#sp_qty_proses_in').text(data.qty_proses);
                 $('#sp_qty_complete_in').text(data.qty_complete);
                 $('#sp_qty_total_in').text(data.total_qty);
+                
 
-                $('#cartInbound').empty();
-                $('#cartInbound').html(`<div id="ctr" class="apex-charts"></div>`);
+                // $('#cartInbound').empty();
+                // $('#cartInbound').html(`<div id="ctr" class="apex-charts"></div>`);
 
-                var options = {
-                    series: [presentase],
-                    chart: {
-                        type: "radialBar",
-                        width: 105,
-                        sparkline: {
-                            enabled: true
-                        }
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        radialBar: {
-                            hollow: {
-                                margin: 0,
-                                size: "70%"
-                            },
-                            track: {
-                                margin: 1
-                            },
-                            dataLabels: {
-                                show: true,
-                                name: {
-                                    show: false
-                                },
-                                value: {
-                                    show: true,
-                                    fontSize: "16px",
-                                    fontWeight: 600,
-                                    offsetY: 8
-                                }
-                            }
-                        }
-                    },
-                    colors: ['#0000FF'] // Gunakan warna-warna yang telah Anda definisikan
-                };
+                // var options = {
+                //     series: [presentase],
+                //     chart: {
+                //         type: "radialBar",
+                //         width: 105,
+                //         sparkline: {
+                //             enabled: true
+                //         }
+                //     },
+                //     dataLabels: {
+                //         enabled: false
+                //     },
+                //     plotOptions: {
+                //         radialBar: {
+                //             hollow: {
+                //                 margin: 0,
+                //                 size: "70%"
+                //             },
+                //             track: {
+                //                 margin: 1
+                //             },
+                //             dataLabels: {
+                //                 show: true,
+                //                 name: {
+                //                     show: false
+                //                 },
+                //                 value: {
+                //                     show: true,
+                //                     fontSize: "16px",
+                //                     fontWeight: 600,
+                //                     offsetY: 8
+                //                 }
+                //             }
+                //         }
+                //     },
+                //     colors: ['#0000FF'] // Gunakan warna-warna yang telah Anda definisikan
+                // };
 
-                var chart = new ApexCharts(document.querySelector("#ctr"), options);
-                chart.render();
+                // var chart = new ApexCharts(document.querySelector("#ctr"), options);
+                // chart.render();
             }, 'json');
         }
 
@@ -440,56 +456,61 @@
 
                 let presentase = Math.round(data.presentase);
 
+                $('#spOutboundUnproses').text(data.outbound_unproses);
                 $('#spOutboundProses').text(data.outbound_proses);
                 $('#spOutboundComplete').text(data.outbound_complete);
-                $('#spOutboundTotal').text(data.total_outbound);
+                $('#spOutboundTotal').text(data.total_pl);
+                $('#sp_qty_unproses_out').text(data.qty_unproses);
                 $('#sp_qty_proses_out').text(data.qty_proses);
                 $('#sp_qty_complete_out').text(data.qty_complete);
                 $('#sp_qty_total_out').text(data.total_qty);
 
-                $('#cartOutbound').empty();
-                $('#cartOutbound').html(`<div id="ctro" class="apex-charts"></div>`);
+                $('#sp_plan').text(response.man_power.total_plan);
+                $('#sp_actual').text(response.man_power.user_active);
 
-                var options = {
-                    series: [presentase],
-                    chart: {
-                        type: "radialBar",
-                        width: 105,
-                        sparkline: {
-                            enabled: true
-                        }
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        radialBar: {
-                            hollow: {
-                                margin: 0,
-                                size: "70%"
-                            },
-                            track: {
-                                margin: 1
-                            },
-                            dataLabels: {
-                                show: true,
-                                name: {
-                                    show: false
-                                },
-                                value: {
-                                    show: true,
-                                    fontSize: "16px",
-                                    fontWeight: 600,
-                                    offsetY: 8
-                                }
-                            }
-                        }
-                    },
-                    colors: ['#FF5733'] // Gunakan warna-warna yang telah Anda definisikan
-                };
+                // $('#cartOutbound').empty();
+                // $('#cartOutbound').html(`<div id="ctro" class="apex-charts"></div>`);
 
-                var chart = new ApexCharts(document.querySelector("#ctro"), options);
-                chart.render();
+                // var options = {
+                //     series: [presentase],
+                //     chart: {
+                //         type: "radialBar",
+                //         width: 105,
+                //         sparkline: {
+                //             enabled: true
+                //         }
+                //     },
+                //     dataLabels: {
+                //         enabled: false
+                //     },
+                //     plotOptions: {
+                //         radialBar: {
+                //             hollow: {
+                //                 margin: 0,
+                //                 size: "70%"
+                //             },
+                //             track: {
+                //                 margin: 1
+                //             },
+                //             dataLabels: {
+                //                 show: true,
+                //                 name: {
+                //                     show: false
+                //                 },
+                //                 value: {
+                //                     show: true,
+                //                     fontSize: "16px",
+                //                     fontWeight: 600,
+                //                     offsetY: 8
+                //                 }
+                //             }
+                //         }
+                //     },
+                //     colors: ['#FF5733'] // Gunakan warna-warna yang telah Anda definisikan
+                // };
+
+                // var chart = new ApexCharts(document.querySelector("#ctro"), options);
+                // chart.render();
             }, 'json');
         }
 

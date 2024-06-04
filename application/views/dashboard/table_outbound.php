@@ -1,7 +1,8 @@
 <table style="font-size: 12px;" class="table table-md table-borderless table-centered align-middle table-nowrap mb-0">
     <thead class="text-muted table-light">
         <tr>
-            <th scope="col">Date</th>
+            <th scope="col">No.</th>
+            <th scope="col">Activity Date</th>
             <th scope="col">PL No</th>
             <th scope="col">Picking</th>
             <th scope="col">Checking</th>
@@ -10,7 +11,10 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($outbound->result() as $data) {
+
+        <?php
+        $no = 1;
+        foreach ($outbound->result() as $data) {
             $duration_picking = countDuration($data->start_picking, $data->stop_picking);
             $duration_checking = countDuration($data->start_checking, $data->stop_checking);
             $duration_scanning = countDuration($data->start_scanning, $data->stop_scanning);
@@ -21,9 +25,10 @@
         ?>
 
             <tr>
+                <td><?= $no++ ?></td>
                 <td>
                     <div class="d-flex align-items-center">
-                        <div class="flex-grow-1"><?= date('Y-m-d', strtotime($data->created_date)) ?></div>
+                        <div class="flex-grow-1"><?= date('Y-m-d', strtotime($data->activity_date)) ?></div>
                     </div>
                 </td>
                 <td><?= $data->pl_no ?></td>

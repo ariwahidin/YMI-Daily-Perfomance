@@ -84,4 +84,23 @@ class Dashboard_m extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
+
+    function getUserOutboundRangeDate()
+    {
+        // var_dump($_POST);
+
+        $start_date = $_POST['start_date'];
+        $end_date = $_POST['end_date'];
+        // die;
+        $sql = "select distinct a.id, a.user_id, b.fullname, a.date, a.start_time, a.end_time, c.name as position
+        from work_schedule a
+        inner join master_user b on a.user_id = b.id
+        inner join master_position c on a.position_id = c.id
+        WHERE a.is_deleted <> 'Y' AND a.is_active = 'Y'
+        AND convert(date, a.start_time) between '$start_date' and '$end_date'
+        AND c.id = 2";
+        $query = $this->db->query($sql);
+        // var_dump($this->db->last_query());
+        return $query;
+    }
 }

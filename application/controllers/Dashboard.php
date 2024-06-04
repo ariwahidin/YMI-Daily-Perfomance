@@ -69,9 +69,38 @@ class Dashboard extends CI_Controller
     {
         $outbound = $this->outbound_m->getPresentaseOutbound()->row();
         $response = array(
-            'data' => $outbound
+            'data' => $outbound,
+            'man_power' => $this->getSummaryManPowerOutbound()
         );
         echo json_encode($response);
+    }
+
+    public function getSummaryManPowerOutbound()
+    {
+        $result = $this->dashboard_m->getUserOutboundRangeDate();
+        $user_active = 0;
+        foreach ($result->result() as $data) {
+            $arr_pl = array();
+            $this->db->select('a.pl_no');
+            $this->db->from('pl_h a');
+            $this->db->join('pl_p b', 'a.id = b.pl_id');
+            $this->db->join('tb_out_temp c', 'a.id = c.no_pl');
+            $this->db->where(['b.user_id' => $data->user_id]);
+            $pl = $this->db->get();
+            foreach ($pl->result() as $p) {
+                array_push($arr_pl, $p->pl_no);
+            }
+            $pl_no = implode(", ", $arr_pl);
+
+            if (count($arr_pl) > 0) {
+                $user_active += 1;
+            }
+        }
+        $data = array(
+            'total_plan' => $result->num_rows(),
+            'user_active' => $user_active
+        );
+        return $data;
     }
 
     public function getMonthlyInbound()

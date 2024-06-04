@@ -85,9 +85,9 @@
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>Picker</th>
+                        <th>User</th>
                         <th>Status</th>
-                        <th>PL</th>
+                        <th>Detail</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,14 +95,17 @@
                     $no = 1;
                     foreach ($user_outbound->result() as $data) {
                         $arr_pl = array();
-                        $this->db->select('a.pl_no');
+                        $this->db->select('a.pl_no, b.sts');
                         $this->db->from('pl_h a');
                         $this->db->join('pl_p b', 'a.id = b.pl_id');
                         $this->db->join('tb_out_temp c', 'a.id = c.no_pl');
-                        $this->db->where(['b.user_id' => $data->user_id]);
+                        $where = array(
+                            'b.user_id' => $data->user_id
+                        );
+                        $this->db->where($where);
                         $pl = $this->db->get();
                         foreach ($pl->result() as $p) {
-                            array_push($arr_pl, $p->pl_no);
+                            array_push($arr_pl, $p->pl_no . "(" . $p->sts . ")");
                         }
                         $pl_no = implode(", ", $arr_pl);
                     ?>

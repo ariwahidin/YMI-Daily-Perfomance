@@ -181,22 +181,8 @@ class Outbound_m extends CI_Model
 
     public function getCompletedActivity()
     {
-        // $sql = "select CONVERT(DATE, a.created_date) as TANGGAL, c.pl_no AS [NO PL], c.sj_no AS [NO SJ], c.dest as TUJUAN, c.no_truck as [NO TRUCK], 
-        // c.dealer_code as [KODE DEALER], d.name AS EXPEDISI, c.dock as [MD/DDS], c.tot_qty as QTY, c.remarks AS REMARKS, c.pintu_loading as [PINTU LOADING], 
-        // --CONVERT(DATETIME2,CONVERT(VARBINARY(6),c.pl_print_time)+CONVERT(BINARY(3),
-        // c.pl_print_time as [JAM CETAK PL], 
-        // --CONVERT(DATETIME2,CONVERT(VARBINARY(6),c.adm_pl_time)+CONVERT(BINARY(3),
-        // c.adm_pl_time as [JAM AMANO], 
-        // a.start_picking as [MULAI DORONG], 
-        // a.stop_picking as [SELESAI DORONG], a.start_checking as [MULAI CHECK], 
-        // a.stop_checking as [SELESAI CHECK], a.start_scanning as [MULAI SCAN], 
-        // a.stop_scanning as [SELESAI SCAN],
-        // c.sj_time as [JAM TERIMA SJ],
-        // c.remarks as [REMARKS] 
-        // from tb_out a 
-        // left join master_user b on a.checker_id = b.id 
-        // left join pl_h c on c.id = a.pl_id 
-        // left join master_ekspedisi d on c.expedisi = d.id  where a.is_deleted <> 'Y' ";
+        $startDate = $_POST['startDate'];
+        $endDate = $_POST['endDate'];
 
         $sql = "select * from
         (select c.activity_date as [ACTIVITY DATE], CONVERT(DATE, a.created_date) as TANGGAL, c.pl_no AS [NO PL], c.sj_no AS [NO SJ], c.dest as TUJUAN, c.no_truck as [NO TRUCK], 
@@ -220,25 +206,21 @@ class Outbound_m extends CI_Model
         b.pintu_loading as [PINTU LOADING], b.pl_print_time as [JAM CETAK PL], b.adm_pl_time as [JAM AMANO], a.start_picking as [MULAI DORONG], a.stop_picking as [SELESAI DORONG],
         a.start_checking as [MULAI CHECK], a.stop_checking as [SELESAI CHECK], a.start_scanning as [MULAI SCAN], a.stop_scanning as [SELESAI SCAN], b.sj_time as [JAM TERIMA SJ], b.remarks as [REMARKS]
         from tb_out_temp a
-        INNER JOIN pl_h b on a.no_pl = b.id
-        LEFT JOIN master_ekspedisi c on b.expedisi = c.id)a";
+        RIGHT JOIN pl_h b on a.no_pl = b.id
+        LEFT JOIN master_ekspedisi c on b.expedisi = c.id 
+        WHERE b.pl_no NOT IN (SELECT no_pl from tb_out WHERE activity_date between CONVERT(DATE, '$startDate') and CONVERT(DATE, '$endDate')))a";
 
-        if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
-            $startDate = $_POST['startDate'];
-            $endDate = $_POST['endDate'];
-            $sql .= " WHERE a.[TANGGAL] between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
-        } else {
-            $sql .= " AND a.[TANGGAL] = CONVERT(DATE, GETDATE())";
-        }
+        $sql .= " WHERE a.[ACTIVITY DATE] between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
 
-        $sql .= " ORDER BY a.[TANGGAL] DESC";
+        // if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
+        //     $startDate = $_POST['startDate'];
+        //     $endDate = $_POST['endDate'];
+        // } else {
+        //     $sql .= " AND a.[ACTIVITY DATE] = CONVERT(DATE, GETDATE())";
+        // }
 
-        // var_dump($sql);
-
-
+        $sql .= " ORDER BY a.[ACTIVITY DATE] DESC";
         $query = $this->db->query($sql);
-        // var_dump($this->db->last_query());
-        // die;
         return $query;
     }
 
@@ -251,16 +233,16 @@ class Outbound_m extends CI_Model
 
         // $sql = "WITH OutboundProses AS (
         //     SELECT COUNT(*) AS count_proses,
-		// 	CASE WHEN SUM(CONVERT(INT,tot_qty)) IS NULL THEN 0 ELSE SUM(CONVERT(INT,tot_qty)) END as qty_proses
+        // 	CASE WHEN SUM(CONVERT(INT,tot_qty)) IS NULL THEN 0 ELSE SUM(CONVERT(INT,tot_qty)) END as qty_proses
         //     FROM tb_out_temp a 
-		// 	INNER JOIN pl_h b ON a.no_pl = b.id 
+        // 	INNER JOIN pl_h b ON a.no_pl = b.id 
         //     WHERE CONVERT(date, b.activity_date) BETWEEN CONVERT(date, '$start_date') AND CONVERT(date, '$end_date')
         // ),
         // OutboundComplete AS (
         //     SELECT COUNT(*) AS count_complete,
-		// 	CASE WHEN SUM(CONVERT(INT,tot_qty)) IS NULL THEN 0 ELSE SUM(CONVERT(INT,tot_qty)) END as qty_complete
+        // 	CASE WHEN SUM(CONVERT(INT,tot_qty)) IS NULL THEN 0 ELSE SUM(CONVERT(INT,tot_qty)) END as qty_complete
         //     FROM tb_out a
-		// 	INNER JOIN pl_h b ON a.pl_id = b.id
+        // 	INNER JOIN pl_h b ON a.pl_id = b.id
         //     WHERE CONVERT(date, b.activity_date) BETWEEN CONVERT(date, '$start_date') AND CONVERT(date, '$end_date')
         // ),
         // TotalOutbound AS (
@@ -268,18 +250,18 @@ class Outbound_m extends CI_Model
         //         (SELECT count_proses FROM OutboundProses) + 
         //         (SELECT count_complete FROM OutboundComplete) AS total_count
         // ),
-		// TotalQty AS (
+        // TotalQty AS (
         //     SELECT 
         //         (SELECT qty_proses FROM OutboundProses) + 
         //         (SELECT qty_complete FROM OutboundComplete) AS total_qty
         // )
         // SELECT 
         //     (SELECT count_proses FROM OutboundProses) AS outbound_proses,
-		// 	(SELECT qty_proses FROM OutboundProses) AS qty_proses,
+        // 	(SELECT qty_proses FROM OutboundProses) AS qty_proses,
         //     (SELECT count_complete FROM OutboundComplete) AS outbound_complete,
-		// 	(SELECT qty_complete FROM OutboundComplete) AS qty_complete,
+        // 	(SELECT qty_complete FROM OutboundComplete) AS qty_complete,
         //     (SELECT total_count FROM TotalOutbound) AS total_outbound,
-		// 	(SELECT total_qty FROM TotalQty) AS total_qty,
+        // 	(SELECT total_qty FROM TotalQty) AS total_qty,
         //     CASE 
         //         WHEN (SELECT total_count FROM TotalOutbound) <> 0 THEN
         //             (CAST((SELECT count_complete FROM OutboundComplete) AS FLOAT) / 
@@ -288,7 +270,19 @@ class Outbound_m extends CI_Model
         //     END AS presentase";
 
         // Optimized Query
-        $sql = "WITH OutboundProses AS (
+        $sql = "WITH
+        OutboundUnProses AS (
+            SELECT COUNT(*) AS count_unproses,
+                COALESCE(SUM(CONVERT(INT, tot_qty)), 0) AS qty_unproses
+            FROM pl_h a
+            WHERE
+            a.pl_no NOT IN (SELECT b.pl_no FROM tb_out_temp a 
+            LEFT JOIN pl_h b ON a.no_pl = b.id WHERE b.activity_date BETWEEN '$start_date' AND '$end_date')
+            AND a.pl_no NOT IN (SELECT b.pl_no FROM tb_out a 
+            LEFT JOIN pl_h b ON a.no_pl = b.pl_no WHERE b.activity_date BETWEEN '$start_date' AND '$end_date')
+            AND a.activity_date BETWEEN '$start_date' AND '$end_date'
+        ),
+        OutboundProses AS (
             SELECT COUNT(*) AS count_proses,
                 COALESCE(SUM(CONVERT(INT, tot_qty)), 0) AS qty_proses
             FROM tb_out_temp a 
@@ -299,23 +293,25 @@ class Outbound_m extends CI_Model
             SELECT COUNT(*) AS count_complete,
                 COALESCE(SUM(CONVERT(INT, tot_qty)), 0) AS qty_complete
             FROM tb_out a
-            RIGHT JOIN pl_h b ON a.pl_id = b.id
+            INNER JOIN pl_h b ON a.pl_id = b.id
             WHERE b.activity_date BETWEEN '$start_date' AND '$end_date'
         )
         SELECT 
+            ou.count_unproses AS outbound_unproses,
+            ou.qty_unproses AS qty_unproses,
             op.count_proses AS outbound_proses,
             op.qty_proses AS qty_proses,
             oc.count_complete AS outbound_complete,
             oc.qty_complete AS qty_complete,
-            (op.count_proses + oc.count_complete) AS total_outbound,
-            (op.qty_proses + oc.qty_complete) AS total_qty,
-            CASE 
-                WHEN (op.count_proses + oc.count_complete) <> 0 THEN
-                    (CAST(oc.count_complete AS FLOAT) / 
-                     (op.count_proses + oc.count_complete)) * 100
-                ELSE 0 
-            END AS presentase
-        FROM OutboundProses op, OutboundComplete oc;";
+            (op.count_proses + oc.count_complete + ou.count_unproses) AS total_pl,
+            (op.qty_proses + oc.qty_complete + ou.qty_unproses) AS total_qty
+            --CASE 
+            --    WHEN (op.count_proses + oc.count_complete) <> 0 THEN
+            --        (CAST(oc.count_complete AS FLOAT) / 
+            --            (op.count_proses + oc.count_complete)) * 100
+            --    ELSE 0 
+            --END AS presentase
+        FROM OutboundUnProses ou, OutboundProses op, OutboundComplete oc;";
         $query = $this->db->query($sql);
         return $query;
     }
@@ -340,18 +336,28 @@ class Outbound_m extends CI_Model
         FROM
         (
             SELECT a.id AS pl_id, a.pl_no, b.start_picking, b.stop_picking,
-                   b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, b.created_date, a.activity_date
+                    b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, b.created_date, a.activity_date
             FROM pl_h a
             INNER JOIN tb_out_temp b ON a.id = b.no_pl
             UNION
             SELECT a.id AS pl_id, b.no_pl AS pl_no, b.start_picking, b.stop_picking,
-                   b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, b.activity_created_date AS created_date, a.activity_date
+                    b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, b.activity_created_date AS created_date, a.activity_date
             FROM pl_h a
             INNER JOIN tb_out b ON a.id = b.pl_id
+            UNION
+            SELECT a.id AS pl_id, a.pl_no, b.start_picking, b.stop_picking,
+            b.start_scanning, b.stop_scanning, b.start_checking, b.stop_checking, a.created_at AS created_date, a.activity_date 
+            FROM pl_h a
+            LEFT JOIN tb_out b ON a.id = b.pl_id
+            WHERE
+            a.pl_no NOT IN (SELECT b.pl_no FROM tb_out_temp a 
+            LEFT JOIN pl_h b ON a.no_pl = b.id WHERE b.activity_date BETWEEN '$start_date' AND '$end_date')
+            AND a.pl_no NOT IN (SELECT b.pl_no FROM tb_out a 
+            LEFT JOIN pl_h b ON a.no_pl = b.pl_no WHERE b.activity_date BETWEEN '$start_date' AND '$end_date')
+            AND a.activity_date BETWEEN '$start_date' AND '$end_date'
         ) a 
         WHERE CONVERT(DATE, activity_date) between CONVERT(DATE, '$start_date') and CONVERT(DATE, '$end_date')
-        ORDER BY created_date DESC;
-        ";
+        ORDER BY created_date DESC;";
 
         $query = $this->db->query($sql);
         return $query;
@@ -498,6 +504,9 @@ class Outbound_m extends CI_Model
         } else {
             $sql .= " AND CONVERT(DATE, a.created_date) = CONVERT(DATE, GETDATE())";
         }
+
+        // var_dump($sql);
+        // exit;
 
         $query = $this->db->query($sql);
         return $query;

@@ -65,7 +65,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </div>
@@ -117,7 +117,7 @@
             }, 'json');
         });
 
-    
+
 
         $('#tablePlace').on('click', '.btnDelete', function() {
             let id = $(this).data('id');
@@ -160,27 +160,17 @@
                     // return;
 
                     var headers = Object.keys(dataAct.data[0]);
-                    var headers_picker = Object.keys(dataAct.data_picker[0]);
+
 
                     // return;
 
 
                     var workbook = new ExcelJS.Workbook();
                     var sheet1 = workbook.addWorksheet('Summary Outbound');
-                    var sheet2 = workbook.addWorksheet('Picker Detail');
+
 
 
                     sheet1.addRow(headers).eachCell(function(row, rowNumber) {
-                        row.fill = {
-                            type: 'pattern',
-                            pattern: 'solid',
-                            fgColor: {
-                                argb: 'FFFF00'
-                            }
-                        };
-                    });
-
-                    sheet2.addRow(headers_picker).eachCell(function(row, rowNumber) {
                         row.fill = {
                             type: 'pattern',
                             pattern: 'solid',
@@ -202,38 +192,8 @@
                         column.width = maxLength < 10 ? 10 : maxLength;
                     });
 
-                    sheet2.columns.forEach(function(column) {
-                        var maxLength = 0;
-                        column.eachCell(function(cell) {
-                            var columnLength = cell.value ? cell.value.toString().length : 10;
-                            if (columnLength > maxLength) {
-                                maxLength = columnLength;
-                            }
-                        });
-                        column.width = maxLength < 10 ? 10 : maxLength;
-                    });
-
                     // Menambahkan border ke seluruh tabel
                     sheet1.eachRow(function(row) {
-                        row.eachCell(function(cell) {
-                            cell.border = {
-                                top: {
-                                    style: 'thin'
-                                },
-                                left: {
-                                    style: 'thin'
-                                },
-                                bottom: {
-                                    style: 'thin'
-                                },
-                                right: {
-                                    style: 'thin'
-                                }
-                            };
-                        });
-                    });
-
-                    sheet2.eachRow(function(row) {
                         row.eachCell(function(cell) {
                             cell.border = {
                                 top: {
@@ -290,24 +250,29 @@
                         });
                     });
 
-                    dataAct.data_picker.forEach(function(row, ) {
-                        var rowData = headers_picker.map(function(header) {
-                            return row[header];
-                        });
-                        sheet2.addRow(rowData);
-                        // Menentukan lebar kolom berdasarkan isi
-                        sheet2.columns.forEach(function(column) {
-                            var maxLength = 0;
-                            column.eachCell(function(cell) {
-                                var columnLength = cell.value ? cell.value.toString().length : 10;
-                                if (columnLength > maxLength) {
-                                    maxLength = columnLength;
-                                }
-                            });
-                            column.width = maxLength < 10 ? 10 : maxLength;
-                        });
 
-                        // Menambahkan border ke seluruh tabel
+                    if (dataAct.data_picker.length > 0) {
+                        var headers_picker = Object.keys(dataAct.data_picker[0]);
+                        var sheet2 = workbook.addWorksheet('Picker Detail');
+                        sheet2.addRow(headers_picker).eachCell(function(row, rowNumber) {
+                            row.fill = {
+                                type: 'pattern',
+                                pattern: 'solid',
+                                fgColor: {
+                                    argb: 'FFFF00'
+                                }
+                            };
+                            sheet2.columns.forEach(function(column) {
+                                var maxLength = 0;
+                                column.eachCell(function(cell) {
+                                    var columnLength = cell.value ? cell.value.toString().length : 10;
+                                    if (columnLength > maxLength) {
+                                        maxLength = columnLength;
+                                    }
+                                });
+                                column.width = maxLength < 10 ? 10 : maxLength;
+                            });
+                        });
                         sheet2.eachRow(function(row) {
                             row.eachCell(function(cell) {
                                 cell.border = {
@@ -326,7 +291,44 @@
                                 };
                             });
                         });
-                    });
+                        dataAct.data_picker.forEach(function(row, ) {
+                            var rowData = headers_picker.map(function(header) {
+                                return row[header];
+                            });
+                            sheet2.addRow(rowData);
+                            // Menentukan lebar kolom berdasarkan isi
+                            sheet2.columns.forEach(function(column) {
+                                var maxLength = 0;
+                                column.eachCell(function(cell) {
+                                    var columnLength = cell.value ? cell.value.toString().length : 10;
+                                    if (columnLength > maxLength) {
+                                        maxLength = columnLength;
+                                    }
+                                });
+                                column.width = maxLength < 10 ? 10 : maxLength;
+                            });
+
+                            // Menambahkan border ke seluruh tabel
+                            sheet2.eachRow(function(row) {
+                                row.eachCell(function(cell) {
+                                    cell.border = {
+                                        top: {
+                                            style: 'thin'
+                                        },
+                                        left: {
+                                            style: 'thin'
+                                        },
+                                        bottom: {
+                                            style: 'thin'
+                                        },
+                                        right: {
+                                            style: 'thin'
+                                        }
+                                    };
+                                });
+                            });
+                        });
+                    }
 
                     workbook.xlsx.writeBuffer().then(function(buffer) {
                         var blob = new Blob([buffer], {

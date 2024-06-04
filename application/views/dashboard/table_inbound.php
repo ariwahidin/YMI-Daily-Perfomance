@@ -1,6 +1,7 @@
 <table style="font-size: 12px;" class="table table-borderless table-centered align-middle table-nowrap mb-0">
     <thead class="text-muted table-light">
         <tr>
+            <th scope="col">No.</th>
             <th scope="col">Activity Date</th>
             <th scope="col">Surat Jalan</th>
             <th scope="col">Checker</th>
@@ -11,7 +12,9 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($inbound->result() as $data) {
+        <?php
+        $no = 1;
+        foreach ($inbound->result() as $data) {
             $duration_unload = countDuration($data->start_unload, $data->stop_unload);
             $duration_checking = countDuration($data->start_checking, $data->stop_checking);
             $duration_putaway = countDuration($data->start_putaway, $data->stop_putaway);
@@ -23,6 +26,7 @@
         ?>
 
             <tr>
+                <td><?= $no++; ?></td>
                 <td>
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1"><?= $data->activity_date == null ? '' : date('Y-m-d', strtotime($data->activity_date)) ?></div>
