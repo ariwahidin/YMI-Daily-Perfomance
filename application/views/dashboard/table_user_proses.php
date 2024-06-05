@@ -48,23 +48,23 @@
                     <?php
                     $no = 1;
                     foreach ($user_inbound->result() as $data) {
+                        $arr_sj = array();
+                        $sj = getStatusProsesUserInbound($data->user_id);
+
+                        // var_dump($sj->result());
+
+                        foreach ($sj->result() as $p) {
+                            if ($p->proses_status == 'active') {
+                                array_push($arr_sj, $p->no_sj);
+                            }
+                        }
+                        $sj_no = implode(", ", $arr_sj);
                     ?>
                         <tr>
                             <td><?= $no++ ?></td>
                             <td><?= $data->fullname ?></td>
-                            <td><?= $data->status ?></td>
-                            <td>
-                                <?php
-                                $sj = $this->db->get_where('tb_trans_temp', ['checker_id' => $data->user_id]);
-                                $arr = array();
-                                foreach ($sj->result() as $s) {
-                                    array_push($arr, $s->no_sj);
-                                }
-                                $no_sj = implode(", ", $arr);
-                                echo $no_sj;
-                                ?>
-
-                            </td>
+                            <td><?= count($arr_sj) > 0 ? 'active' : 'idle' ?></td>
+                            <td><?= $sj_no ?></td>
                         </tr>
                     <?php
                     }

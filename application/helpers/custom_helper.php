@@ -139,6 +139,22 @@ function getScanner($pl_id)
     return $query;
 }
 
+function getStatusProsesUserInbound($user_id)
+{
+    $CI = &get_instance();
+    $sql = "SELECT a.no_sj, a.checker_id, a.start_unloading, a.stop_unloading, a.start_checking, a.stop_checking, a.start_putaway, a.start_putaway,
+    CASE 
+        WHEN a.start_unloading IS NOT NULL AND a.stop_unloading IS NULL THEN 'active' 
+        WHEN a.start_checking IS NOT NULL AND a.stop_checking IS NULL THEN 'active'
+        WHEN a.start_putaway IS NOT NULL AND a.stop_putaway IS NULL THEN 'active' 
+        ELSE 'idle' 
+    END as proses_status
+    FROM tb_trans_temp a
+    WHERE a.checker_id = '$user_id'";
+    $query = $CI->db->query($sql);
+    return $query;
+}
+
 function getStatusProsesUserOutbound($user_id)
 {
     $CI = &get_instance();

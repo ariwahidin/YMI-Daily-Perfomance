@@ -61,7 +61,8 @@ class Dashboard extends CI_Controller
     {
         $inbound = $this->inbound_m->getPresentaseInbound()->row();
         $response = array(
-            'data' => $inbound
+            'data' => $inbound,
+            'man_power' => $this->getSummaryManPowerInbound()
         );
         echo json_encode($response);
     }
@@ -94,6 +95,36 @@ class Dashboard extends CI_Controller
             $pl_no = implode(", ", $arr_pl);
 
             if (count($arr_pl) > 0) {
+                $user_active += 1;
+            }
+        }
+
+        $data = array(
+            'total_plan' => $result->num_rows(),
+            'user_active' => $user_active
+        );
+        return $data;
+    }
+
+
+    public function getSummaryManPowerInbound()
+    {
+        $result = $this->dashboard_m->getUserInboundRangeDate();
+        $user_active = 0;
+        foreach ($result->result() as $data) {
+            $arr_sj = array();
+            $sj = getStatusProsesUserInbound($data->user_id);
+            foreach ($sj->result() as $p) {
+
+                if ($p->proses_status == 'active') {
+                    array_push($arr_sj, $p->no_sj);
+                }
+            }
+
+
+            $pl_no = implode(", ", $arr_sj);
+
+            if (count($arr_sj) > 0) {
                 $user_active += 1;
             }
         }

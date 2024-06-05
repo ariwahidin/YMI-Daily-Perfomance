@@ -87,13 +87,13 @@
                                 </h4>
                                 <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_total_in">0</span> <span class="fs-10 text-muted mb-0">Unit</span></p>
                             </div>
-                            <!-- <div class="flex-grow-1">
+                            <div class="flex-grow-1">
                                 <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Man Power </p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
                                     <span id="sp_plan_inb">0</span><span class="fs-10 text-muted mb-0"> Total Alokasi MP</span>
                                 </h4>
                                 <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_actual_inb">0</span><span class="fs-10 text-muted mb-0"> Actual Alokasi MP</span></p>
-                            </div> -->
+                            </div>
                             <div class="flex-shrink-0">
                                 <div id="cartInbound"></div>
                             </div>
@@ -407,6 +407,9 @@
                 $('#sp_qty_proses_in').text(data.qty_proses);
                 $('#sp_qty_complete_in').text(data.qty_complete);
                 $('#sp_qty_total_in').text(data.total_qty);
+
+                $('#sp_plan_inb').text(response.man_power.total_plan);
+                $('#sp_actual_inb').text(response.man_power.user_active);
 
 
                 // $('#cartInbound').empty();
