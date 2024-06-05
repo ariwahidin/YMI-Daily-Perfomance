@@ -27,6 +27,7 @@ class Dashboard extends CI_Controller
     {
         $data = array(
             'inbound' => $this->dashboard_m->getResumeUserInbound(),
+            'outbound' => $this->dashboard_m->getResumeUserOutbound(),
             'user_inbound' => $this->dashboard_m->getUserInboundActivity(),
             'user_outbound' => $this->dashboard_m->getUserOutbound()
         );
@@ -81,21 +82,22 @@ class Dashboard extends CI_Controller
         $user_active = 0;
         foreach ($result->result() as $data) {
             $arr_pl = array();
-            $this->db->select('a.pl_no');
-            $this->db->from('pl_h a');
-            $this->db->join('pl_p b', 'a.id = b.pl_id');
-            $this->db->join('tb_out_temp c', 'a.id = c.no_pl');
-            $this->db->where(['b.user_id' => $data->user_id]);
-            $pl = $this->db->get();
+            $pl = getStatusProsesUserOutbound($data->user_id);
             foreach ($pl->result() as $p) {
-                array_push($arr_pl, $p->pl_no);
+
+                if ($p->proses_status == 'active') {
+                    array_push($arr_pl, $p->pl_no);
+                }
             }
+
+
             $pl_no = implode(", ", $arr_pl);
 
             if (count($arr_pl) > 0) {
                 $user_active += 1;
             }
         }
+
         $data = array(
             'total_plan' => $result->num_rows(),
             'user_active' => $user_active

@@ -67,26 +67,33 @@
                     <div class="card-body" style="z-index:1 ;">
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Proccess</p>
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Proccess</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
                                     <span id="spInboundProses">0</span><span class="fs-10 text-muted mb-0"> SJ</span>
                                 </h4>
-                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_proses_in">0</span> Unit</p>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_proses_in">0</span> <span class="fs-10 text-muted mb-0">Unit</span></p>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Complete</p>
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Complete Putaway</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
                                     <span id="spInboundComplete">0</span><span class="fs-10 text-muted mb-0"> SJ</span>
                                 </h4>
-                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_complete_in">0</span> Unit</p>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_complete_in">0</span> <span class="fs-10 text-muted mb-0">Unit</span></p>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-3"> Total </p>
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Total SJ </p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
                                     <span id="spInboundTotal">0</span><span class="fs-10 text-muted mb-0"> SJ</span>
                                 </h4>
-                                <p class="fs-10 text-muted mb-0"><span id="sp_qty_total_in">0</span> Unit</p>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_total_in">0</span> <span class="fs-10 text-muted mb-0">Unit</span></p>
                             </div>
+                            <!-- <div class="flex-grow-1">
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Man Power </p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="sp_plan_inb">0</span><span class="fs-10 text-muted mb-0"> Total Alokasi MP</span>
+                                </h4>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_actual_inb">0</span><span class="fs-10 text-muted mb-0"> Actual Alokasi MP</span></p>
+                            </div> -->
                             <div class="flex-shrink-0">
                                 <div id="cartInbound"></div>
                             </div>
@@ -400,7 +407,7 @@
                 $('#sp_qty_proses_in').text(data.qty_proses);
                 $('#sp_qty_complete_in').text(data.qty_complete);
                 $('#sp_qty_total_in').text(data.total_qty);
-                
+
 
                 // $('#cartInbound').empty();
                 // $('#cartInbound').html(`<div id="ctr" class="apex-charts"></div>`);

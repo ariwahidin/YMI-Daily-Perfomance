@@ -53,6 +53,26 @@ class Dashboard_m extends CI_Model
         return $query;
     }
 
+    function getResumeUserOutbound()
+    {
+
+        $post = $this->input->post();
+        $start_date = $post['start_date'];
+        $end_date = $post['end_date'];
+
+        $sql = "select distinct c.user_id, d.fullname, count(a.pl_id) as tot_pl, sum(CONVERT(int, b.tot_qty)) as tot_qty, 
+        convert(date, b.activity_date) as activity_date
+        from tb_out a
+        inner join pl_h b on a.pl_id = b.id
+        inner join pl_p c on c.pl_id = b.id
+        inner join master_user d on c.user_id = d.id
+        WHERE convert(date, b.activity_date) between CONVERT(date, '$start_date') and CONVERT(date, '$end_date')
+        group by d.fullname, c.user_id, CONVERT(date, b.activity_date)
+        order by fullname";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
     function getUserInboundActivity()
     {
         $sql = "select distinct a.id, a.user_id, b.fullname, a.date, a.start_time, a.end_time, c.name as position, 

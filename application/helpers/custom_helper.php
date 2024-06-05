@@ -139,6 +139,24 @@ function getScanner($pl_id)
     return $query;
 }
 
+function getStatusProsesUserOutbound($user_id)
+{
+    $CI = &get_instance();
+    $sql = "SELECT a.pl_no, b.sts, c.start_picking, c.stop_picking, c.start_checking, c.stop_checking, c.start_scanning, c.stop_scanning,
+    CASE 
+        WHEN b.sts = 'picker' AND c.start_picking IS NOT NULL AND c.stop_picking IS NULL THEN 'active' 
+        WHEN b.sts = 'checker' AND c.start_checking IS NOT NULL AND c.stop_checking IS NULL THEN 'active'
+        WHEN b.sts = 'scanner' AND c.start_scanning IS NOT NULL AND c.stop_scanning IS NULL THEN 'active' 
+        ELSE 'idle' 
+    END as proses_status
+    FROM pl_h a
+    JOIN pl_p b ON a.id = b.pl_id
+    JOIN tb_out_temp c ON a.id = c.no_pl
+    WHERE b.user_id = '$user_id'";
+    $query = $CI->db->query($sql);
+    return $query;
+}
+
 function generateDates($input)
 {
     // Memastikan format input adalah 'YYYY-MM'
