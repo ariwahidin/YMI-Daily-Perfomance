@@ -419,9 +419,9 @@ class Outbound_m extends CI_Model
         if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
             $startDate = $_POST['startDate'];
             $endDate = $_POST['endDate'];
-            $sql .= " WHERE CONVERT(DATE, a.created_at) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
+            $sql .= " WHERE CONVERT(DATE, a.activity_date) between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
         } else {
-            $sql .= " WHERE CONVERT(DATE, a.created_at) = CONVERT(DATE, GETDATE())";
+            $sql .= " WHERE CONVERT(DATE, a.activity_date) = CONVERT(DATE, GETDATE())";
         }
 
         if ($id != null) {
@@ -507,6 +507,21 @@ class Outbound_m extends CI_Model
 
         // var_dump($sql);
         // exit;
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getPLWithNoSJ(){
+
+        $start_date = $_POST['start_date'];
+        $end_date = $_POST['end_date'];
+
+        $sql = "select id, pl_no, sj_no, sj_time, dest, activity_date
+        from pl_h 
+        WHERE sj_no = '' AND sj_time is null 
+        AND CONVERT(date, activity_date) between convert(date, '$start_date') and convert(date, '$end_date')
+        ORDER BY dest ASC";
 
         $query = $this->db->query($sql);
         return $query;

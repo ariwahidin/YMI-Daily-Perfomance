@@ -21,20 +21,22 @@ class Ekspedisi extends CI_Controller
     {
         $list = $this->ekspedisi_model->get_datatables();
 
-        // print_r($this->db->last_query());
-        // exit;
-
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $ekspedisi) {
             $no++;
             $row = array();
+            $row['data-id'] = $ekspedisi->id;
+            $row['data-name'] = $ekspedisi->name;
+            $row['data-position'] = $ekspedisi->position_id;
+            $row['data-notruck'] = $ekspedisi->no_truck;
+            $row['DT_RowClass'] = 'btnEdit'; // Tambahkan class btnEdit
             $row[] = $no;
             $row[] = $ekspedisi->name;
             $row[] = $ekspedisi->position;
             $row[] = $ekspedisi->no_truck;
-            $row[] = '<button class="btn btn-primary btn-sm btnEdit" data-id="'. $ekspedisi->id .'" data-name="'. $ekspedisi->name .'" data-position="'. $ekspedisi->position_id .'" data-notruck="'. $ekspedisi->no_truck .'">Edit</button>
-            <button class=" btn btn-danger btn-sm btnDelete" data-id="'. $ekspedisi->id .'">Delete</button>';
+            $row[] = '<button class="btn btn-primary btn-sm btnEdit" data-id="' . $ekspedisi->id . '" data-name="' . $ekspedisi->name . '" data-position="' . $ekspedisi->position_id . '" data-notruck="' . $ekspedisi->no_truck . '">Edit</button>
+            <button class=" btn btn-danger btn-sm btnDelete" data-id="' . $ekspedisi->id . '">Delete</button>';
 
             $data[] = $row;
         }
@@ -45,7 +47,7 @@ class Ekspedisi extends CI_Controller
             "recordsFiltered" => $this->ekspedisi_model->count_filtered(),
             "data" => $data,
         );
-        //output to json format
+
         echo json_encode($output);
     }
 

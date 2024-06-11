@@ -95,6 +95,7 @@ class Ekspedisi_model extends CI_Model
     public function count_all()
     {
         $this->db->from($this->table);
+        $this->db->where('a.is_active', 'Y');
         return $this->db->count_all_results();
     }
 }

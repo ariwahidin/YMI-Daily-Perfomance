@@ -1,5 +1,10 @@
 <!-- <link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" /> -->
 <link href="<?= base_url() ?>myassets/css/select2.min.css" rel="stylesheet" />
+<style>
+    .swal2-container {
+        z-index: 9999;
+    }
+</style>
 <div class="row">
     <div class="col col-md-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -19,15 +24,50 @@
     <div class="col col-md-12">
         <div class="card">
             <div class="card-header bg-primary d-flex">
+                <span style="white-space: nowrap; color: whitesmoke; padding-top: 10px;">Activity Date : &nbsp; </span>
                 <input type="text" class="form-control" style="display:none; width: 200px; margin-right: 10px;" id="sChecker" placeholder="Checker">
                 <input type="date" class="form-control" style="width: 200px; margin-right: 10px;" id="sStartDate" placeholder="Start Date">
                 <input type="date" class="form-control" style="width: 200px; margin-right: 10px;" id="sEndDate" placeholder="End Date">
                 <button class="btn btn-outline-success" id="sButton"><i class="ri-filter-fill"></i></button>&nbsp;&nbsp;
                 <button class="btn btn-info" id="btnAdd">Add new</button>&nbsp;&nbsp;
-                <button class="btn btn-success" id="btnRefresh">Refresh</button>
+                <button class="btn btn-warning" id="btnAddSJ">Add SJ</button>&nbsp;&nbsp;
+                <button style="display: none;" class="btn btn-success" id="btnRefresh">Refresh</button>
             </div>
             <div class="card-body table-responsive" id="cardPL">
 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFormSJ" aria-labelledby="exampleModalgridLabel" aria-modal="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddSJ">Add SJ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-7">
+                        <span>Total PL : <span id="spanTotPL">0</span></span>
+                        <div id="mdCardNoPL" style="max-height:300px; overflow-y: auto;">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <form action="" id="formInputSJ">
+                            <div class="form-group">
+                                <label for="">SJ No : </label>
+                                <input type="text" value="" class="form-control" name="inSJ" required autocomplete="off">
+                            </div>
+                            <div class="form-group mt-1">
+                                <label for="">SJ Time : </label>
+                                <input type="time" value="" class="form-control" name="inSJTime" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3 float-end">Submit</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -72,12 +112,6 @@
                                 <input type="time" class="form-control" id="rec_pl_time" name="rec_pl_time" placeholder="" required>
                             </div>
                         </div>
-
-
-
-
-
-
                     </div>
 
                     <div class="row mt-2">
@@ -326,6 +360,59 @@
             }
         });
 
+        $('#formInputSJ').on('submit', function(e) {
+            e.preventDefault();
+
+            let idSelected = [];
+
+            $('.in_sj_id').each(function(index, item) {
+                if ($(this).prop('checked')) {
+                    console.log($(this).val());
+                    idSelected.push($(this).val());
+                }
+            });
+
+            if (idSelected.length > 0) {
+                startLoading();
+                let formData = new FormData(this);
+                formData.append('id', idSelected);
+
+                $.ajax({
+                    url: 'addSJ',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success == true) {
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 1000
+                            }).then(function() {
+                                getTablePickingList();
+                            }).then(function() {
+                                $('#modalFormSJ').modal('hide');
+                                stopLoading();
+                            })
+                        } else {
+                            stopLoading();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed',
+                                text: response.message
+                            });
+                        }
+                    },
+                    dataType: 'json'
+                });
+
+            }
+
+        })
+
         function getTablePickingList() {
 
             var today = new Date().toISOString().split('T')[0];
@@ -369,9 +456,27 @@
             stopLoading();
         })
 
+
         $('#btnAdd').click(function() {
             loadModalAdd();
         });
+
+
+        $('#btnAddSJ').on('click', function() {
+
+            let start_date = $('#sStartDate').val();
+            let end_date = $('#sEndDate').val();
+            $.post('getPLWithNoSJ', {
+                start_date,
+                end_date
+            }, function(response) {
+                $('#mdCardNoPL').empty();
+                $('#spanTotPL').text(response.data.length);
+                $('#mdCardNoPL').html(response.content);
+                $('#modalFormSJ').modal('show');
+            }, 'json');
+
+        })
 
         function loadModalAdd() {
             moment.tz.setDefault('Asia/Jakarta');
@@ -408,8 +513,6 @@
 
         }
 
-
-
         $('#cardPL').on('click', '.btnEdit', function() {
             let pl_id = $(this).data('id');
 
@@ -441,7 +544,6 @@
             }, 'json');
 
         })
-
 
 
         $('#cardPL').on('click', '.btnDelete', function() {

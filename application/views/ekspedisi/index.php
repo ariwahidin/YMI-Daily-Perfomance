@@ -155,6 +155,19 @@
 <script>
     $(document).ready(function() {
 
+        // var table = $('#tableEkpedisi').DataTable({
+        //     "processing": true,
+        //     "serverSide": true,
+        //     "ajax": {
+        //         "url": "<?php echo site_url('ekspedisi/ajax_list') ?>",
+        //         "type": "POST"
+        //     },
+        //     "columnDefs": [{
+        //         "targets": [0], //first column / numbering column
+        //         "orderable": false, //set not orderable
+        //     }, ],
+        // });
+
         var table = $('#tableEkpedisi').DataTable({
             "processing": true,
             "serverSide": true,
@@ -165,7 +178,23 @@
             "columnDefs": [{
                 "targets": [0], //first column / numbering column
                 "orderable": false, //set not orderable
-            }, ],
+            }],
+            "createdRow": function(row, data, dataIndex) {
+                // Menambahkan atribut data-id pada elemen tr
+                $(row).attr('data-id', data['data-id']);
+                $(row).attr('data-name', data['data-name']);
+                $(row).attr('data-position', data['data-position']);
+                $(row).attr('data-notruck', data['data-notruck']);
+                $(row).addClass('btnEdit');
+                $(row).css('cursor', 'pointer');
+            },
+            "columns": [
+                { "data": 0 }, // Nomor urut
+                { "data": 1 }, // Name
+                { "data": 2 }, // Position
+                { "data": 3 }, // No Truck
+                { "data": 4 }  // Action buttons
+            ]
         });
 
         // Individual column search

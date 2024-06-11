@@ -1,4 +1,4 @@
-<table id="tablePL" class="table table-sm table-nowrap table-striped table-bordered compact" style="width:100%">
+<table id="tablePL" class="table table-sm table-nowrap table-striped table-bordered compact table-hover" style="width:100%:">
     <thead>
         <tr>
             <th>#</th>
@@ -28,7 +28,7 @@
         $no = 1;
         foreach ($picking_list->result() as $data) {
         ?>
-            <tr>
+            <tr class="btnEdit" data-id="<?= $data->id ?>" style=" cursor: pointer;">
                 <td><?= $no++ ?></td>
                 <td><?= $data->pl_no ?></td>
                 <td><?= $data->activity_date ?></td>

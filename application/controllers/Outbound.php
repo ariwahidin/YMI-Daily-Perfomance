@@ -711,4 +711,56 @@ class Outbound extends CI_Controller
         }
         echo json_encode($response);
     }
+
+    public function getPLWithNoSJ()
+    {
+        $pl = $this->outbound_m->getPLWithNoSJ();
+        $data = array(
+            'pl' => $pl
+        );
+
+        $response = array(
+            'success' => true,
+            'content' => $this->load->view('outbound/picking_list/tbl_pl_no_sj', $data, true),
+            'data' => $pl->result()
+        );
+        echo json_encode($response);
+    }
+
+    public function addSJ()
+    {
+        $post = $this->input->post();
+        $id = explode(',', $post['id']);
+
+        $edited = 0;
+        foreach ($id as $item) {
+            $params = array(
+                'sj_no' => $post['inSJ'],
+                'sj_time' => $post['inSJTime'] == '' ? null : $post['inSJTime'],
+                'updated_at' => currentDateTime(),
+                'updated_by' => userId()
+            );
+
+            $this->db->where(['id' => $item]);
+            $this->db->update('pl_h', $params);
+
+            if ($this->db->affected_rows() > 0) {
+                $edited += 1;
+            }
+        }
+
+        if ($edited > 0) {
+            $response = array(
+                'success' => true,
+                'message' => 'Add SJ successfully ' . $edited . " PL edited"
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Add SJ failed!'
+            );
+        }
+
+        echo json_encode($response);
+    }
 }
