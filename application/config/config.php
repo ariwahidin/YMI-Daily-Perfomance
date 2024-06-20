@@ -29,7 +29,22 @@ defined('BASEPATH') or exit('No direct script access allowed');
 // exit;
 // $config['base_url'] = 'http://localhost:88/ymi';
 
-$config['base_url'] = "http://" . $_SERVER['HTTP_HOST'] . "/ymi";
+// $config['base_url'] = "http://" . $_SERVER['HTTP_HOST'] . "/ymi";
+
+
+$host = $_SERVER['HTTP_HOST'];
+
+$protocol = "http://";
+if ($host == "laracv.com") {
+    $protocol = "https://";
+}
+
+if ($host == "yusen-id.com") {
+    $protocol = "https://";
+}
+
+$config['base_url'] = $protocol . $_SERVER['HTTP_HOST'] . "/ymi";
+
 // print_r($config['base_url']);
 // die;
 
