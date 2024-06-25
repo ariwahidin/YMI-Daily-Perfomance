@@ -1,6 +1,7 @@
 <?php
 // Include library Ratchet
-require '../vendor/autoload.php';
+require 'vendor\autoload.php';
+
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
@@ -51,15 +52,16 @@ class KitchenChat implements MessageComponentInterface
 }
 
 // Jalankan server WebSocket dengan HTTP
+$port = 8001;
 $server = IoServer::factory(
     new HttpServer(
         new WsServer(
             new KitchenChat()
         )
     ),
-    8001 // Port yang ingin Anda gunakan
+    $port // Port yang ingin Anda gunakan
 );
 
-echo "Server WebSocket berjalan di port 8001...\n";
+echo "Server WebSocket berjalan di port " . $port . " ...\n";
 
 $server->run();
