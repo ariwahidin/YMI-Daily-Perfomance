@@ -196,6 +196,9 @@
         urlWebsocket = 'wss://' + hostnameWebsocket + '/ws-ymi';
     }
 
+    console.log(protocolHttp);
+    console.log(urlWebsocket);
+
     function formatTime(timeString) {
         var timeComponents = timeString.split(':');
 
