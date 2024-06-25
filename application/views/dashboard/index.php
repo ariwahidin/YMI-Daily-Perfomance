@@ -251,7 +251,6 @@
         var currentMonth = year + '-' + month;
         $('#inputMonthInbound').val(currentMonth);
 
-
         $('.btnDash').on('click', function(e) {
             e.preventDefault();
             let tab = $(this).data('tab');
@@ -267,7 +266,6 @@
             }
         })
 
-
         $('#inputMonthInbound').on('change', function() {
             getInboundMonthly();
             getOutboundMonthly();
@@ -275,7 +273,6 @@
 
         var socket;
         initWebSocket();
-
 
         getAllByDate();
 
@@ -344,9 +341,7 @@
         }
 
         function initWebSocket() {
-            let hostname = window.location.hostname;
-            console.log(hostname);
-            socket = new WebSocket('ws://' + hostname + ':8001');
+            socket = new WebSocket(urlWebsocket);
 
             socket.onopen = function() {
                 $('#spConnect').html(`<span class="position-absolute mt-2 translate-middle badge border border-light rounded-circle bg-success p-2"><span class="visually-hidden">Connected</span></span>`);

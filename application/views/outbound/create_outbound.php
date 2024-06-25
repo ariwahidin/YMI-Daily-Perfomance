@@ -212,11 +212,6 @@
 
         $('#divPLNo').on('change', '#no_pl', function() {
             let id = $(this).val();
-            // console.log(id);
-
-            // return;
-
-
             if (id != '') {
                 $.post('getPickingListAdmById', {
                     id: id
@@ -235,9 +230,7 @@
         })
 
         function initWebSocket() {
-            let hostname = window.location.hostname;
-            // console.log(hostname);
-            socket = new WebSocket('ws://' + hostname + ':8001');
+            socket = new WebSocket(urlWebsocket);
 
             socket.onopen = function() {
                 $('#spConnect').html(`<i class="ri-swap-box-fill"></i>`);
