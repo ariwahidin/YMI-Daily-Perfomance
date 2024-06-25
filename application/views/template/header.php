@@ -190,8 +190,8 @@
 </div>
 <script>
     const hostnameWebsocket = window.location.hostname;
-    const protocolHttp = window.location.protocol;
-    const urlWebsocket = 'ws://' + hostnameWebsocket + ':8001';
+    let protocolHttp = window.location.protocol;
+    let urlWebsocket = 'ws://' + hostnameWebsocket + ':8001';
     if (protocolHttp == 'https:') {
         urlWebsocket = 'wss://' + hostnameWebsocket + '/ws-ymi';
     }
