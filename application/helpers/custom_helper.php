@@ -194,3 +194,11 @@ function generateDates($input)
 
     return $dates;
 }
+
+function wsConfig()
+{
+    $CI = &get_instance();
+    $sql = "SELECT TOP 1 *  FROM ws_config";
+    $query = $CI->db->query($sql);
+    return $query->row();
+}

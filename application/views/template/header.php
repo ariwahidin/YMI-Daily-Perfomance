@@ -188,12 +188,19 @@
         </div>
     </div>
 </div>
+
+<?php
+$ws_config = wsConfig();
+$ws_port = $ws_config->port;
+$ws_first_path =  $ws_config->first_path;
+?>
+
 <script>
     const hostnameWebsocket = window.location.hostname;
     let protocolHttp = window.location.protocol;
-    let urlWebsocket = 'ws://' + hostnameWebsocket + ':8001';
+    let urlWebsocket = 'ws://' + hostnameWebsocket + ':' + '<?= $ws_port ?>';
     if (protocolHttp == 'https:') {
-        urlWebsocket = 'wss://' + hostnameWebsocket + '/ws-ymi';
+        urlWebsocket = 'wss://' + hostnameWebsocket + '<?= $ws_first_path ?>';
     }
 
     function formatTime(timeString) {
