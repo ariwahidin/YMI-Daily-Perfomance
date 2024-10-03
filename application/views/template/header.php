@@ -284,6 +284,10 @@ $ws_first_path =  $ws_config->first_path;
                             </span>
                         </button>
 
+                        <div class="ms-1 header-item d-sm-flex">
+                            <span class="badge bg-success rounded-pill" id="spDC">Unit Test</span>
+                        </div>
+
                     </div>
 
                     <div class="d-flex align-items-center">
