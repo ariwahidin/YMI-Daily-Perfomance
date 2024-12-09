@@ -233,6 +233,32 @@
 <script>
     $(document).ready(function() {
 
+        var socket;
+        initWebSocket();
+        function initWebSocket() {
+            socket = new WebSocket(urlWebsocket);
+
+            socket.onopen = function() {
+                $('#spConnect').html(`<i class="ri-swap-box-fill"></i>`);
+                // console.log('WebSocket connection opened');
+                socket.send('ping');
+            };
+
+            socket.onmessage = function(event) {
+                // console.log('Received message: ' + event.data);
+                // getAllRowTask();
+            };
+
+            socket.onclose = function(event) {
+                $('#spConnect').html(`<i class="ri-alert-fill"></i>`);
+                setTimeout(initWebSocket, 5000); // Retry after 5 seconds
+            };
+
+            socket.onerror = function(error) {
+                console.error('WebSocket error: ' + error);
+            };
+        }
+
         $('#dest').select2({
             // tags: true,
             dropdownParent: $("#modalForm")
@@ -268,16 +294,11 @@
             $('#expedisi').val(id);
         })
 
-
-
         getTablePickingList();
 
         $('#sButton').on('click', function() {
             getTablePickingList();
         })
-
-
-
 
         let isSubmitting = false;
         $('#plForm').on('submit', function(e) {
@@ -311,6 +332,7 @@
                                 isSubmitting = false;
                                 $('#modalForm').modal('hide');
                                 stopLoading();
+                                socket.send('ping');
                             })
                         } else {
                             isSubmitting = false;
@@ -343,6 +365,7 @@
                                 isSubmitting = false;
                                 getTablePickingList();
                                 $('#modalForm').modal('hide');
+                                socket.send('ping');
                                 stopLoading();
                             })
                         } else {

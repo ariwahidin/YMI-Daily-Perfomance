@@ -55,7 +55,6 @@ class Dashboard_m extends CI_Model
 
     function getResumeUserOutbound()
     {
-
         $post = $this->input->post();
         $start_date = $post['start_date'];
         $end_date = $post['end_date'];
@@ -109,7 +108,6 @@ class Dashboard_m extends CI_Model
     function getUserOutboundRangeDate()
     {
         // var_dump($_POST);
-
         $start_date = $_POST['start_date'];
         $end_date = $_POST['end_date'];
         // die;
@@ -121,7 +119,6 @@ class Dashboard_m extends CI_Model
         AND convert(date, a.start_time) between '$start_date' and '$end_date'
         AND c.id = 2";
         $query = $this->db->query($sql);
-        // var_dump($this->db->last_query());
         return $query;
     }
 

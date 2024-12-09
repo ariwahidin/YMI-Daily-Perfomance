@@ -34,7 +34,7 @@ class Dashboard extends CI_Controller
 
         $response = array(
             'success' => true,
-            'table_user_proses' => $this->load->view('dashboard/table_user_proses', $data, true)
+            'table_user_proses' => $this->load->view('dashboard/table_user_proses', $data, true),
         );
         echo json_encode($response);
     }

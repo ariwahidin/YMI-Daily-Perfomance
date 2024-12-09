@@ -11,7 +11,6 @@
                     </li>
                 </ol>
             </div>
-
         </div>
     </div>
 </div>
@@ -59,7 +58,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <div class="card card-animate overflow-hidden">
                     <div class="card-header card-primary align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Inbound Summary </h4>
@@ -101,7 +100,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-7">
                 <div class="card card-animate overflow-hidden">
                     <div class="card-header card-success align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Outbound Summary</h4>
@@ -129,6 +128,15 @@
                                 </h4>
                                 <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_complete_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p>
                             </div>
+
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Total SJ</p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="spTotalSJ">0</span><span class="fs-10 text-muted mb-0"> SJ</span>
+                                </h4>
+                                <!-- <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_complete_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p> -->
+                            </div>
+
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Total PL </p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
@@ -193,9 +201,6 @@
     </div>
     <div style="display: none;" class="col-md-12 tab-pane tabDash" id="DashboardMonthly">
         <div class="d-felx">
-            <!-- <label for="">Activity Date : </label>
-            <input type="month" class="form-control-sm" id="inputMonthInbound">
-            <button class="btn btn-sm btn-success" id="btnRefreshInboundMonthly">Refresh</button> -->
         </div>
 
         <div class="row mb-3 pb-1">
@@ -219,7 +224,6 @@
                         <div id="inboundMonthly" class="e-charts"></div>
                     </div>
                 </div>
-                <!-- end card -->
             </div>
             <div class="col-12 col-xl-12">
                 <div class="card card-responsive">
@@ -236,7 +240,6 @@
     </div>
 </div>
 
-<!-- echarts js -->
 <script src="<?= base_url('jar/html/default/') ?>assets/libs/echarts/echarts.min.js"></script>
 
 
@@ -273,7 +276,6 @@
 
         var socket;
         initWebSocket();
-
         getAllByDate();
 
         $('#formSearchByDate').on('submit', function(e) {
@@ -298,37 +300,9 @@
 
             cartInbound(dataToPost);
             getAllProccessInbound(dataToPost);
-
             getUserProses(dataToPost);
-
             cartOutbound(dataToPost);
             getAllProccessOutbound(dataToPost);
-
-            // let sDate = $('#sStartDate').val();
-            // let eDate = $('#sEndDate').val();
-
-            // let divTable = $('#divSchedule');
-            // divTable.empty();
-            // $.ajax({
-            //     url: "getTablePickingList",
-            //     type: "POST",
-            //     data: {
-            //         startDate: sDate,
-            //         endDate: eDate
-            //     },
-            //     dataType: 'JSON',
-            //     success: function(response) {
-            //         if (response.success == true) {
-            //             $('#cardPL').empty();
-            //             $('#cardPL').html(response.table);
-            //             $('#tablePL').dataTable();
-            //         }
-            //     }
-            // });
-
-            // // $.post('', {}, function(response) {
-
-            // // }, 'json');
         }
 
         function getUserProses(dataToPost) {
@@ -458,9 +432,7 @@
             $.post('getPresentaseOutbound', dataToPost, function(response) {
 
                 let data = response.data;
-
                 let presentase = Math.round(data.presentase);
-
                 $('#spOutboundUnproses').text(data.outbound_unproses);
                 $('#spOutboundProses').text(data.outbound_proses);
                 $('#spOutboundComplete').text(data.outbound_complete);
@@ -469,53 +441,10 @@
                 $('#sp_qty_proses_out').text(data.qty_proses);
                 $('#sp_qty_complete_out').text(data.qty_complete);
                 $('#sp_qty_total_out').text(data.total_qty);
-
                 $('#sp_plan').text(response.man_power.total_plan);
                 $('#sp_actual').text(response.man_power.user_active);
+                $('#spTotalSJ').text(data.total_sj);
 
-                // $('#cartOutbound').empty();
-                // $('#cartOutbound').html(`<div id="ctro" class="apex-charts"></div>`);
-
-                // var options = {
-                //     series: [presentase],
-                //     chart: {
-                //         type: "radialBar",
-                //         width: 105,
-                //         sparkline: {
-                //             enabled: true
-                //         }
-                //     },
-                //     dataLabels: {
-                //         enabled: false
-                //     },
-                //     plotOptions: {
-                //         radialBar: {
-                //             hollow: {
-                //                 margin: 0,
-                //                 size: "70%"
-                //             },
-                //             track: {
-                //                 margin: 1
-                //             },
-                //             dataLabels: {
-                //                 show: true,
-                //                 name: {
-                //                     show: false
-                //                 },
-                //                 value: {
-                //                     show: true,
-                //                     fontSize: "16px",
-                //                     fontWeight: 600,
-                //                     offsetY: 8
-                //                 }
-                //             }
-                //         }
-                //     },
-                //     colors: ['#FF5733'] // Gunakan warna-warna yang telah Anda definisikan
-                // };
-
-                // var chart = new ApexCharts(document.querySelector("#ctro"), options);
-                // chart.render();
             }, 'json');
         }
 
