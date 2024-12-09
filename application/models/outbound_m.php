@@ -86,7 +86,7 @@ class Outbound_m extends CI_Model
         $this->db->update('tb_out_temp', $params);
 
 
-        
+
         if ($this->db->affected_rows() > 0) {
             $sql = "select 
             b.id as pl_id, b.pl_no as no_pl, b.no_truck, b.tot_qty as qty,
@@ -136,6 +136,18 @@ class Outbound_m extends CI_Model
             // Jika transaksi berhasil, bisa dilakukan commit
             $this->db->trans_commit();
         }
+    }
+
+    function getPickingListByDest($dest, $activity_date)
+    {
+        $sql = "select a.id, a.pl_no, a.dest, activity_date 
+                from pl_h a where a.id not in(select pl_id from tb_out)
+                AND a.id not in (select no_pl from tb_out_temp)
+                AND a.activity_date = ?
+                AND a.dest = ?
+                ORDER BY a.dest ASC";
+        $query = $this->db->query($sql, [$activity_date, $dest]);
+        return $query;
     }
 
     function deleteOutTemp($post)

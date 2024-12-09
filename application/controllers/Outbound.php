@@ -62,39 +62,64 @@ class Outbound extends CI_Controller
     {
         $post = $this->input->post();
 
-        var_dump($post);
-        die;
+        // var_dump($post);
+        // die;
 
         $this->db->trans_start();
 
-        foreach ($post['picker_id'] as $key => $val) {
+        foreach ($post['no_pl'] as $pl) {
+            $pl_id = $pl;
+            foreach ($post['picker_id'] as $key => $val) {
+                $params = array(
+                    'pl_id' =>  $pl_id,
+                    'user_id' => $val,
+                    'sts' => 'picker'
+                );
+                $this->db->insert('pl_p', $params);
+            }
+
             $params = array(
-                'pl_id' => $post['no_pl'],
-                'user_id' => $val,
-                'sts' => 'picker'
+                // 'tot_qty' => $post['qty'],
+                // 'no_truck' => $post['no_truck'],
+                // 'pintu_loading' => $post['pintu_loading'],
+                'remarks' => $post['remarks'],
+                'updated_at' => currentDateTime(),
+                'updated_by' => userId()
             );
-            $this->db->insert('pl_p', $params);
+
+            $this->db->where(['id' =>  $pl_id]);
+            $this->db->update('pl_h', $params);
+
+            $params2 = array(
+                'no_pl' => $pl_id,
+                'created_date' => currentDateTime(),
+                'created_by' => userId()
+            );
+    
+            $this->outbound_m->createTask($params2);
         }
 
-        $params = array(
-            'tot_qty' => $post['qty'],
-            'no_truck' => $post['no_truck'],
-            'pintu_loading' => $post['pintu_loading'],
-            'remarks' => $post['remarks'],
-            'updated_at' => currentDateTime(),
-            'updated_by' => userId()
-        );
 
-        $this->db->where(['id' => $post['no_pl']]);
-        $this->db->update('pl_h', $params);
 
-        $params = array(
-            'no_pl' => $post['no_pl'],
-            'created_date' => currentDateTime(),
-            'created_by' => userId()
-        );
+        // $params = array(
+        //     'tot_qty' => $post['qty'],
+        //     'no_truck' => $post['no_truck'],
+        //     'pintu_loading' => $post['pintu_loading'],
+        //     'remarks' => $post['remarks'],
+        //     'updated_at' => currentDateTime(),
+        //     'updated_by' => userId()
+        // );
 
-        $this->outbound_m->createTask($params);
+        // $this->db->where(['id' => $post['no_pl']]);
+        // $this->db->update('pl_h', $params);
+
+        // $params = array(
+        //     'no_pl' => $post['no_pl'],
+        //     'created_date' => currentDateTime(),
+        //     'created_by' => userId()
+        // );
+
+        // $this->outbound_m->createTask($params);
 
 
         $this->db->trans_complete();
@@ -118,6 +143,30 @@ class Outbound extends CI_Controller
             );
         }
 
+        echo json_encode($response);
+    }
+
+    // public function getPickingListByDest($dest, $activity_date)
+    // {
+    //     $result = $this->outbound_m->getPickingListByDest($dest, $activity_date);
+    //     $response = array(
+    //         'success' => true,
+    //         'picking_list' => $result->result()
+    //     );
+    //     echo json_encode($response);
+    // }
+
+    public function getPickingListByDest()
+    {
+        $post = $this->input->post(null, true);
+        $dest = $post['dest'];
+        $activity_date = $post['activity_date'];
+
+        $result = $this->outbound_m->getPickingListByDest($dest, $activity_date);
+        $response = array(
+            'success' => true,
+            'picking_list' => $result->result()
+        );
         echo json_encode($response);
     }
 
@@ -580,7 +629,7 @@ class Outbound extends CI_Controller
         if ($check) {
             $response = array(
                 'success' => false,
-                'message' => 'Picking List '.$post['pl_no'].' already exist'
+                'message' => 'Picking List ' . $post['pl_no'] . ' already exist'
             );
             echo json_encode($response);
             return;

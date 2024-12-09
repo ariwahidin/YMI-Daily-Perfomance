@@ -79,52 +79,28 @@
 
 
                     <div class="row">
-                        <div class="col-6 col-lg-3" id="divPLNo">
-
-                        </div>
                         <div class="col-6 col-lg-3">
-                            <label for="priority-field" class="form-label">Ekspedisi</label><br>
-                            <select class="form-control-sm" name="ekspedisi" id="ekspedisi" style="width: 150px;" disabled>
-                                <option value="">Choose ekspedisi</option>
-                                <?php foreach ($ekspedisi->result() as $eks) { ?>
-                                    <!-- <option value="<?= $eks->id ?>"><?= $eks->name ?></option> -->
-                                <?php } ?>
-                            </select>
+                            <label for="priority-field" class="form-label">Activity Date</label>
+                            <input type="date" id="activity_date" required name="activity_date" class="form-control-sm" value="<?php echo date('Y-m-d'); ?>">
                         </div>
-                        <div class="col-6 col-lg-3">
+                        <div class="col-6 col-lg-3  align-items-center">
                             <label for="" class="form-label">Destination</label>
-                            <input type="text" id="dest" name="dest" class="form-control" placeholder="" value="" required readonly>
+                            <div class="d-flex">
+                                <input type="text" style="min-width: 100px; text-transform: uppercase;" id="dest" name="dest" class="form-control-sm" placeholder="" value="" required>
+                                <button type="button" class="btn btn-sm btn-primary ms-2" id="btnSearchDest"><i class="ri-search-2-line"></i></button>
+                            </div>
                         </div>
-                        <div class="col-6 col-lg-3">
-                            <label for="" class="form-label">Dealer Code</label>
-                            <input type="text" id="dealer_code" name="dealer_code" class="form-control" placeholder="" value="" readonly>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <label for="" class="form-label">Dealer / Depo</label>
-                            <input type="text" id="dealer_det" name="dealer_det" class="form-control" placeholder="" value="" readonly>
-                        </div>
+                    </div>
 
-                        <div class="col-6 col-lg-3">
-                            <label for="priority-field" class="form-label">Total Qty</label>
-                            <input type="number" id="qty" name="qty" class="form-control" placeholder="" value="" readonly>
-                        </div>
-
-                        <div class="col-6 col-lg-3">
-                            <label for="priority-field" class="form-label">No truck</label>
-                            <input type="text" id="no_truck" name="no_truck" class="form-control" placeholder="" value="" readonly>
-                        </div>
-
-
-                        <div class="col-6 col-lg-3">
-                            <label for="priority-field" class="form-label">Pintu Loading</label>
-                            <input type="text" id="pintu_loading" name="pintu_loading" class="form-control" value="">
+                    <div class="row">
+                        <div class="col-12 col-lg-6" id="optionsPickingList">
                         </div>
                     </div>
 
                     <div class="row">
 
                         <div class="col-12 col-lg-6">
-                            <label for="priority-field" class="form-label">Picker</label>
+                            <label for="priority-field" class="form-label mt-2">Picker</label>
                             <select style="background-color: blue !important;" class="js-example-basic-multiple form-control-sm" name="picker_id[]" multiple="multiple" id="picker_id" required>
                                 <option value="">Choose picker</option>
                                 <?php foreach ($checker->result() as $check) { ?>
@@ -134,7 +110,7 @@
                         </div>
 
                         <div class="col-lg-6">
-                            <label for="priority-field" class="form-label">Remarks</label>
+                            <label for="priority-field" class="form-label mt-2">Remarks</label>
                             <input type="text" id="remarks" name="remarks" class="form-control" value="">
                         </div>
                     </div>
@@ -161,6 +137,11 @@
         initWebSocket();
 
         $('.js-example-basic-multiple').select2();
+
+        $('#dest').on('keyup', function() {
+            let divPL = $('#optionsPickingList');
+            divPL.empty();
+        })
 
         $('#btnCreate').on('click', function() {
             // $.get('getPickingListAdm', {}, function(response) {
@@ -198,8 +179,60 @@
             //         $('#createTask').modal('show');
             //     }
             // }, 'json');
+
+            
+            let divPL = $('#optionsPickingList');
+            divPL.empty();
+            $('#proses').val('new_task');
             $('#createTask').modal('show');
 
+        });
+
+        $('#btnSearchDest').on('click', function() {
+            let form = $("#creatask").serialize();
+            $.ajax({
+                url: 'getPickingListByDest',
+                type: 'POST',
+                data: form,
+                dataType: 'JSON',
+                success: function(response) {
+                    if (response.success == true) {
+                        let data = response.picking_list;
+
+
+                        if (data.length == 0) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Empty',
+                                text: 'No Picking List Found'
+                            })
+                            return false;
+                        }
+
+                        let divPL = $('#optionsPickingList');
+                        divPL.empty();
+                        divPL.html(`<label for="" class="form-label mt-2">PL No </label>
+                                    <select name="no_pl[]" id="no_pl" multiple class="form-control" style="width: 200px; height: 50px;" required>
+                                </select>`);
+
+                        let selPL = $('#no_pl');
+                        selPL.empty();
+
+                        let opt = `<option value="" disabled>Choose PL No </option>`;
+                        data.forEach(function(elem) {
+                            opt += `<option value="${elem.id}" selected>${elem.pl_no}</option>`;
+                        });
+                        selPL.html(opt);
+
+                        // console.log(opt);
+                        // .select2();
+                        $('#no_pl').select2({
+                            // tags: true,
+                            dropdownParent: $("#createTask")
+                        });
+                    }
+                }
+            });
         });
 
         $('#divPLNo').on('change', '#no_pl', function() {
@@ -263,7 +296,7 @@
 
         $('#creatask').on('submit', function(e) {
             e.preventDefault();
-            let form = new FormData(this);
+            let form = $("#creatask").serialize();
             let proses = $('#proses').val();
 
             if (proses === 'new_task') {
@@ -271,8 +304,6 @@
                     url: 'createTask',
                     type: 'POST',
                     data: form,
-                    processData: false,
-                    contentType: false,
                     dataType: 'JSON',
                     success: function(response) {
                         if (response.success == true) {
