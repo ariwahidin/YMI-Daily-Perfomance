@@ -163,50 +163,42 @@
         $('.js-example-basic-multiple').select2();
 
         $('#btnCreate').on('click', function() {
+            // $.get('getPickingListAdm', {}, function(response) {
 
+            //     if (response.success == true) {
 
+            //         let divPL = $('#divPLNo');
+            //         divPL.empty();
+            //         divPL.html(`<label for="" class="form-label">PL No </label>
+            //                         <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;" required>
+            //                     </select>`);
 
-            $.get('getPickingListAdm', {}, function(response) {
+            //         let selPL = $('#no_pl');
+            //         selPL.empty();
 
-                if (response.success == true) {
+            //         let opt = `<option value="">Choose PL No </option>`;
+            //         response.picking_list.forEach(function(elem) {
+            //             opt += `<option value="${elem.pl_id}">${elem.pl_no}</option>`;
+            //         });
+            //         selPL.html(opt);
 
-                    let divPL = $('#divPLNo');
-                    divPL.empty();
-                    divPL.html(`<label for="" class="form-label">PL No </label>
-                                    <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;" required>
-                                </select>`);
+            //         // console.log(opt);
+            //         // .select2();
+            //         $('#no_pl').select2({
+            //             // tags: true,
+            //             dropdownParent: $("#createTask")
+            //         });
 
-                    let selPL = $('#no_pl');
-                    selPL.empty();
+            //         // Membersihkan opsi-opsi yang sudah terpilih sebelumnya
+            //         $('#picker_id').find('option:selected').prop('selected', false).trigger('change');
 
-                    let opt = `<option value="">Choose PL No </option>`;
-                    response.picking_list.forEach(function(elem) {
-                        opt += `<option value="${elem.pl_id}">${elem.pl_no}</option>`;
-                    });
-                    selPL.html(opt);
-
-                    // console.log(opt);
-                    // .select2();
-                    $('#no_pl').select2({
-                        // tags: true,
-                        dropdownParent: $("#createTask")
-                    });
-
-                    // Membersihkan opsi-opsi yang sudah terpilih sebelumnya
-                    $('#picker_id').find('option:selected').prop('selected', false).trigger('change');
-
-                    $('#btnTask').text('Create');
-                    $('#createTaskLabel').text('Create new');
-                    $('#proses').val('new_task');
-                    $('#createTask').modal('show');
-
-                    // $('#createTask').on('shown.bs.modal', function() {
-                    //     // $('.js-example-basic-single').select2('open');
-                    //     $('.js-example-basic-single').focus();
-
-                    // });
-                }
-            }, 'json');
+            //         $('#btnTask').text('Create');
+            //         $('#createTaskLabel').text('Create new');
+            //         $('#proses').val('new_task');
+            //         $('#createTask').modal('show');
+            //     }
+            // }, 'json');
+            $('#createTask').modal('show');
 
         });
 

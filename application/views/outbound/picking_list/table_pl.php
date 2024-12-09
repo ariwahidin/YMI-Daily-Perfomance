@@ -28,7 +28,7 @@
         $no = 1;
         foreach ($picking_list->result() as $data) {
         ?>
-            <tr class="btnEdit" data-id="<?= $data->id ?>" style=" cursor: pointer;">
+            <tr style=" cursor: pointer;">
                 <td><?= $no++ ?></td>
                 <td><?= $data->pl_no ?></td>
                 <td><?= $data->activity_date ?></td>

@@ -74,7 +74,7 @@
 </div>
 
 <!-- Grids in modals -->
-<div class="modal fade" id="modalForm" aria-labelledby="exampleModalgridLabel" aria-modal="true">
+<div class="modal fade" id="modalForm">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -87,7 +87,7 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">PL No : </label>
-                                <input type="text" class="form-control" id="pl_no" name="pl_no" placeholder="" required autocomplete="off">
+                                <input type="text" class="form-control" id="pl_no" name="pl_no" placeholder="" minlength="8" maxlength="8" required autocomplete="off">
                             </div>
                             <input type="hidden" id="form_proses" name="form_proses" val="" readonly>
                             <input type="hidden" id="pl_id" name="pl_id" val="" readonly>
@@ -235,6 +235,7 @@
 
         var socket;
         initWebSocket();
+
         function initWebSocket() {
             socket = new WebSocket(urlWebsocket);
 
@@ -318,21 +319,29 @@
                     data: formUser,
                     processData: false,
                     contentType: false,
+                    dataType: 'JSON',
                     success: function(response) {
                         if (response.success == true) {
                             Swal.fire({
-                                position: "top-end",
+                                position: "center",
                                 icon: "success",
                                 title: response.message,
                                 showConfirmButton: false,
-                                timer: 1000
+                                timer: 1000,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
                             }).then(function() {
                                 getTablePickingList();
+                                $("input[name='pl_no']").val('');
                             }).then(function() {
                                 isSubmitting = false;
-                                $('#modalForm').modal('hide');
+                                // $('#modalForm').modal('hide');
                                 stopLoading();
                                 socket.send('ping');
+                                setTimeout(function() {
+                                    $('#pl_no').focus();
+                                }, 300);
                             })
                         } else {
                             isSubmitting = false;
@@ -344,8 +353,9 @@
                             });
                         }
                     },
-                    dataType: 'json'
-                });
+                }).done(function() {
+
+                })
             } else {
                 $.ajax({
                     url: 'editPickingList',
@@ -571,8 +581,6 @@
 
         $('#cardPL').on('click', '.btnDelete', function() {
             let id = $(this).data('id');
-
-
             Swal.fire({
                 icon: "question",
                 title: "Do you want to delete this data?",
@@ -606,31 +614,6 @@
                     }, 'json');
                 }
             });
-
-
-
-
-            // $.post('deleteEkspedisi', {
-            //     id: id
-            // }, function(response) {
-            //     if (response.success == true) {
-            //         Swal.fire({
-            //             position: "top-end",
-            //             icon: "success",
-            //             title: response.message,
-            //             showConfirmButton: false,
-            //             timer: 1500
-            //         }).then(function() {
-            //             window.location.href = 'index';
-            //         })
-            //     } else {
-            //         Swal.fire({
-            //             icon: 'error',
-            //             title: 'Failed',
-            //             text: response.message
-            //         });
-            //     }
-            // }, 'json');
         })
 
         getOptionEkspedisi();

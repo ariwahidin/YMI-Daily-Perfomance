@@ -84,9 +84,6 @@ class Outbound_m extends CI_Model
         $this->db->trans_start();
         $this->db->where('id', $id);
         $this->db->update('tb_out_temp', $params);
-
-
-        
         if ($this->db->affected_rows() > 0) {
             $sql = "select 
             b.id as pl_id, b.pl_no as no_pl, b.no_truck, b.tot_qty as qty,

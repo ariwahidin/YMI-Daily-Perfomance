@@ -62,8 +62,8 @@ class Outbound extends CI_Controller
     {
         $post = $this->input->post();
 
-        var_dump($post);
-        die;
+        // var_dump($post);
+        // die;
 
         $this->db->trans_start();
 
@@ -90,6 +90,9 @@ class Outbound extends CI_Controller
 
         $params = array(
             'no_pl' => $post['no_pl'],
+            // 'qty' => $post['qty'],
+            // 'ekspedisi' => $post['ekspedisi'],
+            // 'remarks' => $post['remarks'],
             'created_date' => currentDateTime(),
             'created_by' => userId()
         );
@@ -206,8 +209,8 @@ class Outbound extends CI_Controller
     {
         $post = $this->input->post();
 
-        // var_dump($post);
-        // die;
+        var_dump($post);
+        die;
 
         if ($post['activity'] == 'picking') {
             $user_id = userId();
@@ -573,19 +576,6 @@ class Outbound extends CI_Controller
         $post = $this->input->post();
         // var_dump($post);
         // exit;
-
-
-        $check = $this->db->get_where('pl_h', array('pl_no' => $post['pl_no']))->row();
-
-        if ($check) {
-            $response = array(
-                'success' => false,
-                'message' => 'Picking List '.$post['pl_no'].' already exist'
-            );
-            echo json_encode($response);
-            return;
-        }
-
         $params = array(
             'transaction_number' => $this->outbound_m->generateTransactionNumber(),
             'pl_no' => $post['pl_no'],
