@@ -26,6 +26,33 @@ class Outbound_m extends CI_Model
         return $transaction_number;
     }
 
+    function generateOutboundNumber()
+    {
+        // Set zona waktu ke Asia/Jakarta
+        date_default_timezone_set('Asia/Jakarta');
+        // Ambil tanggal saat ini
+        $date = date('ymd');
+
+        // Ambil nomor urut perharinya dari database
+        $sql = "SELECT
+        ISNULL(MAX(RIGHT(outbound_number, 5)), 0) + 1 AS max_id 
+        FROM outbound_h 
+        WHERE SUBSTRING(outbound_number, 3, 6) = '$date'";
+
+        $query = $this->db->query($sql);
+        $row = $query->row();
+
+        $max_id = sprintf("%05s", $row->max_id);
+
+        // var_dump($max_id);
+        // die;
+
+        // Gabungkan informasi dan nomor urut perharinya
+        $transaction_number = "OB$date$max_id";
+
+        return $transaction_number;
+    }
+
     function createTask($params)
     {
         return $this->db->insert('tb_out_temp', $params);
@@ -39,32 +66,43 @@ class Outbound_m extends CI_Model
 
     public function getTaskByUser($post = null)
     {
-        $sql = "SELECT b.id, a.id as pl_id, a.pl_no as no_pl, a.adm_pl_date, a.adm_pl_time, a.no_truck, 
-        a.tot_qty as qty, a.sj_no, a.expedisi, a.pintu_loading,
-        a.sj_time, a.dest, a.dealer_code, a.dealer_det, a.remarks,
-        b.start_picking, b.stop_picking,
-        b.start_checking, b.stop_checking,
-        b.start_scanning, b.stop_scanning,
-        CONVERT(DATE, b.created_date) AS activity_date
-        FROM pl_h a
-        INNER JOIN tb_out_temp b ON a.id = b.no_pl";
+        // var_dump($post);
 
-        if (isset($post['pl_id'])) {
-            if ($post['pl_id'] != '') {
-                $pl_id = $post['pl_id'];
-                $sql .= " WHERE a.id = '$pl_id'";
-            }
+        // $sql = "SELECT b.id, a.id as pl_id, a.pl_no as no_pl, a.adm_pl_date, a.adm_pl_time, a.no_truck, 
+        // a.tot_qty as qty, a.sj_no, a.expedisi, a.pintu_loading,
+        // a.sj_time, a.dest, a.dealer_code, a.dealer_det, a.remarks,
+        // b.start_picking, b.stop_picking,
+        // b.start_checking, b.stop_checking,
+        // b.start_scanning, b.stop_scanning,
+        // CONVERT(DATE, b.created_date) AS activity_date
+        // FROM pl_h a
+        // INNER JOIN tb_out_temp b ON a.id = b.no_pl";
+
+        // if (isset($post['pl_id'])) {
+        //     if ($post['pl_id'] != '') {
+        //         $pl_id = $post['pl_id'];
+        //         $sql .= " WHERE a.id = '$pl_id'";
+        //     }
+        // }
+
+        // if (isset($post['search']) && isset($post['searchDest'])) {
+        //     // if ($post['search'] != '') {
+        //     $search = $post['search'];
+        //     $searchDest = $post['searchDest'];
+        //     $sql .= " WHERE a.pl_no LIKE '%$search%' AND dest LIKE '%$searchDest%'";
+        //     // }
+        // }
+
+        // $sql .= " ORDER BY b.id DESC";
+
+        $sql = "select distinct a.* from outbound_h a
+                inner join tb_out_temp c on a.id = c.outbound_id
+                WHERE a.is_active = 'Y'";
+
+        if (isset($post['id'])) {
+            $outbound_id = $post['id'];
+            $sql .= " AND a.id = '$outbound_id'";
         }
-
-        if (isset($post['search']) && isset($post['searchDest'])) {
-            // if ($post['search'] != '') {
-            $search = $post['search'];
-            $searchDest = $post['searchDest'];
-            $sql .= " WHERE a.pl_no LIKE '%$search%' AND dest LIKE '%$searchDest%'";
-            // }
-        }
-
-        $sql .= " ORDER BY b.id DESC";
 
         // print_r($sql);
 
@@ -77,28 +115,64 @@ class Outbound_m extends CI_Model
 
     function prosesActivity($id, $params)
     {
-        var_dump($id);
-        var_dump($params);
-        die;
+        // var_dump($id);
+        // var_dump($params);
+        // die;
         // Memulai transaksi
         $this->db->trans_start();
-        $this->db->where('id', $id);
+
+
+        if (isset($params['start_picking'])) {
+            $this->db->where('id', $id);
+            $this->db->update('outbound_h', array('picking_status' => 'processing'));
+        }
+
+        if (isset($params['stop_picking'])) {
+            $this->db->where('id', $id);
+            $this->db->update('outbound_h', array('picking_status' => 'completed'));
+        }
+
+        if (isset($params['start_checking'])) {
+            $this->db->where('id', $id);
+            $this->db->update('outbound_h', array('checking_status' => 'processing'));
+        }
+
+        if (isset($params['stop_checking'])) {
+            $this->db->where('id', $id);
+            $this->db->update('outbound_h', array('checking_status' => 'completed'));
+        }
+
+        if (isset($params['start_scanning'])) {
+            $this->db->where('id', $id);
+            $this->db->update('outbound_h', array('scanning_status' => 'processing'));
+        }
+
+        if (isset($params['stop_scanning'])) {
+            $this->db->where('id', $id);
+            $this->db->update('outbound_h', array('scanning_status' => 'completed'));
+        }
+
+        $this->db->where('outbound_id', $id);
         $this->db->update('tb_out_temp', $params);
 
+        $outbound = $this->db->get_where('outbound_h', ['id' => $id])->row();
+        $outbound_id = $outbound->id;
 
-
-        if ($this->db->affected_rows() > 0) {
-            $sql = "select 
-            b.id as pl_id, b.pl_no as no_pl, b.no_truck, b.tot_qty as qty,
-            b.adm_pl_date as pl_date, b.adm_pl_time as pl_time, b.expedisi as ekspedisi,
-            a.start_picking, a.stop_picking, a.start_checking, a.stop_checking, a.start_scanning, a.stop_scanning,
-            a.created_date, a.created_by, a.remarks
-            from tb_out_temp a
-            INNER JOIN pl_h b on a.no_pl = b.id
-            WHERE a.id = '$id'";
-            $act = $this->db->query($sql)->row();
-            if ($act->stop_picking != null && $act->stop_checking != null && $act->stop_scanning != null) {
+        if ($outbound->picking_status == 'completed' && $outbound->checking_status == 'completed' && $outbound->scanning_status == 'completed') {
+            $pl_h = $this->db->get_where('pl_h', ['outbound_id' => $outbound_id]);
+            foreach ($pl_h->result() as $pl) {
+                $pl_id = $pl->id;
+                $sql = "select a.outbound_id,
+                        b.id as pl_id, b.pl_no as no_pl, b.no_truck, b.tot_qty as qty,
+                        b.adm_pl_date as pl_date, b.adm_pl_time as pl_time, b.expedisi as ekspedisi,
+                        a.start_picking, a.stop_picking, a.start_checking, a.stop_checking, a.start_scanning, a.stop_scanning,
+                        a.created_date, a.created_by, a.remarks
+                        from tb_out_temp a
+                        INNER JOIN pl_h b on a.no_pl = b.id
+                        WHERE a.no_pl = ?";
+                $act = $this->db->query($sql, array($pl_id))->row();
                 $data = array(
+                    'outbound_id' => $act->outbound_id,
                     'pl_id' => $act->pl_id,
                     'no_pl' => $act->no_pl,
                     'start_picking' => $act->start_picking,
@@ -117,12 +191,50 @@ class Outbound_m extends CI_Model
                     'is_deleted' => 'N'
                 );
                 $this->db->insert('tb_out', $data);
+
                 if ($this->db->affected_rows() > 0) {
-                    $this->db->where(['id' => $id]);
+                    $this->db->where(['no_pl' => $pl_id]);
                     $this->db->delete('tb_out_temp');
                 }
             }
         }
+
+        // if ($this->db->affected_rows() > 0) {
+        //     $sql = "select 
+        //     b.id as pl_id, b.pl_no as no_pl, b.no_truck, b.tot_qty as qty,
+        //     b.adm_pl_date as pl_date, b.adm_pl_time as pl_time, b.expedisi as ekspedisi,
+        //     a.start_picking, a.stop_picking, a.start_checking, a.stop_checking, a.start_scanning, a.stop_scanning,
+        //     a.created_date, a.created_by, a.remarks
+        //     from tb_out_temp a
+        //     INNER JOIN pl_h b on a.no_pl = b.id
+        //     WHERE a.id = '$id'";
+        //     $act = $this->db->query($sql)->row();
+        //     if ($act->stop_picking != null && $act->stop_checking != null && $act->stop_scanning != null) {
+        //         $data = array(
+        //             'pl_id' => $act->pl_id,
+        //             'no_pl' => $act->no_pl,
+        //             'start_picking' => $act->start_picking,
+        //             'stop_picking' => $act->stop_picking,
+        //             'duration_picking' => countDuration($act->start_picking, $act->stop_picking),
+        //             'start_checking' => $act->start_checking,
+        //             'stop_checking' => $act->stop_checking,
+        //             'duration_checking' => countDuration($act->start_checking, $act->stop_checking),
+        //             'start_scanning' => $act->start_scanning,
+        //             'stop_scanning' => $act->stop_scanning,
+        //             'duration_scanning' => countDuration($act->start_scanning, $act->stop_scanning),
+        //             'activity_created_date' => $act->created_date,
+        //             'activity_created_by' => $act->created_by,
+        //             'created_date' => currentDateTime(),
+        //             'created_by' => userId(),
+        //             'is_deleted' => 'N'
+        //         );
+        //         $this->db->insert('tb_out', $data);
+        //         if ($this->db->affected_rows() > 0) {
+        //             $this->db->where(['id' => $id]);
+        //             $this->db->delete('tb_out_temp');
+        //         }
+        //     }
+        // }
 
         // Menyelesaikan transaksi
         $this->db->trans_complete();
@@ -488,7 +600,8 @@ class Outbound_m extends CI_Model
         return $query;
     }
 
-    public function getPLWithNoSJ(){
+    public function getPLWithNoSJ()
+    {
 
         $start_date = $_POST['start_date'];
         $end_date = $_POST['end_date'];

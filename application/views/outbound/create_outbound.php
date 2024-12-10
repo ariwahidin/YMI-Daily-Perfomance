@@ -179,11 +179,14 @@
             //         $('#createTask').modal('show');
             //     }
             // }, 'json');
-
-            
+            $('#dest').val('');
+            $('#dest').prop('readonly', false);
+            $('#btnSearchDest').prop('disabled', false);
             let divPL = $('#optionsPickingList');
             divPL.empty();
             $('#proses').val('new_task');
+            $('#btnTask').text('Create');
+            $('#createTaskLabel').text('Create New');
             $('#createTask').modal('show');
 
         });
@@ -198,8 +201,6 @@
                 success: function(response) {
                     if (response.success == true) {
                         let data = response.picking_list;
-
-
                         if (data.length == 0) {
                             Swal.fire({
                                 icon: 'error',
@@ -208,7 +209,6 @@
                             })
                             return false;
                         }
-
                         let divPL = $('#optionsPickingList');
                         divPL.empty();
                         divPL.html(`<label for="" class="form-label mt-2">PL No </label>
@@ -217,17 +217,12 @@
 
                         let selPL = $('#no_pl');
                         selPL.empty();
-
                         let opt = `<option value="" disabled>Choose PL No </option>`;
                         data.forEach(function(elem) {
                             opt += `<option value="${elem.id}" selected>${elem.pl_no}</option>`;
                         });
                         selPL.html(opt);
-
-                        // console.log(opt);
-                        // .select2();
                         $('#no_pl').select2({
-                            // tags: true,
                             dropdownParent: $("#createTask")
                         });
                     }
@@ -310,6 +305,12 @@
                             getAllRowTask();
                             $('#createTask').modal('hide');
                             socket.send('ping');
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed',
+                                text: response.message
+                            })
                         }
                     }
                 });
@@ -318,8 +319,6 @@
                     url: 'editTask',
                     type: 'POST',
                     data: form,
-                    processData: false,
-                    contentType: false,
                     dataType: 'JSON',
                     success: function(response) {
                         if (response.success == true) {
@@ -336,58 +335,73 @@
         $('#content').on('click', '.btnEdit', async function() {
             startLoading();
             let id = $(this).data('id');
-            let pl_id = $(this).data('pl-id');
+            // let pl_id = $(this).data('pl-id');
             let result = await $.post('getTaskById', {
                 id: id,
-                pl_id: pl_id
             }, function(response) {
                 let task = response.data;
-                // console.log(task);
-                // return false;
-
-                $('#proses').val('edit_task');
+                $('#btnSearchDest').prop('disabled', true);
                 $('#id_task').val(id);
+                // // console.log(task);
+                // // return false;
 
-                let divPL = $('#divPLNo');
+                // $('#proses').val('edit_task');
+
+                // let divPL = $('#divPLNo');
+                // divPL.empty();
+                // divPL.html(`<label for="" class="form-label">PL No </label>
+                //                     <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;" required>
+                //                 </select>`);
+
+                // let selPL = $('#no_pl');
+                // selPL.empty();
+
+                // let opt = `<option value="">Choose PL No </option>`;
+                // opt += `<option value="${task.pl_id}" selected>${task.no_pl}</option>`;
+                // selPL.html(opt);
+                // $('#no_pl').select2({
+                //     // tag : [],
+                //     dropdownParent: $("#createTask")
+                // });
+
+                let divPL = $('#optionsPickingList');
                 divPL.empty();
-                divPL.html(`<label for="" class="form-label">PL No </label>
-                                    <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;" required>
+                divPL.html(`<label for="" class="form-label mt-2">PL No </label>
+                                    <select name="no_pl[]" id="no_pl" multiple class="form-control" style="width: 200px; height: 50px;" required>
                                 </select>`);
 
                 let selPL = $('#no_pl');
                 selPL.empty();
-
-                let opt = `<option value="">Choose PL No </option>`;
-                opt += `<option value="${task.pl_id}" selected>${task.no_pl}</option>`;
+                let opt = `<option value="" disabled>Choose PL No </option>`;
+                response.pl_selected.forEach(function(elem) {
+                    opt += `<option value="${elem.id}" selected>${elem.pl_no}</option>`;
+                });
                 selPL.html(opt);
                 $('#no_pl').select2({
-                    // tag : [],
-                    dropdownParent: $("#createTask")
+                    dropdownParent: $("#createTask"),
+                    disabled : true,
+                    // disabled: 'readonly'
                 });
 
-                // Membersihkan opsi-opsi yang sudah terpilih sebelumnya
+                // $('#no_pl').attr("readonly", true)
+
+                // $('#no_pl').select2("readonly", true);
+
+
                 $('#picker_id').find('option:selected').prop('selected', false);
-                // Meloop melalui setiap nilai yang dipilih
                 $.each(response.picker, function(index, value) {
-                    // Menandai opsi dengan nilai yang sesuai sebagai dipilih
-                    // console.log(value.user_id);
                     $('#picker_id option[value="' + value.user_id + '"]').prop('selected', true).trigger('change');
                 });
 
 
                 $('#dest').val(task.dest);
-                $('#dealer_code').val(task.dealer_code);
-                $('#dealer_det').val(task.dealer_det);
-                $('#qty').val(task.qty);
-                $('#no_truck').val(task.no_truck);
-                $('#ekspedisi').val(task.expedisi);
-                $('#pintu_loading').val(task.pintu_loading);
+                $('#dest').prop('readonly', true);
+                $('#activity_date').val(task.activity_date);
                 $('#remarks').val(task.remarks);
 
                 $('#btnTask').text('Update');
                 $('#createTaskLabel').text('Edit');
                 $('#proses').val('edit_task');
-
                 $('#createTask').modal('show');
                 stopLoading();
             }, 'json');
@@ -423,7 +437,7 @@
 
             Swal.fire({
                 icon: "question",
-                title: "Are u sure to " + $(this).data('proses') + " ?",
+                title: "Are u sure to " + $(this).data('name') + " ?",
                 showCancelButton: true,
                 confirmButtonText: "Yes",
             }).then((result) => {

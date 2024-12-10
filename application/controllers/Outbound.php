@@ -61,12 +61,28 @@ class Outbound extends CI_Controller
     public function createTask()
     {
         $post = $this->input->post();
-
-        // var_dump($post);
-        // die;
-
         $this->db->trans_start();
-
+        $outbound_number = $this->outbound_m->generateOutboundNumber();
+        $this->db->insert('outbound_h', array(
+            'activity_date' => $post['activity_date'],
+            'dest' => strtoupper($post['dest']),
+            'remarks' => $post['remarks'],
+            'outbound_number' => $outbound_number,
+            'picking_status' => 'open',
+            'checking_status' => 'open',
+            'scanning_status' => 'open',
+            'created_at' => currentDateTime(),
+            'created_by' => userId()
+        ));
+        $outbound_id = $this->db->insert_id();
+        if (!isset($post['no_pl'])) {
+            $response = array(
+                'success' => false,
+                'message' => 'No PL is required'
+            );
+            echo json_encode($response);
+            return;
+        }
         foreach ($post['no_pl'] as $pl) {
             $pl_id = $pl;
             foreach ($post['picker_id'] as $key => $val) {
@@ -79,9 +95,7 @@ class Outbound extends CI_Controller
             }
 
             $params = array(
-                // 'tot_qty' => $post['qty'],
-                // 'no_truck' => $post['no_truck'],
-                // 'pintu_loading' => $post['pintu_loading'],
+                'outbound_id' => $outbound_id,
                 'remarks' => $post['remarks'],
                 'updated_at' => currentDateTime(),
                 'updated_by' => userId()
@@ -91,36 +105,13 @@ class Outbound extends CI_Controller
             $this->db->update('pl_h', $params);
 
             $params2 = array(
+                'outbound_id' => $outbound_id,
                 'no_pl' => $pl_id,
                 'created_date' => currentDateTime(),
                 'created_by' => userId()
             );
-    
             $this->outbound_m->createTask($params2);
         }
-
-
-
-        // $params = array(
-        //     'tot_qty' => $post['qty'],
-        //     'no_truck' => $post['no_truck'],
-        //     'pintu_loading' => $post['pintu_loading'],
-        //     'remarks' => $post['remarks'],
-        //     'updated_at' => currentDateTime(),
-        //     'updated_by' => userId()
-        // );
-
-        // $this->db->where(['id' => $post['no_pl']]);
-        // $this->db->update('pl_h', $params);
-
-        // $params = array(
-        //     'no_pl' => $post['no_pl'],
-        //     'created_date' => currentDateTime(),
-        //     'created_by' => userId()
-        // );
-
-        // $this->outbound_m->createTask($params);
-
 
         $this->db->trans_complete();
 
@@ -173,32 +164,70 @@ class Outbound extends CI_Controller
     public function editTask()
     {
         $post = $this->input->post();
+        $outbound_id = $post['id_task'];
+
+        $pl_h = $this->db->get_where('pl_h', array('outbound_id' => $outbound_id));
 
         // var_dump($post);
         // die;
 
         $this->db->trans_start();
 
-        $this->db->delete('pl_p', ['pl_id' => $post['no_pl'], 'sts' => 'picker']);
-
-        foreach ($post['picker_id'] as $picker) {
-            $params = array(
-                'pl_id' => $post['no_pl'],
-                'user_id' => $picker,
-                'sts' => 'picker'
-            );
-            $this->db->insert('pl_p', $params);
-        }
-
-        $params = array(
-            'pintu_loading' => $post['pintu_loading'],
+        $params_ob = array(
             'remarks' => $post['remarks'],
             'updated_at' => currentDateTime(),
             'updated_by' => userId()
         );
+        $this->db->where(array('id' => $outbound_id));
+        $this->db->update('outbound_h', $params_ob);
 
-        $this->db->where(['id' => $post['no_pl']]);
-        $this->db->update('pl_h', $params);
+        foreach ($pl_h->result() as $pl) {
+            $pl_id = $pl->id;
+            $this->db->delete('pl_p', array('pl_id' => $pl_id));
+
+            $params = array(
+                'remarks' => $post['remarks'],
+                'updated_at' => currentDateTime(),
+                'updated_by' => userId()
+            );
+
+            $this->db->where(['id' => $pl_id]);
+            $this->db->update('pl_h', $params);
+        }
+
+
+        foreach ($pl_h->result() as $pl) {
+            $pl_id = $pl->id;
+            foreach ($post['picker_id'] as $picker) {
+                $params = array(
+                    'pl_id' => $pl_id,
+                    'user_id' => $picker,
+                    'sts' => 'picker'
+                );
+                $this->db->insert('pl_p', $params);
+            }
+        }
+
+        // $this->db->delete('pl_p', ['pl_id' => $post['no_pl'], 'sts' => 'picker']);
+
+        // foreach ($post['picker_id'] as $picker) {
+        //     $params = array(
+        //         'pl_id' => $post['no_pl'],
+        //         'user_id' => $picker,
+        //         'sts' => 'picker'
+        //     );
+        //     $this->db->insert('pl_p', $params);
+        // }
+
+        // $params = array(
+        //     'pintu_loading' => $post['pintu_loading'],
+        //     'remarks' => $post['remarks'],
+        //     'updated_at' => currentDateTime(),
+        //     'updated_by' => userId()
+        // );
+
+        // $this->db->where(['id' => $post['no_pl']]);
+        // $this->db->update('pl_h', $params);
 
         $this->db->trans_complete();
 
@@ -232,6 +261,11 @@ class Outbound extends CI_Controller
         // die;
 
         $task = $this->outbound_m->getTaskByUser($post);
+
+
+        // var_dump($task->result());
+        // die;
+
         $data = array(
             'task' => $task
         );
@@ -246,7 +280,8 @@ class Outbound extends CI_Controller
         $result = $this->outbound_m->getTaskByUser($post)->row();
         $response = array(
             'data' => $result,
-            'picker' => getPicker($post['pl_id'])->result()
+            'picker' => getPickerOB($post['id'])->result(),
+            'pl_selected' => $this->db->get_where('pl_h', array('outbound_id' => $post['id']))->result()
         );
         echo json_encode($response);
     }
@@ -254,120 +289,269 @@ class Outbound extends CI_Controller
     public function prosesActivity()
     {
         $post = $this->input->post();
+        $outbound_id = $post['id'];
+        $is_picker = false;
+        $pickers = getPickerOB($outbound_id);
+        $user_id = userId();
+        $pl_h = $this->db->get_where('pl_h', array('outbound_id' => $outbound_id));
+        $outbound = $this->db->get_where('outbound_h', array('id' => $outbound_id))->row();
+
+
+        foreach ($pickers->result() as $picker) {
+            if ($picker->user_id == $user_id) {
+                $is_picker = true;
+            }
+        }
 
         // var_dump($post);
         // die;
 
+        // Picking
+        $pickingProccess = $outbound->picking_status;
         if ($post['activity'] == 'picking') {
-            $user_id = userId();
-            $pl_id = $post['pl_id'];
-            $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
-            $query = $this->db->query($sql);
-            if ($query->num_rows() < 1) {
+
+            if ($post['proses'] == 'start_picking') {
+                if ($pickingProccess != 'open') {
+                    $response = array(
+                        'success' => false,
+                        'message' => 'Already start picking proccess'
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
+            }
+
+            if ($post['proses'] == 'stop_picking') {
+                if ($pickingProccess != 'processing') {
+                    $response = array(
+                        'success' => false,
+                        'message' => 'Start picking proccess first'
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
+            }
+
+            if (!$is_picker) {
                 $response = array(
                     'success' => false,
-                    'message' => 'This user is not picker for this PL'
+                    'message' => 'This user is not allowed to picking proccess'
                 );
                 echo json_encode($response);
                 exit;
             }
         }
 
+        // Checking
+        $checkingProccess = $outbound->checking_status;
         if ($post['activity'] == 'checking') {
-            $user_id = userId();
-            $id = $post['id'];
-            $pl_id = $post['pl_id'];
 
-
-            $sql = "SELECT TOP 1 stop_picking FROM tb_out_temp WHERE id = '$id' AND stop_picking IS NULL";
-            $query = $this->db->query($sql);
-
-            if ($query->num_rows() > 0) {
+            if ($pickingProccess != 'completed') {
                 $response = array(
                     'success' => false,
-                    'message' => "Can not to checking proccess, Finish picking proccess first"
+                    'message' => 'Picking proccess is not completed'
                 );
                 echo json_encode($response);
-                exit;
+                return;
             }
 
-            $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
-            $query = $this->db->query($sql);
-
-            if ($query->num_rows() > 0) {
+            if ($is_picker) {
                 $response = array(
                     'success' => false,
                     'message' => 'This user is not allowed to checking proccess'
                 );
                 echo json_encode($response);
-                exit;
+                return;
             }
 
-            $sql = "SELECT TOP 1 * FROM pl_p WHERE sts = 'checker' and user_id = '$user_id' and pl_id = '$pl_id'";
-            $query = $this->db->query($sql);
-
-            if ($query->num_rows() < 1) {
-                $params = array(
-                    'pl_id' => $pl_id,
-                    'user_id' => $user_id,
-                    'sts' => 'checker'
-                );
-                $this->db->insert('pl_p', $params);
+            if (isset($post['proses']) && $post['proses'] == 'start_checking') {
+                if ($pickingProccess != 'open') {
+                    $response = array(
+                        'success' => false,
+                        'message' => 'Already start checking proccess'
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
             }
+
+            if ($post['proses'] == 'stop_checking') {
+                if ($checkingProccess != 'processing') {
+                    $response = array(
+                        'success' => false,
+                        'message' => 'Start checking proccess first'
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
+            }
+
+            if (isset($post['proses']) && $post['proses'] == 'start_checking') {
+                foreach ($pl_h->result() as $pl) {
+                    $pl_id = $pl->id;
+                    $params = array(
+                        'pl_id' => $pl_id,
+                        'user_id' => $user_id,
+                        'sts' => 'checker'
+                    );
+                    $this->db->insert('pl_p', $params);
+                }
+            }
+
+            // var_dump($post);
+            // var_dump($pl_h->result());
+            // die;
+
+            // $sql = "SELECT TOP 1 stop_picking FROM tb_out_temp WHERE id = '$id' AND stop_picking IS NULL";
+            // $query = $this->db->query($sql);
+
+            // if ($query->num_rows() > 0) {
+            //     $response = array(
+            //         'success' => false,
+            //         'message' => "Can not to checking proccess, Finish picking proccess first"
+            //     );
+            //     echo json_encode($response);
+            //     exit;
+            // }
+
+            // $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
+            // $query = $this->db->query($sql);
+
+            // if ($query->num_rows() > 0) {
+            //     $response = array(
+            //         'success' => false,
+            //         'message' => 'This user is not allowed to checking proccess'
+            //     );
+            //     echo json_encode($response);
+            //     exit;
+            // }
+
+            // $sql = "SELECT TOP 1 * FROM pl_p WHERE sts = 'checker' and user_id = '$user_id' and pl_id = '$pl_id'";
+            // $query = $this->db->query($sql);
+
+
+
+
+            // if ($query->num_rows() < 1) {
+            //     $params = array(
+            //         'pl_id' => $pl_id,
+            //         'user_id' => $user_id,
+            //         'sts' => 'checker'
+            //     );
+            //     $this->db->insert('pl_p', $params);
+            // }
         }
 
+        // Scanning
+        $scanningProccess = $outbound->scanning_status;
         if ($post['activity'] == 'scanning') {
-            $user_id = userId();
-            $pl_id = $post['pl_id'];
-            $id = $post['id'];
 
-            $sql = "SELECT TOP 1 stop_checking FROM tb_out_temp WHERE id = '$id' AND stop_checking IS NULL";
-            $query = $this->db->query($sql);
 
-            if ($query->num_rows() > 0) {
+            if ($checkingProccess != 'completed') {
                 $response = array(
                     'success' => false,
-                    'message' => "Can not to scanning proccess, Finish checking proccess first"
+                    'message' => 'Checking proccess is not completed'
                 );
                 echo json_encode($response);
-                exit;
+                return;
             }
 
-            $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
-            $query = $this->db->query($sql);
-
-
-            if ($query->num_rows() > 0) {
+            if ($is_picker) {
                 $response = array(
                     'success' => false,
                     'message' => 'This user is not allowed to scanning proccess'
                 );
                 echo json_encode($response);
-                exit;
+                return;
             }
 
-            $sql = "SELECT TOP 1 * FROM pl_p WHERE sts = 'scanner' and user_id = '$user_id' and pl_id = '$pl_id'";
-            $query = $this->db->query($sql);
-
-            if ($query->num_rows() < 1) {
-                $params = array(
-                    'pl_id' => $pl_id,
-                    'user_id' => $user_id,
-                    'sts' => 'scanner'
-                );
-                $this->db->insert('pl_p', $params);
+            if (isset($post['proses']) && $post['proses'] == 'start_scanning') {
+                if ($scanningProccess != 'open') {
+                    $response = array(
+                        'success' => false,
+                        'message' => 'Already start scanning proccess'
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
             }
+
+            if ($post['proses'] == 'stop_scanning') {
+                if ($scanningProccess != 'processing') {
+                    $response = array(
+                        'success' => false,
+                        'message' => 'Start scanning proccess first'
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
+            }
+
+            if (isset($post['proses']) && $post['proses'] == 'start_scanning') {
+                foreach ($pl_h->result() as $pl) {
+                    $pl_id = $pl->id;
+                    $params = array(
+                        'pl_id' => $pl_id,
+                        'user_id' => $user_id,
+                        'sts' => 'scanner'
+                    );
+                    $this->db->insert('pl_p', $params);
+                }
+            }
+
+
+            // $user_id = userId();
+            // $pl_id = $post['pl_id'];
+            // $id = $post['id'];
+
+            // $sql = "SELECT TOP 1 stop_checking FROM tb_out_temp WHERE id = '$id' AND stop_checking IS NULL";
+            // $query = $this->db->query($sql);
+
+            // if ($query->num_rows() > 0) {
+            //     $response = array(
+            //         'success' => false,
+            //         'message' => "Can not to scanning proccess, Finish checking proccess first"
+            //     );
+            //     echo json_encode($response);
+            //     exit;
+            // }
+
+            // $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
+            // $query = $this->db->query($sql);
+
+
+            // if ($query->num_rows() > 0) {
+            //     $response = array(
+            //         'success' => false,
+            //         'message' => 'This user is not allowed to scanning proccess'
+            //     );
+            //     echo json_encode($response);
+            //     exit;
+            // }
+
+            // $sql = "SELECT TOP 1 * FROM pl_p WHERE sts = 'scanner' and user_id = '$user_id' and pl_id = '$pl_id'";
+            // $query = $this->db->query($sql);
+
+            // if ($query->num_rows() < 1) {
+            //     $params = array(
+            //         'pl_id' => $pl_id,
+            //         'user_id' => $user_id,
+            //         'sts' => 'scanner'
+            //     );
+            //     $this->db->insert('pl_p', $params);
+            // }
         }
 
         // var_dump($post);
         // die;
+        // $id = $post['id'];
 
-        $id = $post['id'];
+        // die;
         $params = array(
             $post['proses'] => currentDateTime()
         );
 
-        $this->outbound_m->prosesActivity($id, $params);
+        $this->outbound_m->prosesActivity($outbound_id, $params);
 
         $response = array(
             'success' => true,
@@ -381,19 +565,59 @@ class Outbound extends CI_Controller
     public function deleteOut()
     {
         $post = $this->input->post();
+        $outbound_id = $post['id'];
 
-        $this->db->delete('pl_p', ['pl_id' => $post['pl_id']]);
-        $this->outbound_m->deleteOutTemp($post);
-        if ($this->db->affected_rows() > 0) {
+        $this->db->trans_start();
+
+        // delete picker
+        $sql1 = "DELETE from pl_p where pl_id in(select id from pl_h where outbound_id = ?)";
+        $this->db->query($sql1, [$outbound_id]);
+
+        // delete from temp
+        $sql2 = "DELETE from tb_out_temp where outbound_id = ?";
+        $this->db->query($sql2, [$outbound_id]);
+
+        // update outbound_id => null
+        $sql3 = "UPDATE pl_h SET outbound_id = null where outbound_id = ?";
+        $this->db->query($sql3, [$outbound_id]);
+
+        // update outbound_h set is_active = N
+        $sql4 = "UPDATE outbound_h SET is_active = 'N', updated_at = ?, updated_by = ? where id = ? and is_active = 'Y'";
+        $this->db->query($sql4, [currentDateTime(), userId(), $outbound_id]);
+
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
             $response = array(
-                'success' => true
+                'success' => false,
+                'error' => $this->db->error(),
+                'message' => 'Delete task failed'
             );
         } else {
+            $this->db->trans_commit();
             $response = array(
-                'success' => false
+                'success' => true,
+                'message' => 'Delete task successfully'
             );
         }
+
         echo json_encode($response);
+
+
+        // $this->db->delete('pl_p', ['pl_id' => $post['pl_id']]);
+        // $this->outbound_m->deleteOutTemp($post);
+        // if ($this->db->affected_rows() > 0) {
+        //     $response = array(
+        //         'success' => true
+        //     );
+        // } else {
+        //     $response = array(
+        //         'success' => false
+        //     );
+        // }
+        // echo json_encode($response);
     }
 
     public function report()

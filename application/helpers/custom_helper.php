@@ -202,3 +202,34 @@ function wsConfig()
     $query = $CI->db->query($sql);
     return $query->row();
 }
+function getPlNo($outbound_id)
+{
+    $CI = &get_instance();
+    $sql = "select pl_no from pl_h where outbound_id = ?";
+    $query = $CI->db->query($sql, [$outbound_id]);
+    return $query;
+}
+
+function getPickerOB($outbound_id)
+{
+    $CI = &get_instance();
+    $sql = "select distinct a.user_id, a.sts, b.fullname 
+            from pl_p a 
+            inner join master_user b on a.user_id = b.id
+            where a.pl_id in(select id from pl_h where outbound_id = ?)
+            and a.sts = 'picker'";
+    $query = $CI->db->query($sql, [$outbound_id]);
+    return $query;
+}
+
+function duration($outbound_id)
+{
+    $CI = &get_instance();
+    $sql = "select distinct 
+            start_picking, stop_picking,
+            start_checking, stop_checking,
+            start_scanning, stop_scanning
+            from tb_out_temp where outbound_id = ?";
+    $query = $CI->db->query($sql, [$outbound_id]);
+    return $query->row();
+}
