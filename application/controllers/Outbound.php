@@ -61,30 +61,65 @@ class Outbound extends CI_Controller
     public function createTask()
     {
         $post = $this->input->post();
+
+        // var_dump($post);
+        // die;
+
+        $picklist = $this->outbound_m->getPickingListByDest($post['dest'], $post['activity_date']);
+
+        // var_dump($picklist->result());
+
+
+        // die;
+
+        if ($picklist->num_rows()  < 1) {
+            $response = array(
+                'success' => false,
+                'message' => 'No PL found'
+            );
+            echo json_encode($response);
+            return;
+        }
+
+
         $this->db->trans_start();
         $outbound_number = $this->outbound_m->generateOutboundNumber();
         $this->db->insert('outbound_h', array(
             'activity_date' => $post['activity_date'],
             'dest' => strtoupper($post['dest']),
+            'pintu_loading' => $post['loading_gate'] == '' ? null : $post['loading_gate'],
             'remarks' => $post['remarks'],
             'outbound_number' => $outbound_number,
             'picking_status' => 'open',
             'checking_status' => 'open',
             'scanning_status' => 'open',
+            'parking_time' => $post['truck_parking'] == '' ? null : $post['truck_parking'],
+            'start_loading' => $post['start_loading'] == '' ? null : $post['start_loading'],
+            'finish_loading' => $post['finish_loading'] == '' ? null : $post['finish_loading'],
             'created_at' => currentDateTime(),
             'created_by' => userId()
         ));
         $outbound_id = $this->db->insert_id();
-        if (!isset($post['no_pl'])) {
-            $response = array(
-                'success' => false,
-                'message' => 'No PL is required'
-            );
-            echo json_encode($response);
-            return;
-        }
-        foreach ($post['no_pl'] as $pl) {
-            $pl_id = $pl;
+
+
+
+
+
+        // if (!isset($post['no_pl'])) {
+        //     $response = array(
+        //         'success' => false,
+        //         'message' => 'No PL is required'
+        //     );
+        //     echo json_encode($response);
+        //     return;
+        // }
+
+
+
+
+
+        foreach ($picklist->result() as $pl) {
+            $pl_id = $pl->id;
             foreach ($post['picker_id'] as $key => $val) {
                 $params = array(
                     'pl_id' =>  $pl_id,
@@ -164,6 +199,12 @@ class Outbound extends CI_Controller
     public function editTask()
     {
         $post = $this->input->post();
+
+
+        // var_dump($post);
+        // die;
+
+
         $outbound_id = $post['id_task'];
 
         $pl_h = $this->db->get_where('pl_h', array('outbound_id' => $outbound_id));
@@ -176,14 +217,18 @@ class Outbound extends CI_Controller
         $params_ob = array(
             'remarks' => $post['remarks'],
             'updated_at' => currentDateTime(),
-            'updated_by' => userId()
+            'updated_by' => userId(),
+            'pintu_loading' => $post['loading_gate'] == '' ? null : $post['loading_gate'],
+            'parking_time' => $post['truck_parking'] == '' ? null : $post['truck_parking'],
+            'start_loading' => $post['start_loading'] == '' ? null : $post['start_loading'],
+            'finish_loading' => $post['finish_loading'] == '' ? null : $post['finish_loading'],
         );
         $this->db->where(array('id' => $outbound_id));
         $this->db->update('outbound_h', $params_ob);
 
         foreach ($pl_h->result() as $pl) {
             $pl_id = $pl->id;
-            $this->db->delete('pl_p', array('pl_id' => $pl_id));
+            $this->db->delete('pl_p', array('pl_id' => $pl_id, 'sts' => 'picker'));
 
             $params = array(
                 'remarks' => $post['remarks'],
@@ -365,7 +410,7 @@ class Outbound extends CI_Controller
             }
 
             if (isset($post['proses']) && $post['proses'] == 'start_checking') {
-                if ($pickingProccess != 'open') {
+                if ($checkingProccess != 'open') {
                     $response = array(
                         'success' => false,
                         'message' => 'Already start checking proccess'
@@ -387,6 +432,9 @@ class Outbound extends CI_Controller
             }
 
             if (isset($post['proses']) && $post['proses'] == 'start_checking') {
+                // var_dump($post);
+                // var_dump($pl_h->result());
+                // exit;
                 foreach ($pl_h->result() as $pl) {
                     $pl_id = $pl->id;
                     $params = array(

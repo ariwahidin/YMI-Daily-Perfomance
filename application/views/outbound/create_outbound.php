@@ -33,30 +33,24 @@
 <div class="row mb-3 pb-1">
     <div class="col-12">
         <div class="d-flex align-items-lg-center flex-lg-row flex-column">
-            <div class="flex-grow-1">
-                <h4 class="card-title mb-0 flex-grow-1"><strong id="clock"></strong></h4>
-            </div>
-            <div class="mt-3 mt-lg-0">
+            <div class="">
                 <form action="javascript:void(0);">
                     <div class="row">
-                        <div class="col-sm-auto">
+                        <div class="col-6">
                             <div class="input-group">
-                                <input type="text" id="inSearchDest" class="form-control" placeholder="Destination">
-                                <input type="text" id="inSearch" class="form-control" placeholder="Picking list">
+                                <input type="text" style="max-width: 150px;" id="inSearchDest" class="form-control" placeholder="Destination">
                                 <button class="btn btn-primary btn-sm border-primary text-white" id="btnSearch">
                                     <i class="ri-search-2-line"></i>
                                 </button>
                             </div>
                         </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary ms-2" id="btnCreate">Create new</button>
+                        </div>
 
                     </div>
                 </form>
             </div>
-            <?php if ($_SESSION['user_data']['role'] != 4) { ?>
-                <div class="mt-3 ms-3 mt-lg-0">
-                    <button class="btn btn-primary" id="btnCreate">Create new task</button>
-                </div>
-            <?php } ?>
         </div>
     </div>
 </div>
@@ -109,9 +103,30 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-6">
-                            <label for="priority-field" class="form-label mt-2">Remarks</label>
-                            <input type="text" id="remarks" name="remarks" class="form-control" value="">
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="priority-field" class="form-label mt-2">Truck Parking</label>
+                                <input type="time" id="truck_parking" name="truck_parking" class="form-control-sm" value="">
+                            </div>
+                            <div class="col-4">
+                                <label for="priority-field" class="form-label mt-2">Start Loading</label>
+                                <input type="time" id="start_loading" name="start_loading" class="form-control-sm" value="">
+                            </div>
+                            <div class="col-4">
+                                <label for="priority-field" class="form-label mt-2">Finish Loading</label>
+                                <input type="time" id="finish_loading" name="finish_loading" class="form-control-sm" value="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="priority-field" class="form-label mt-2">Loading Gate</label>
+                                <input type="text" id="loading_gate" name="loading_gate" class="form-control-sm" value="">
+                            </div>
+                            <div class="col-6">
+                                <label for="priority-field" class="form-label mt-2">Remarks</label>
+                                <input type="text" id="remarks" name="remarks" class="form-control-sm" value="">
+                            </div>
                         </div>
                     </div>
 
@@ -144,41 +159,10 @@
         })
 
         $('#btnCreate').on('click', function() {
-            // $.get('getPickingListAdm', {}, function(response) {
-
-            //     if (response.success == true) {
-
-            //         let divPL = $('#divPLNo');
-            //         divPL.empty();
-            //         divPL.html(`<label for="" class="form-label">PL No </label>
-            //                         <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;" required>
-            //                     </select>`);
-
-            //         let selPL = $('#no_pl');
-            //         selPL.empty();
-
-            //         let opt = `<option value="">Choose PL No </option>`;
-            //         response.picking_list.forEach(function(elem) {
-            //             opt += `<option value="${elem.pl_id}">${elem.pl_no}</option>`;
-            //         });
-            //         selPL.html(opt);
-
-            //         // console.log(opt);
-            //         // .select2();
-            //         $('#no_pl').select2({
-            //             // tags: true,
-            //             dropdownParent: $("#createTask")
-            //         });
-
-            //         // Membersihkan opsi-opsi yang sudah terpilih sebelumnya
-            //         $('#picker_id').find('option:selected').prop('selected', false).trigger('change');
-
-            //         $('#btnTask').text('Create');
-            //         $('#createTaskLabel').text('Create new');
-            //         $('#proses').val('new_task');
-            //         $('#createTask').modal('show');
-            //     }
-            // }, 'json');
+            $('#truck_parking').val('');
+            $('#start_loading').val('');
+            $('#finish_loading').val('');
+            $('#loading_gate').val('');
             $('#dest').val('');
             $('#dest').prop('readonly', false);
             $('#btnSearchDest').prop('disabled', false);
@@ -223,31 +207,32 @@
                         });
                         selPL.html(opt);
                         $('#no_pl').select2({
-                            dropdownParent: $("#createTask")
+                            dropdownParent: $("#createTask"),
+                            disabled: true
                         });
                     }
                 }
             });
         });
 
-        $('#divPLNo').on('change', '#no_pl', function() {
-            let id = $(this).val();
-            if (id != '') {
-                $.post('getPickingListAdmById', {
-                    id: id
-                }, function(response) {
-                    let data = response.picking_list;
-                    $('#no_truck').val(data.no_truck);
-                    $('#dest').val(data.dest);
-                    $('#dealer_code').val(data.dealer_code);
-                    $('#dealer_det').val(data.dealer_det);
-                    $('#ekspedisi').val(data.expedisi);
-                    $('#pintu_loading').val(data.pintu_loading);
-                    $('#remarks').val(data.remarks);
-                    $('#qty').val(data.tot_qty);
-                }, 'json');
-            }
-        })
+        // $('#divPLNo').on('change', '#no_pl', function() {
+        //     let id = $(this).val();
+        //     if (id != '') {
+        //         $.post('getPickingListAdmById', {
+        //             id: id
+        //         }, function(response) {
+        //             let data = response.picking_list;
+        //             $('#no_truck').val(data.no_truck);
+        //             $('#dest').val(data.dest);
+        //             $('#dealer_code').val(data.dealer_code);
+        //             $('#dealer_det').val(data.dealer_det);
+        //             $('#ekspedisi').val(data.expedisi);
+        //             $('#pintu_loading').val(data.pintu_loading);
+        //             $('#remarks').val(data.remarks);
+        //             $('#qty').val(data.tot_qty);
+        //         }, 'json');
+        //     }
+        // })
 
         function initWebSocket() {
             socket = new WebSocket(urlWebsocket);
@@ -335,34 +320,12 @@
         $('#content').on('click', '.btnEdit', async function() {
             startLoading();
             let id = $(this).data('id');
-            // let pl_id = $(this).data('pl-id');
             let result = await $.post('getTaskById', {
                 id: id,
             }, function(response) {
                 let task = response.data;
                 $('#btnSearchDest').prop('disabled', true);
                 $('#id_task').val(id);
-                // // console.log(task);
-                // // return false;
-
-                // $('#proses').val('edit_task');
-
-                // let divPL = $('#divPLNo');
-                // divPL.empty();
-                // divPL.html(`<label for="" class="form-label">PL No </label>
-                //                     <select name="no_pl" id="no_pl" class="form-control" style="width: 200px; height: 50px;" required>
-                //                 </select>`);
-
-                // let selPL = $('#no_pl');
-                // selPL.empty();
-
-                // let opt = `<option value="">Choose PL No </option>`;
-                // opt += `<option value="${task.pl_id}" selected>${task.no_pl}</option>`;
-                // selPL.html(opt);
-                // $('#no_pl').select2({
-                //     // tag : [],
-                //     dropdownParent: $("#createTask")
-                // });
 
                 let divPL = $('#optionsPickingList');
                 divPL.empty();
@@ -379,14 +342,8 @@
                 selPL.html(opt);
                 $('#no_pl').select2({
                     dropdownParent: $("#createTask"),
-                    disabled : true,
-                    // disabled: 'readonly'
+                    disabled: true,
                 });
-
-                // $('#no_pl').attr("readonly", true)
-
-                // $('#no_pl').select2("readonly", true);
-
 
                 $('#picker_id').find('option:selected').prop('selected', false);
                 $.each(response.picker, function(index, value) {
@@ -394,11 +351,15 @@
                 });
 
 
+                $('#truck_parking').val(task.parking_time == null ? '' : task.parking_time.slice(0, 8));
+                $('#start_loading').val(task.start_loading == null ? '' : task.start_loading.slice(0, 8));
+                $('#finish_loading').val(task.finish_loading == null ? '' : task.finish_loading.slice(0, 8));
+                $('#loading_gate').val(task.pintu_loading == null ? '' : task.pintu_loading);
+                $('#dest').val('');
                 $('#dest').val(task.dest);
                 $('#dest').prop('readonly', true);
                 $('#activity_date').val(task.activity_date);
                 $('#remarks').val(task.remarks);
-
                 $('#btnTask').text('Update');
                 $('#createTaskLabel').text('Edit');
                 $('#proses').val('edit_task');

@@ -10,7 +10,7 @@
                 <div class="card-header card-primary">
                     <div style="font-size: 11px;" class="row">
                         <div class="col-md-3 col-6 ps-3">
-                            <p class="m-0">Activity Date : <span> <?= $data->activity_date ?? '' ?></span></p>
+                            <p class="m-0">Act. Date : <span> <?= $data->activity_date ?? '' ?></span></p>
                             <p class="m-0">Dest : <span style="font-size: 11px;" class="badge badge-pill bg-danger"><strong><?= $data->dest ?? '' ?></strong></span></p>
                             <p class="m-0">PL No :
                             <ul>
@@ -24,7 +24,7 @@
                                 <?php } ?>
                             </ul>
                             </p>
-                            <p class="m-0">Pintu Loading : <span><?= $data->pintu_loading ?? '' ?></span></p>
+                            <p class="m-0">Loading Gate : <span><?= $data->pintu_loading ?? '' ?></span></p>
                             <p class="m-0">Remarks : <span><?= $data->remarks ?? '' ?></span></p>
                         </div>
                         <div class="col-md-2 col-6">
@@ -41,6 +41,13 @@
                             </p>
                             <p class="m-0">Checker :
                             <ul>
+                                <?php foreach (getCheckerOB($data->id)->result() as $checker) { ?>
+                                    <li class="fs-8">
+                                        <span class="badge badge-pill bg-success">
+                                            <strong><?= $checker->fullname ?? '' ?></strong>
+                                        </span>
+                                    </li>
+                                <?php } ?>
                             </ul>
                             </p>
                             <p class="m-0">Scanner : </p>

@@ -98,6 +98,11 @@ class Outbound_m extends CI_Model
         $sql = "select distinct a.* from outbound_h a
                 inner join tb_out_temp c on a.id = c.outbound_id
                 WHERE a.is_active = 'Y'";
+        
+        if (isset($post['searchDest']) && $post['searchDest'] != '') {
+            $searchDest = $post['searchDest'];
+            $sql .= " AND a.dest LIKE '%$searchDest%'";
+        }
 
         if (isset($post['id'])) {
             $outbound_id = $post['id'];

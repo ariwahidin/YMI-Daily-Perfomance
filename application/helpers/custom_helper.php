@@ -221,6 +221,18 @@ function getPickerOB($outbound_id)
     $query = $CI->db->query($sql, [$outbound_id]);
     return $query;
 }
+function getCheckerOB($outbound_id)
+{
+    $CI = &get_instance();
+    $sql = "select distinct a.user_id, a.sts, b.fullname 
+            from pl_p a 
+            inner join master_user b on b.id = a.user_id
+            where a.pl_id in(select id from pl_h where outbound_id = ?)
+            and a.sts = 'checker'";
+    $query = $CI->db->query($sql, [$outbound_id]);
+    // var_dump($CI->db->last_query());
+    return $query;
+}
 
 function duration($outbound_id)
 {

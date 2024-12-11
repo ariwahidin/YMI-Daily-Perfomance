@@ -333,19 +333,17 @@
                                 }
                             }).then(function() {
                                 getTablePickingList();
-                                $("input[name='pl_no']").val('');
+                                $('#pl_no').focus();
+                                // $("input[name='pl_no']").val('');
                             }).then(function() {
                                 isSubmitting = false;
-                                // $('#modalForm').modal('hide');
-                                stopLoading();
                                 socket.send('ping');
-                                setTimeout(function() {
-                                    $('#pl_no').focus();
-                                }, 300);
+                                // setTimeout(function() {
+                                //     $('#pl_no').focus();
+                                // }, 300);
                             })
                         } else {
                             isSubmitting = false;
-                            stopLoading();
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Failed',
@@ -354,7 +352,7 @@
                         }
                     },
                 }).done(function() {
-
+                    stopLoading();
                 })
             } else {
                 $.ajax({
@@ -376,11 +374,9 @@
                                 getTablePickingList();
                                 $('#modalForm').modal('hide');
                                 socket.send('ping');
-                                stopLoading();
                             })
                         } else {
                             isSubmitting = false;
-                            stopLoading();
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Failed',
@@ -389,7 +385,9 @@
                         }
                     },
                     dataType: 'json'
-                });
+                }).done(function() {
+                    stopLoading();
+                })
             }
         });
 
