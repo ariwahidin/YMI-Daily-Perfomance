@@ -98,7 +98,7 @@ class Outbound_m extends CI_Model
         $sql = "select distinct a.* from outbound_h a
                 inner join tb_out_temp c on a.id = c.outbound_id
                 WHERE a.is_active = 'Y'";
-        
+
         if (isset($post['searchDest']) && $post['searchDest'] != '') {
             $searchDest = $post['searchDest'];
             $sql .= " AND a.dest LIKE '%$searchDest%'";
@@ -160,8 +160,27 @@ class Outbound_m extends CI_Model
         $this->db->where('outbound_id', $id);
         $this->db->update('tb_out_temp', $params);
 
-        $outbound = $this->db->get_where('outbound_h', ['id' => $id])->row();
-        $outbound_id = $outbound->id;
+        // Menyelesaikan transaksi
+        $this->db->trans_complete();
+
+        // Memeriksa apakah transaksi berhasil atau tidak
+        if ($this->db->trans_status() === FALSE) {
+            // Jika transaksi gagal, bisa dilakukan rollback
+            $this->db->trans_rollback();
+
+
+
+            // Atau penanganan kesalahan lainnya
+        } else {
+            // Jika transaksi berhasil, bisa dilakukan commit
+            $this->db->trans_commit();
+        }
+    }
+
+    function closeTask($outbound_id)
+    {
+        $this->db->trans_start();
+        $outbound = $this->db->get_where('outbound_h', ['id' => $outbound_id])->row();
 
         if ($outbound->picking_status == 'completed' && $outbound->checking_status == 'completed' && $outbound->scanning_status == 'completed') {
             $pl_h = $this->db->get_where('pl_h', ['outbound_id' => $outbound_id]);
@@ -197,49 +216,12 @@ class Outbound_m extends CI_Model
                 );
                 $this->db->insert('tb_out', $data);
 
-                // if ($this->db->affected_rows() > 0) {
-                //     $this->db->where(['no_pl' => $pl_id]);
-                //     $this->db->delete('tb_out_temp');
-                // }
+                if ($this->db->affected_rows() > 0) {
+                    $this->db->where(['no_pl' => $pl_id]);
+                    $this->db->delete('tb_out_temp');
+                }
             }
         }
-
-        // if ($this->db->affected_rows() > 0) {
-        //     $sql = "select 
-        //     b.id as pl_id, b.pl_no as no_pl, b.no_truck, b.tot_qty as qty,
-        //     b.adm_pl_date as pl_date, b.adm_pl_time as pl_time, b.expedisi as ekspedisi,
-        //     a.start_picking, a.stop_picking, a.start_checking, a.stop_checking, a.start_scanning, a.stop_scanning,
-        //     a.created_date, a.created_by, a.remarks
-        //     from tb_out_temp a
-        //     INNER JOIN pl_h b on a.no_pl = b.id
-        //     WHERE a.id = '$id'";
-        //     $act = $this->db->query($sql)->row();
-        //     if ($act->stop_picking != null && $act->stop_checking != null && $act->stop_scanning != null) {
-        //         $data = array(
-        //             'pl_id' => $act->pl_id,
-        //             'no_pl' => $act->no_pl,
-        //             'start_picking' => $act->start_picking,
-        //             'stop_picking' => $act->stop_picking,
-        //             'duration_picking' => countDuration($act->start_picking, $act->stop_picking),
-        //             'start_checking' => $act->start_checking,
-        //             'stop_checking' => $act->stop_checking,
-        //             'duration_checking' => countDuration($act->start_checking, $act->stop_checking),
-        //             'start_scanning' => $act->start_scanning,
-        //             'stop_scanning' => $act->stop_scanning,
-        //             'duration_scanning' => countDuration($act->start_scanning, $act->stop_scanning),
-        //             'activity_created_date' => $act->created_date,
-        //             'activity_created_by' => $act->created_by,
-        //             'created_date' => currentDateTime(),
-        //             'created_by' => userId(),
-        //             'is_deleted' => 'N'
-        //         );
-        //         $this->db->insert('tb_out', $data);
-        //         if ($this->db->affected_rows() > 0) {
-        //             $this->db->where(['id' => $id]);
-        //             $this->db->delete('tb_out_temp');
-        //         }
-        //     }
-        // }
 
         // Menyelesaikan transaksi
         $this->db->trans_complete();
@@ -249,9 +231,13 @@ class Outbound_m extends CI_Model
             // Jika transaksi gagal, bisa dilakukan rollback
             $this->db->trans_rollback();
             // Atau penanganan kesalahan lainnya
+            $response = array('success' => false, 'message' => 'Error : ' . $this->db->error());
+            echo json_encode($response);
         } else {
             // Jika transaksi berhasil, bisa dilakukan commit
             $this->db->trans_commit();
+            $response = array('success' => true, 'message' => 'Success');
+            echo json_encode($response);
         }
     }
 
@@ -325,44 +311,6 @@ class Outbound_m extends CI_Model
         $start_date = $post['start_date'];
         $end_date = $post['end_date'];
 
-        // $sql = "WITH OutboundProses AS (
-        //     SELECT COUNT(*) AS count_proses,
-        // 	CASE WHEN SUM(CONVERT(INT,tot_qty)) IS NULL THEN 0 ELSE SUM(CONVERT(INT,tot_qty)) END as qty_proses
-        //     FROM tb_out_temp a 
-        // 	INNER JOIN pl_h b ON a.no_pl = b.id 
-        //     WHERE CONVERT(date, b.activity_date) BETWEEN CONVERT(date, '$start_date') AND CONVERT(date, '$end_date')
-        // ),
-        // OutboundComplete AS (
-        //     SELECT COUNT(*) AS count_complete,
-        // 	CASE WHEN SUM(CONVERT(INT,tot_qty)) IS NULL THEN 0 ELSE SUM(CONVERT(INT,tot_qty)) END as qty_complete
-        //     FROM tb_out a
-        // 	INNER JOIN pl_h b ON a.pl_id = b.id
-        //     WHERE CONVERT(date, b.activity_date) BETWEEN CONVERT(date, '$start_date') AND CONVERT(date, '$end_date')
-        // ),
-        // TotalOutbound AS (
-        //     SELECT 
-        //         (SELECT count_proses FROM OutboundProses) + 
-        //         (SELECT count_complete FROM OutboundComplete) AS total_count
-        // ),
-        // TotalQty AS (
-        //     SELECT 
-        //         (SELECT qty_proses FROM OutboundProses) + 
-        //         (SELECT qty_complete FROM OutboundComplete) AS total_qty
-        // )
-        // SELECT 
-        //     (SELECT count_proses FROM OutboundProses) AS outbound_proses,
-        // 	(SELECT qty_proses FROM OutboundProses) AS qty_proses,
-        //     (SELECT count_complete FROM OutboundComplete) AS outbound_complete,
-        // 	(SELECT qty_complete FROM OutboundComplete) AS qty_complete,
-        //     (SELECT total_count FROM TotalOutbound) AS total_outbound,
-        // 	(SELECT total_qty FROM TotalQty) AS total_qty,
-        //     CASE 
-        //         WHEN (SELECT total_count FROM TotalOutbound) <> 0 THEN
-        //             (CAST((SELECT count_complete FROM OutboundComplete) AS FLOAT) / 
-        //              (SELECT total_count FROM TotalOutbound)) * 100
-        //         ELSE 0 
-        //     END AS presentase";
-
         // Optimized Query
         $sql = "WITH
         OutboundUnProses AS (
@@ -391,9 +339,20 @@ class Outbound_m extends CI_Model
             WHERE b.activity_date BETWEEN '$start_date' AND '$end_date'
         ),
         InfoSuratJalan AS (
-            SELECT COUNT(sj_no) AS total_sj FROM pl_h
-            WHERE activity_date BETWEEN '$start_date' AND '$end_date'
-            AND sj_no <> ''
+            SELECT 
+			COUNT(sj_no) AS total_sj, 
+			SUM(
+				CASE 
+					WHEN ISNUMERIC(tot_qty) = 1 THEN CAST(tot_qty AS FLOAT) 
+					ELSE 0 
+					 END
+					) AS qty_item_sj
+				FROM 
+					pl_h
+				WHERE 
+					activity_date BETWEEN '$start_date' AND '$end_date'
+					AND sj_no IS NOT NULL 
+					AND sj_no <> ''
         )
         SELECT 
             ou.count_unproses AS outbound_unproses,
@@ -403,6 +362,7 @@ class Outbound_m extends CI_Model
             oc.count_complete AS outbound_complete,
             oc.qty_complete AS qty_complete,
             isj.total_sj AS total_sj,
+            isj.qty_item_sj as qty_item_sj,
             (op.count_proses + oc.count_complete + ou.count_unproses) AS total_pl,
             (op.qty_proses + oc.qty_complete + ou.qty_unproses) AS total_qty
         FROM OutboundUnProses ou, OutboundProses op, OutboundComplete oc, InfoSuratJalan isj;";

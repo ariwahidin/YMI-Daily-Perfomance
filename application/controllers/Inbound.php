@@ -61,14 +61,15 @@ class Inbound extends CI_Controller
                 'sj_send_date' => $post['send_date'],
                 'sj_date' => $post['sj_date'],
                 'sj_time' => date('H:i:s', strtotime($post['sj_time'])),
-                'time_arival' => date('H:i:s', strtotime($post['toa'])),
+                'time_departure' => $post['tod'] == '' ? null : date('H:i:s', strtotime($post['tod'])),
+                'time_arival' => $post['toa'] == '' ? null : date('H:i:s', strtotime($post['toa'])),
                 'ekspedisi' => $post['expedisi'],
                 'driver' => $post['driver'],
                 'factory_code' => $post['factory'],
                 'alloc_code' => $post['alocation'],
                 'pintu_unloading' => $post['pintu_unloading'],
                 'remarks' => $post['remarks'],
-                'activity_date' =>$post['activity_date'],
+                'activity_date' => $post['activity_date'],
                 'created_date' => currentDateTime(),
                 'created_by' => userId()
             );
@@ -113,7 +114,8 @@ class Inbound extends CI_Controller
                 'alloc_code' => $post['alocation'],
                 'pintu_unloading' => $post['pintu_unloading'],
                 'sj_send_date' => $post['send_date'],
-                'time_arival' => $post['toa'],
+                'time_departure' => $post['tod'] == '' ? null : date('H:i:s', strtotime($post['tod'])),
+                'time_arival' => $post['toa'] == '' ? null : date('H:i:s', strtotime($post['toa'])),
                 'remarks' => $post['remarks'],
                 'activity_date' => $post['activity_date'],
             );
@@ -388,7 +390,8 @@ class Inbound extends CI_Controller
             'alloc_code' => $post['alocation'],
             'pintu_unloading' => $post['pintu_unloading'],
             'sj_send_date' => $post['send_date'],
-            'time_arival' => $post['toa'],
+            'time_departure' => $post['tod'] == '' ? null : date('H:i:s', strtotime($post['tod'])),
+            'time_arival' => $post['toa'] == '' ? null : date('H:i:s', strtotime($post['toa'])),
             'remarks' => $post['remarks'],
             'updated_by' => userId(),
             'updated_at' => currentDateTime()

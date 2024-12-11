@@ -1,5 +1,6 @@
 uncommit notulen 25-10-2024
 - cretaed new table "outbound_h"
-- add column outbound_id in pl_h
-- add column outbound_id in tb_out_temp
-- add column outbound_id in tb_out
+- add column outbound_id(int) in pl_h
+- add column outbound_id(int) in tb_out_temp
+- add column outbound_id(int) in tb_out
+- add column time_departure(varchar(50)) in tb_trans_temp

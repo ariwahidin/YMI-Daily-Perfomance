@@ -14,12 +14,6 @@
                     </li>
                 </ol>
             </div>
-
-            <!-- <div class="page-title-right">
-                <ol class="breadcrumb m-0">
-                </ol>
-            </div> -->
-
         </div>
     </div>
 </div>
@@ -29,15 +23,13 @@
         <div class="d-flex align-items-lg-center flex-lg-row flex-column">
             <div class="flex-grow-1">
                 <h4 class="card-title mb-0 flex-grow-1"></h4>
-                <!-- <h4 class="fs-16 mb-1">Hi , <?= $_SESSION['user_data']['fullname'] ?></h4> -->
-                <!-- <p class="text-muted mb-0">This is a task that you must complete.</p> -->
             </div>
             <div class="mt-3 mt-lg-0">
                 <form action="javascript:void(0);">
                     <div class="row">
                         <div class="col-sm-auto">
                             <div class="input-group">
-                                <input type="text" id="inSearch" class="form-control border-0 dash-filter-picker shadow" placeholder="Search SJ">
+                                <input type="text" id="inSearch" class="form-control border-0 dash-filter-picker shadow" placeholder="SJ, No truck, Driver, Checker, Alocation, Ekspedisi">
                                 <button class="btn btn-primary border-primary text-white" id="btnSearch">
                                     <i class="ri-search-2-line"></i>
                                 </button>
@@ -71,12 +63,9 @@
                 <form autocomplete="off" action="#" id="creatask">
                     <input type="hidden" id="proses" name="proses" class="form-control">
                     <input type="hidden" id="id_task" name="id_task" class="form-control">
-
-
                     <div class="row">
                         <div class="col-lg-3 col-xs-6">
                             <label for="priority-field" class="form-label">Factory Code</label>
-                            <!-- <input type="text" id="factory" name="factory" class="form-control" value=""> -->
                             <select class="form-control" name="factory" id="factory" required>
                                 <option value="">Choose Factory</option>
                                 <?php foreach ($factory->result() as $f) { ?>
@@ -86,7 +75,7 @@
                         </div>
                         <div class="col col-lg-3 col-xs-6">
                             <label for="task-title-input" class="form-label">SJ No</label>
-                            <input type="text" id="sj" name="sj" class="form-control" placeholder="" value="" required>
+                            <input type="text" id="sj" name="sj" class="form-control" placeholder="" value="" maxlength="8" required>
                         </div>
                         <div class="col col-lg-2">
                             <label for="task-title-input" class="form-label">SJ Send Date</label>
@@ -105,7 +94,6 @@
                     <div class="row form-group">
                         <div class="col col-lg-3 col-xs-6">
                             <label for="task-status" class="form-label">No Truck</label>
-                            <!-- <input type="text" id="no_truck" name="no_truck" class="form-control" value=""> -->
                             <select class="form-control" name="no_truck" id="no_truck" required>
                                 <option value="">Choose No Truck</option>
                                 <?php foreach ($ekspedisi->result() as $e) { ?>
@@ -139,14 +127,18 @@
                             <input type="text" id="alocation" name="alocation" class="form-control" value="">
                         </div>
                         <div class="col-6 col-lg-3">
-                            <label for="task-assign-input" class="form-label">Pintu Unloading</label>
+                            <label for="task-assign-input" class="form-label">Unloading Gate</label>
                             <input type="text" id="pintu_unloading" name="pintu_unloading" class="form-control" value="">
                         </div>
-                        <div class="col-6 col-lg-3">
+                        <div class="col-6 col-lg-2">
                             <label for="task-status" class="form-label">Qty</label>
                             <input type="number" id="qty" name="qty" class="form-control" placeholder="" value="">
                         </div>
-                        <div class="col-6 col-lg-3">
+                        <div class="col-6 col-lg-2">
+                            <label for="task-status" class="form-label">Time of departure</label>
+                            <input type="time" id="tod" name="tod" class="form-control" placeholder="" value="">
+                        </div>
+                        <div class="col-6 col-lg-2">
                             <label for="task-status" class="form-label">Time of arival</label>
                             <input type="time" id="toa" name="toa" class="form-control" placeholder="" value="">
                         </div>
@@ -347,6 +339,7 @@
             $('#driver').val(task.driver);
             $('#remarks').val(task.remarks);
             $('#send_date').val(task.sj_send_date);
+            $('#tod').val(task.time_departure);
             $('#toa').val(task.time_arival);
             $('#pintu_unloading').val(task.pintu_unloading);
             $('#activity_date').val(task.activity_date);

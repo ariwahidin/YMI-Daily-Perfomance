@@ -134,7 +134,7 @@
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
                                     <span id="spTotalSJ">0</span><span class="fs-10 text-muted mb-0"> SJ</span>
                                 </h4>
-                                <!-- <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_complete_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p> -->
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_item_sj">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p>
                             </div>
 
                             <div class="flex-grow-1 overflow-hidden">
@@ -444,6 +444,7 @@
                 $('#sp_plan').text(response.man_power.total_plan);
                 $('#sp_actual').text(response.man_power.user_active);
                 $('#spTotalSJ').text(data.total_sj);
+                $('#sp_qty_item_sj').text(data.qty_item_sj);
 
             }, 'json');
         }

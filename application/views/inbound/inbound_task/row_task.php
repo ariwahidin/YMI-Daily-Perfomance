@@ -16,7 +16,8 @@
                             <p class="m-0">Qty : <span><?= $data->qty ?></span></p>
                         </div>
                         <div class="col-md-2 col-6">
-                            <p class="m-0">Time arival : <span><?= $data->time_arival == null ? '' : date('H:i', strtotime($data->time_arival)) ?></span></p>
+                            <p class="m-0">Departure : <span><?= $data->time_departure == null ? '' : date('H:i', strtotime($data->time_departure)) ?></span></p>
+                            <p class="m-0">Arival : <span><?= $data->time_arival == null ? '' : date('H:i', strtotime($data->time_arival)) ?></span></p>
                             <p class="m-0">No Truck : <span><?= $data->no_truck ?></span></p>
                             <p class="m-0">Ekspedisi : <span><?= $data->ekspedisi_name ?></span></p>
                             <p class="m-0">Driver : <span><?= $data->driver ?></span></p>

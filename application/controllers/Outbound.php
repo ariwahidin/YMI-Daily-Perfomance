@@ -610,23 +610,31 @@ class Outbound extends CI_Controller
         echo json_encode($response);
     }
 
-    public function closeOut(){
+    public function closeOut()
+    {
         $post = $this->input->post();
         $outbound_id = $post['id'];
-        $this->db->delete('tb_out_temp', array('outbound_id' => $outbound_id));
 
-        if ($this->db->affected_rows() > 0) {
-            $response = array(
-                'success' => true,
-                'message' => 'Deleting data successfully'
-            );
-        } else {
+        $sqlCek = "select * from outbound_h
+                where
+                scanning_status = 'completed'
+                and parking_time is not null
+                and start_loading is not null
+                and finish_loading is not null
+                and id = ?";
+
+        $queryCek = $this->db->query($sqlCek, [$outbound_id]);
+
+        if ($queryCek->num_rows() < 1) {
             $response = array(
                 'success' => false,
-                'message' => 'Error : ' . $this->db->error()
+                'message' => 'Outbound is not completed, truck parking, start/finish load must be filled'
             );
+            echo json_encode($response);
+            return;
         }
-        echo json_encode($response);    
+
+        $this->outbound_m->closeTask($outbound_id);
     }
 
     public function deleteOut()
@@ -672,19 +680,6 @@ class Outbound extends CI_Controller
 
         echo json_encode($response);
 
-
-        // $this->db->delete('pl_p', ['pl_id' => $post['pl_id']]);
-        // $this->outbound_m->deleteOutTemp($post);
-        // if ($this->db->affected_rows() > 0) {
-        //     $response = array(
-        //         'success' => true
-        //     );
-        // } else {
-        //     $response = array(
-        //         'success' => false
-        //     );
-        // }
-        // echo json_encode($response);
     }
 
     public function report()

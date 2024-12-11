@@ -375,7 +375,8 @@
 
                         divTable.html(response.summary);
                         $('#tableOutboundActivities').DataTable({
-                            sort: false
+                            sort: false,
+                            paginate: false
                         });
 
                         divPicker.html(response.picker);

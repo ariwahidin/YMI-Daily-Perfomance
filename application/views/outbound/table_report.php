@@ -22,12 +22,12 @@
             <th scope="col">SELESAI SCAN</th>
             <th scope="col">JAM TERIMA SJ</th>
             <th scope="col">PINTU LOADING</th>
-            <th scope="col">DURASI DORONG</th>
+            <!-- <th scope="col">DURASI DORONG</th>
             <th scope="col">LEAD TIME DURASI DORONG</th>
             <th scope="col">DURASI CHECK</th>
             <th scope="col">LEAD TIME DURASI CHECK</th>
             <th scope="col">DURASI SCAN</th>
-            <th scope="col">LEAD TIME DURASI SCAN</th>
+            <th scope="col">LEAD TIME DURASI SCAN</th> -->
             <th scope="col">REMARKS</th>
         </tr>
     </thead>
@@ -58,12 +58,12 @@
                 <td><?= $data->{'SELESAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'SELESAI SCAN'})) ?></td>
                 <td><?= $data->{'JAM TERIMA SJ'} == null ? '' : date('H:i', strtotime($data->{'JAM TERIMA SJ'})) ?></td>
                 <td><?= $data->{'PINTU LOADING'} ?></td>
-                <td><?= $data->{'DURASI DORONG'} ?></td>
+                <!-- <td><?= $data->{'DURASI DORONG'} ?></td>
                 <td><?= $data->{'LEAD TIME DURASI DORONG'} ?></td>
                 <td><?= $data->{'DURASI CHECK'} ?></td>
                 <td><?= $data->{'LEAD TIME DURASI CHECK'} ?></td>
                 <td><?= $data->{'DURASI SCAN'} ?></td>
-                <td><?= $data->{'LEAD TIME DURASI SCAN'} ?></td>
+                <td><?= $data->{'LEAD TIME DURASI SCAN'} ?></td> -->
                 <td><?= $data->{'REMARKS'} ?></td>
             </tr>
         <?php

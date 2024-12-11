@@ -172,7 +172,6 @@
             $('#btnTask').text('Create');
             $('#createTaskLabel').text('Create New');
             $('#createTask').modal('show');
-
         });
 
         $('#btnSearchDest').on('click', function() {
@@ -404,6 +403,11 @@
                 if (response.success == true) {
                     getAllRowTask();
                     socket.send('ping');
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: response.message,
+                    })
                 }
             }, 'json');
         });

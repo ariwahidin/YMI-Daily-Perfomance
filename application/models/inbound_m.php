@@ -306,7 +306,10 @@ class Inbound_m extends CI_Model
         if (isset($post['search'])) {
             if ($post['search'] != '') {
                 $search = $post['search'];
-                $this->db->like('no_sj', $search, 'both');
+                $this->db->like('a.no_sj', $search, 'both');
+                $this->db->or_like('a.no_truck', $search, 'both');
+                $this->db->or_like('b.fullname', $search, 'both');
+                $this->db->or_like('a.driver', $search, 'both');
             }
         }
 

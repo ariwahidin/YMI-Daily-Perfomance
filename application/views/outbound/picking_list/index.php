@@ -183,9 +183,11 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Expedisi : </label>
-                                <select class="form-control" name="expedisi" id="expedisi" required>
+                                <!-- <select class="form-control" name="expedisi" id="expedisi" required>
                                     <option value="">Choose ekspedisi</option>
-                                </select>
+                                </select> -->
+                                <input type="text" name="expedisi" id="expedisi" hidden readonly required>
+                                <input type="text" class="form-control" name="expedisi_name" id="expedisi_name" readonly required">
                             </div>
                         </div>
                         <div class="col">
@@ -261,7 +263,6 @@
         }
 
         $('#dest').select2({
-            // tags: true,
             dropdownParent: $("#modalForm")
         });
 
@@ -284,15 +285,15 @@
         })
 
         $('#no_truck').select2({
-            // tags: true,
             dropdownParent: $("#modalForm")
         });
 
         $('#no_truck').on('change', function() {
             let kode = $(this).val();
             let id = $(this).children('option:selected').data('id');
-            // console.log(id);
+            let name = $(this).children('option:selected').data('name');
             $('#expedisi').val(id);
+            $('#expedisi_name').val(name);
         })
 
         getTablePickingList();
@@ -334,13 +335,9 @@
                             }).then(function() {
                                 getTablePickingList();
                                 $('#pl_no').focus();
-                                // $("input[name='pl_no']").val('');
                             }).then(function() {
                                 isSubmitting = false;
                                 socket.send('ping');
-                                // setTimeout(function() {
-                                //     $('#pl_no').focus();
-                                // }, 300);
                             })
                         } else {
                             isSubmitting = false;
@@ -471,14 +468,12 @@
                     if (response.success == true) {
                         $('#cardPL').empty();
                         $('#cardPL').html(response.table);
-                        $('#tablePL').dataTable();
+                        $('#tablePL').dataTable({
+                            paginate : false
+                        });
                     }
                 }
             });
-
-            // $.post('', {}, function(response) {
-
-            // }, 'json');
         }
 
         $('#btnRefresh').on('click', async function() {
