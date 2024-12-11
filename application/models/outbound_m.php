@@ -197,10 +197,10 @@ class Outbound_m extends CI_Model
                 );
                 $this->db->insert('tb_out', $data);
 
-                if ($this->db->affected_rows() > 0) {
-                    $this->db->where(['no_pl' => $pl_id]);
-                    $this->db->delete('tb_out_temp');
-                }
+                // if ($this->db->affected_rows() > 0) {
+                //     $this->db->where(['no_pl' => $pl_id]);
+                //     $this->db->delete('tb_out_temp');
+                // }
             }
         }
 

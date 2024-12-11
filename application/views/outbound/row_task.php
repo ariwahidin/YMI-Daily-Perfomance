@@ -57,6 +57,7 @@
                         <div class="col-md-6 pt-1">
                             <button class="btn btn-sm btn-success btnEdit" data-id="<?= $data->id ?>">Edit</button>
                             <button class="btn btn-sm btn-danger btnDelete" data-id="<?= $data->id ?>">Delete</button>
+                            <button class="btn btn-sm btn-warning btnClose float-end" data-id="<?= $data->id ?>">Close Task</button>
                         </div>
                     </div>
                 </div>

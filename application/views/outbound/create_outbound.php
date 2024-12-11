@@ -110,22 +110,22 @@
                                 <input type="time" id="truck_parking" name="truck_parking" class="form-control-sm" value="">
                             </div>
                             <div class="col-4">
-                                <label for="priority-field" class="form-label mt-2">Start Loading</label>
+                                <label for="priority-field" class="form-label mt-2">Start Load</label>
                                 <input type="time" id="start_loading" name="start_loading" class="form-control-sm" value="">
                             </div>
                             <div class="col-4">
-                                <label for="priority-field" class="form-label mt-2">Finish Loading</label>
+                                <label for="priority-field" class="form-label mt-2">Finish Load</label>
                                 <input type="time" id="finish_loading" name="finish_loading" class="form-control-sm" value="">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <label for="priority-field" class="form-label mt-2">Loading Gate</label>
-                                <input type="text" id="loading_gate" name="loading_gate" class="form-control-sm" value="">
+                                <input style="max-width: 150px;" type="text" id="loading_gate" name="loading_gate" class="form-control-sm" value="">
                             </div>
                             <div class="col-6">
                                 <label for="priority-field" class="form-label mt-2">Remarks</label>
-                                <input type="text" id="remarks" name="remarks" class="form-control-sm" value="">
+                                <input style="max-width: 180px;" type="text" id="remarks" name="remarks" class="form-control-sm" value="">
                             </div>
                         </div>
                     </div>
