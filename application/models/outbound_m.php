@@ -362,7 +362,7 @@ class Outbound_m extends CI_Model
             oc.count_complete AS outbound_complete,
             oc.qty_complete AS qty_complete,
             isj.total_sj AS total_sj,
-            isj.qty_item_sj as qty_item_sj,
+            isnull(isj.qty_item_sj, 0) as qty_item_sj,
             (op.count_proses + oc.count_complete + ou.count_unproses) AS total_pl,
             (op.qty_proses + oc.qty_complete + ou.qty_unproses) AS total_qty
         FROM OutboundUnProses ou, OutboundProses op, OutboundComplete oc, InfoSuratJalan isj;";
