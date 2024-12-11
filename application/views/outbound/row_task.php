@@ -52,12 +52,21 @@
                             </p>
                             <p class="m-0">Scanner : </p>
                             <ul>
+                                <?php foreach (getScannerOB($data->id)->result() as $scanner) { ?>
+                                    <li class="fs-8">
+                                        <span class="badge badge-pill bg-success">
+                                            <strong><?= $scanner->fullname ?? '' ?></strong>
+                                        </span>
+                                    </li>
+                                <?php } ?>
                             </ul>
                         </div>
                         <div class="col-md-6 pt-1">
                             <button class="btn btn-sm btn-success btnEdit" data-id="<?= $data->id ?>">Edit</button>
                             <button class="btn btn-sm btn-danger btnDelete" data-id="<?= $data->id ?>">Delete</button>
-                            <button class="btn btn-sm btn-warning btnClose float-end" data-id="<?= $data->id ?>">Close Task</button>
+                            <?php if ($data->scanning_status == 'completed') { ?>
+                                <button class="btn btn-sm btn-warning btnClose float-end" data-id="<?= $data->id ?>">Close Task</button>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>

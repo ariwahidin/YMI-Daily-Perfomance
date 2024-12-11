@@ -610,6 +610,25 @@ class Outbound extends CI_Controller
         echo json_encode($response);
     }
 
+    public function closeOut(){
+        $post = $this->input->post();
+        $outbound_id = $post['id'];
+        $this->db->delete('tb_out_temp', array('outbound_id' => $outbound_id));
+
+        if ($this->db->affected_rows() > 0) {
+            $response = array(
+                'success' => true,
+                'message' => 'Deleting data successfully'
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Error : ' . $this->db->error()
+            );
+        }
+        echo json_encode($response);    
+    }
+
     public function deleteOut()
     {
         $post = $this->input->post();

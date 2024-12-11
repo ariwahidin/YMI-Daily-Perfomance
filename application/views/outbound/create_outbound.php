@@ -394,6 +394,20 @@
             });
         });
 
+        $('#content').on('click', '.btnClose', function() {
+            let id = $(this).data('id');
+            startLoading();
+            $.post('closeOut', {
+                id: id
+            }, function(response) {
+                stopLoading();
+                if (response.success == true) {
+                    getAllRowTask();
+                    socket.send('ping');
+                }
+            }, 'json');
+        });
+
         $('#content').on('click', '.btnActivity', function() {
 
             Swal.fire({
