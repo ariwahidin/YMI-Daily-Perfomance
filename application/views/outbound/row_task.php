@@ -24,10 +24,6 @@
                                 <?php } ?>
                             </ul>
                             </p>
-                            <p class="m-0">Loading Gate : <span><?= $data->pintu_loading ?? '' ?></span></p>
-                            <p class="m-0">Remarks : <span><?= $data->remarks ?? '' ?></span></p>
-                        </div>
-                        <div class="col-md-2 col-6">
                             <p class="m-0">Picker :
                             <ul>
                                 <?php foreach (getPickerOB($data->id)->result() as $picker) { ?>
@@ -39,6 +35,10 @@
                                 <?php } ?>
                             </ul>
                             </p>
+
+                        </div>
+                        <div class="col-md-2 col-6">
+
                             <p class="m-0">Checker :
                             <ul>
                                 <?php foreach (getCheckerOB($data->id)->result() as $checker) { ?>
@@ -60,6 +60,11 @@
                                     </li>
                                 <?php } ?>
                             </ul>
+                            <p class="m-0">Truck parking : <span><?= $data->parking_time == null ?  '' : date('H:i', strtotime($data->parking_time)) ?></span></p>
+                            <p class="m-0">Start Load : <span><?= $data->start_loading == null ?  '' : date('H:i', strtotime($data->start_loading)) ?></span></p>
+                            <p class="m-0">Fiinish Load : <span><?= $data->finish_loading == null ?  '' : date('H:i', strtotime($data->finish_loading)) ?></span></p>
+                            <p class="m-0">Loading Gate : <span><?= $data->pintu_loading ?? '' ?></span></p>
+                            <p class="m-0">Remarks : <span><?= $data->remarks ?? '' ?></span></p>
                         </div>
                         <div class="col-md-6 pt-1">
                             <button class="btn btn-sm btn-success btnEdit" data-id="<?= $data->id ?>">Edit</button>

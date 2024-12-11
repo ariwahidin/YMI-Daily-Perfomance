@@ -1,4 +1,4 @@
-<option value="">--Choose No Truck--</option>
+<option value="">--No Truck--</option>
 <?php
 foreach ($ekspedisi->result() as $eks) {
 ?>

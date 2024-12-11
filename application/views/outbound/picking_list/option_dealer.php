@@ -1,4 +1,4 @@
-<option value="">--Choose Dealer Code--</option>
+<option value="">--Dealer Code--</option>
 <?php
 foreach ($dealer->result() as $data) {
 ?>

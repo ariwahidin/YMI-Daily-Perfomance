@@ -1,4 +1,4 @@
-<option value="">--Choose Destination--</option>
+<option value="">--Destination--</option>
 <?php
 foreach ($dest->result() as $data) {
 ?>

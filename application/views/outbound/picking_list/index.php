@@ -133,22 +133,9 @@
 
                         <div class="col">
                             <div class="form-group">
-                                <label for="name" class="form-label">Pintu Loading : </label>
-                                <input type="number" class="form-control" id="pintu_loading" name="pintu_loading" placeholder="">
-                            </div>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="row mt-2">
-
-                        <div class="col">
-                            <div class="form-group">
                                 <label for="name" class="form-label">Destination : </label>
                                 <select name="dest" id="dest" class="form-control" required>
-                                    <option value="">Choose destination</option>
+                                    <option value="">Destination</option>
                                 </select>
                             </div>
                         </div>
@@ -160,12 +147,22 @@
                             </div>
                         </div>
 
-                        <div class="col">
+                        <div class="col d-none">
                             <div class="form-group">
-                                <label for="name" class="form-label">Total Qty : </label>
-                                <input type="number" class="form-control" id="tot_qty" name="tot_qty" placeholder="">
+                                <label for="name" class="form-label">Pintu Loading : </label>
+                                <input type="number" class="form-control" id="pintu_loading" name="pintu_loading" placeholder="">
                             </div>
                         </div>
+
+                    </div>
+
+
+
+                    <div class="row mt-2">
+
+
+
+                        
 
                     </div>
 
@@ -176,7 +173,7 @@
                             <div class="form-group">
                                 <label for="name" class="form-label">No Truck : </label>
                                 <select class="form-control" name="no_truck" id="no_truck" required>
-                                    <option value="">Choose No Truck</option>
+                                    <option value="">No Truck</option>
                                 </select>
                             </div>
                         </div>
@@ -205,13 +202,19 @@
                     </div>
 
                     <div class="row mt-2">
-                        <div class="col-3">
+                        <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Activity Date : </label>
                                 <input type="date" class="form-control" name="activity_date" id="activity_date" required>
                             </div>
                         </div>
-                        <div class="col-9">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Total Qty : </label>
+                                <input type="number" class="form-control" id="tot_qty" name="tot_qty" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Remarks : </label>
                                 <input type="text" class="form-control" name="remarks" id="remarks" autocomplete="off">
@@ -469,7 +472,7 @@
                         $('#cardPL').empty();
                         $('#cardPL').html(response.table);
                         $('#tablePL').dataTable({
-                            paginate : false
+                            paginate: false
                         });
                     }
                 }

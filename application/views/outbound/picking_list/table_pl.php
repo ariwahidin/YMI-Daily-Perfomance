@@ -18,7 +18,6 @@
             <th>Dock</th>
             <th>No Truck</th>
             <th>Dest</th>
-            <th>Pintu Loading</th>
             <th>Remarks</th>
             <th>Action</th>
         </tr>
@@ -46,7 +45,6 @@
                 <td><?= $data->dock ?></td>
                 <td><?= $data->no_truck ?></td>
                 <td><?= $data->dest ?></td>
-                <td><?= $data->pintu_loading ?></td>
                 <td><?= $data->remarks ?></td>
                 <td>
                     <button class="btn btn-sm btn-info btnEdit" data-id="<?= $data->id ?>">Edit</button>
