@@ -256,3 +256,34 @@ function duration($outbound_id)
     $query = $CI->db->query($sql, [$outbound_id]);
     return $query->row();
 }
+
+function getDestOnPick(){
+    $CI = &get_instance();
+    $sql = "select dest, picking_status 
+            from outbound_h
+            where dest is not null
+            and picking_status = 'processing'
+            and is_active = 'Y'";
+    $query = $CI->db->query($sql);
+    return $query;
+}
+function getDestOnCheck(){
+    $CI = &get_instance();
+    $sql = "select dest, checking_status 
+            from outbound_h
+            where dest is not null
+            and checking_status = 'processing'
+            and is_active = 'Y'";
+    $query = $CI->db->query($sql);
+    return $query;
+}
+function getDestOnScan(){
+    $CI = &get_instance();
+    $sql = "select dest, scanning_status 
+            from outbound_h
+            where dest is not null
+            and scanning_status = 'processing'
+            and is_active = 'Y'";
+    $query = $CI->db->query($sql);
+    return $query;
+}

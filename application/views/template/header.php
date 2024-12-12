@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="<?= ($this->uri->segment(1) == 'dashboardx' && $this->uri->segment(2) == 'index') ? 'sm' : 'lg' ?>" data-sidebar-image="none" data-preloader="disable">
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" 
+data-sidebar-size="<?= ($this->uri->segment(1) == 'dashboard' && $this->uri->segment(2) == 'index' 
+|| $this->uri->segment(1) == 'dashboard' && $this->uri->segment(2) == 'ekspedisi') ? 'sm' : 'lg' ?>" 
+data-sidebar-image="none" 
+data-preloader="disable">
 
 <head>
 
@@ -384,24 +388,30 @@ $ws_first_path =  $ws_config->first_path;
                     <i class="ri-record-circle-line"></i>
                 </button>
             </div>
-
             <div id="scrollbar">
                 <div class="container-fluid">
-
                     <div id="two-column-menu">
                     </div>
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="<?= base_url('dashboard/index') ?>">
-                                <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboard">Dashboards</span>
+                            <a class="nav-link menu-link" href="#Dashboard" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="Dashboard">
+                                <i class="ri-pages-line"></i><span data-key="t-pagess">Dashboard</span>
                             </a>
+                            <div class="collapse menu-dropdown show" id="Dashboard">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="<?= base_url('dashboard/index') ?>" class="nav-link" data-key="t-starters">Summary </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="<?= base_url('dashboard/ekspedisi') ?>" class="nav-link" data-key="t-starters">Ekspedisi </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
-
                         <?php
                         foreach (parentMenu()->result() as $parent) {
                         ?>
-
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#<?= $parent->name; ?>" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="<?= $parent->name ?>">
                                     <i class="ri-pages-line"></i> <span data-key="t-pages"><?= $parent->name; ?></span>

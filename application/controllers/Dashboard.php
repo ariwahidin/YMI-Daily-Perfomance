@@ -23,6 +23,76 @@ class Dashboard extends CI_Controller
         $this->render('dashboard/index', $data);
     }
 
+    public function ekspedisi()
+    {
+        $checker = $this->user_m->getOperator();
+        $factory = $this->factory_m->getFactory();
+        $ekspedisi = $this->ekspedisi_m->getEkspedisi();
+        $data = array(
+            'checker' => $checker,
+            'factory' => $factory,
+            'ekspedisi' => $ekspedisi,
+        );
+        $this->render('dashboard/ekspedisi', $data);
+    }
+
+    public function tableReport()
+    {
+        $post = $this->input->post();
+        $rows = $this->getReportOutbound($post);
+
+        $data = array(
+            'completed' => $rows,
+            'picker' => $this->getPickerOutbound($post)
+        );
+
+        $response = array(
+            'success' => true,
+            'summary' => $this->load->view('dashboard/table_report', $data, true),
+            'picker' => $this->load->view('dashboard/table_picker', $data, true)
+        );
+
+        echo json_encode($response);
+    }
+
+    public function getPickerOutbound($post)
+    {
+        $rows = $this->outbound_m->getPickerOutbound();
+        $no = 1;
+        $dataExcel = array();
+        foreach ($rows->result() as $data) {
+            $row = array();
+            $row['NO'] = $no++;
+            $row['PICKER NAME'] = $data->fullname;
+            $row['TANGGAL'] = $data->created_date;
+            $row['NO PL'] = $data->no_pl;
+            $row['PL DATE'] = $data->pl_date;
+            $row['MULAI DORONG'] = date('H:i', strtotime($data->start_picking));
+            $row['SELESAI DORONG'] = date('H:i', strtotime($data->stop_picking));
+            $row['DURASI DORONG'] = countDuration($row['MULAI DORONG'], $row['SELESAI DORONG']);
+            $row['LEAD TIME DURASI DORONG'] = roundMinutes($row['DURASI DORONG']);
+            array_push($dataExcel, $row);
+        }
+
+        return $dataExcel;
+    }
+
+    public function getReportOutbound($post)
+    {
+        $rows = $this->outbound_m->getCompletedActivity($post);
+
+        foreach ($rows->result() as $data) {
+            $data->{'DURASI DORONG'} = $data->{'SELESAI DORONG'} == null ? null : countDuration($data->{'MULAI DORONG'}, $data->{'SELESAI DORONG'});
+            $data->{'LEAD TIME DURASI DORONG'} = $data->{'DURASI DORONG'} == null ? '' : roundMinutes($data->{'DURASI DORONG'});
+            $data->{'DURASI CHECK'} = $data->{'SELESAI CHECK'} == null ? null : countDuration($data->{'MULAI CHECK'}, $data->{'SELESAI CHECK'});
+            $data->{'LEAD TIME DURASI CHECK'} = $data->{'DURASI CHECK'} == null ? '' : roundMinutes($data->{'DURASI CHECK'});
+            $data->{'DURASI SCAN'} = $data->{'SELESAI SCAN'} == null ? null : countDuration($data->{'MULAI SCAN'}, $data->{'SELESAI SCAN'});
+            $data->{'LEAD TIME DURASI SCAN'} = $data->{'DURASI SCAN'} == null ? '' : roundMinutes($data->{'DURASI SCAN'});
+        }
+
+        return $rows;
+    }
+
     public function getUserProses()
     {
         $data = array(
