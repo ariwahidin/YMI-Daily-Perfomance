@@ -121,7 +121,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <label for="priority-field" class="form-label mt-2">Loading Gate</label>
-                                <input style="max-width: 150px;" type="text" id="loading_gate" name="loading_gate" class="form-control-sm" value="">
+                                <input style="max-width: 150px;" type="text" id="loading_gate" name="loading_gate" class="form-control-sm" value="" required>
                             </div>
                             <div class="col-6">
                                 <label for="priority-field" class="form-label mt-2">Remarks</label>

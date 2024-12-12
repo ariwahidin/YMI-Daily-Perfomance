@@ -21,7 +21,10 @@
             <th scope="col">MULAI SCAN</th>
             <th scope="col">SELESAI SCAN</th>
             <th scope="col">JAM TERIMA SJ</th>
-            <th scope="col">PINTU LOADING</th>
+            <th scope="col">LOADING GATE</th>
+            <th scope="col">TRUCK PARKING</th>
+            <th scope="col">START LOAD</th>
+            <th scope="col">FINISH LOAD</th>
             <!-- <th scope="col">DURASI DORONG</th>
             <th scope="col">LEAD TIME DURASI DORONG</th>
             <th scope="col">DURASI CHECK</th>
@@ -57,13 +60,16 @@
                 <td><?= $data->{'MULAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'MULAI SCAN'})) ?></td>
                 <td><?= $data->{'SELESAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'SELESAI SCAN'})) ?></td>
                 <td><?= $data->{'JAM TERIMA SJ'} == null ? '' : date('H:i', strtotime($data->{'JAM TERIMA SJ'})) ?></td>
-                <td><?= $data->{'PINTU LOADING'} ?></td>
+                <td><?= $data->{'loading_gate'} ?></td>
                 <!-- <td><?= $data->{'DURASI DORONG'} ?></td>
                 <td><?= $data->{'LEAD TIME DURASI DORONG'} ?></td>
                 <td><?= $data->{'DURASI CHECK'} ?></td>
                 <td><?= $data->{'LEAD TIME DURASI CHECK'} ?></td>
                 <td><?= $data->{'DURASI SCAN'} ?></td>
                 <td><?= $data->{'LEAD TIME DURASI SCAN'} ?></td> -->
+                <td><?= $data->{'parking_time'} == null ? '' : date('H:i', strtotime($data->{'parking_time'})) ?></td>
+                <td><?= $data->{'start_loading'} == null ? '' : date('H:i', strtotime($data->{'start_loading'})) ?></td>
+                <td><?= $data->{'finish_loading'} == null ? '' : date('H:i', strtotime($data->{'finish_loading'})) ?></td>
                 <td><?= $data->{'REMARKS'} ?></td>
             </tr>
         <?php

@@ -785,7 +785,10 @@ class Outbound extends CI_Controller
             $row['ORIGIN SELESAI SCAN'] = $data->{'SELESAI SCAN'} == null ? '' : date('Y-m-d H:i:s', strtotime($data->{'SELESAI SCAN'}));
             $row['SELESAI SCAN'] = $data->{'SELESAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'SELESAI SCAN'}));
             $row['JAM TERIMA SJ'] = $data->{'JAM TERIMA SJ'} == null ? '' : date('H:i', strtotime($data->{'JAM TERIMA SJ'}));
-            $row['PINTU LOADING'] =  $data->{'PINTU LOADING'};
+            $row['LOADING GATE'] =  $data->{'loading_gate'};
+            $row['TRUCK PARKING'] =  $data->{'parking_time'} == null ? '' : date('H:i', strtotime($data->{'parking_time'}));
+            $row['START LOAD'] =  $data->{'start_loading'} == null ? '' : date('H:i', strtotime($data->{'start_loading'}));
+            $row['FINISH LOAD'] =  $data->{'finish_loading'} == null ? '' : date('H:i', strtotime($data->{'finish_loading'}));
             $row['DURASI DORONG'] =  $data->{'DURASI DORONG'};
             $row['LEAD TIME DURASI DORONG'] = $data->{'LEAD TIME DURASI DORONG'};
             $row['DURASI CHECK'] = $data->{'DURASI CHECK'};

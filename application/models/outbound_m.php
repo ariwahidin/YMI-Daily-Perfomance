@@ -264,8 +264,10 @@ class Outbound_m extends CI_Model
         $startDate = $_POST['startDate'];
         $endDate = $_POST['endDate'];
 
-        $sql = "select * from
-        (select c.activity_date as [ACTIVITY DATE], CONVERT(DATE, a.created_date) as TANGGAL, c.pl_no AS [NO PL], c.sj_no AS [NO SJ], c.dest as TUJUAN, c.no_truck as [NO TRUCK], 
+        $sql = "with tes as (";
+
+        $sql .= "select * from
+        (select c.outbound_id, c.activity_date as [ACTIVITY DATE], CONVERT(DATE, a.created_date) as TANGGAL, c.pl_no AS [NO PL], c.sj_no AS [NO SJ], c.dest as TUJUAN, c.no_truck as [NO TRUCK], 
         c.dealer_code as [KODE DEALER], d.name AS EXPEDISI, c.dock as [MD/DDS], c.tot_qty as QTY, c.pintu_loading as [PINTU LOADING],
         c.pl_print_time as [JAM CETAK PL],
         c.adm_pl_time as [JAM AMANO], 
@@ -281,7 +283,7 @@ class Outbound_m extends CI_Model
         left join master_ekspedisi d on c.expedisi = d.id  
         where a.is_deleted <> 'Y'
         union all
-        select b.activity_date as [ACTIVITY DATE], CONVERT(DATE, a.created_date) as [TANGGAL], b.pl_no as [NO PL], b.sj_no as [NO SJ], b.dest as [TUJUAN], b.no_truck as [NO TRUCK],b.dealer_code as [KODE DEALER],
+        select b.outbound_id, b.activity_date as [ACTIVITY DATE], CONVERT(DATE, a.created_date) as [TANGGAL], b.pl_no as [NO PL], b.sj_no as [NO SJ], b.dest as [TUJUAN], b.no_truck as [NO TRUCK],b.dealer_code as [KODE DEALER],
         c.name as [EXPEDISI], b.dock as [MD/DDS], b.tot_qty as [QTY],
         b.pintu_loading as [PINTU LOADING], b.pl_print_time as [JAM CETAK PL], b.adm_pl_time as [JAM AMANO], a.start_picking as [MULAI DORONG], a.stop_picking as [SELESAI DORONG],
         a.start_checking as [MULAI CHECK], a.stop_checking as [SELESAI CHECK], a.start_scanning as [MULAI SCAN], a.stop_scanning as [SELESAI SCAN], b.sj_time as [JAM TERIMA SJ], b.remarks as [REMARKS]
@@ -291,15 +293,16 @@ class Outbound_m extends CI_Model
         WHERE b.pl_no NOT IN (SELECT no_pl from tb_out WHERE activity_date between CONVERT(DATE, '$startDate') and CONVERT(DATE, '$endDate')))a";
 
         $sql .= " WHERE a.[ACTIVITY DATE] between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
+        // $sql .= " ORDER BY a.[ACTIVITY DATE] DESC";
 
-        // if (isset($_POST['startDate']) != '' && isset($_POST['endDate']) != '') {
-        //     $startDate = $_POST['startDate'];
-        //     $endDate = $_POST['endDate'];
-        // } else {
-        //     $sql .= " AND a.[ACTIVITY DATE] = CONVERT(DATE, GETDATE())";
-        // }
+        $sql .= ")
+        select *, b.pintu_loading as loading_gate, b.parking_time, b.start_loading, b.finish_loading
+        from tes a
+        left join outbound_h b on a.outbound_id = b.id
+        order by [ACTIVITY DATE] DESC";
 
-        $sql .= " ORDER BY a.[ACTIVITY DATE] DESC";
+        // print_r($sql);
+        // die;
         $query = $this->db->query($sql);
         return $query;
     }
