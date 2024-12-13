@@ -55,6 +55,19 @@ class Dashboard extends CI_Controller
         echo json_encode($response);
     }
 
+
+    public function cardHeader()
+    {
+
+        $data = array();
+        $response = array(
+            'success' => true,
+            'html' => $this->load->view('dashboard/card_header', $data, true),
+        );
+
+        echo json_encode($response);
+    }
+
     public function getPickerOutbound($post)
     {
         $rows = $this->outbound_m->getPickerOutbound();

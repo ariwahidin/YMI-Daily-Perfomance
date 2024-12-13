@@ -68,8 +68,6 @@ class Outbound extends CI_Controller
         $picklist = $this->outbound_m->getPickingListByDest($post['dest'], $post['activity_date']);
 
         // var_dump($picklist->result());
-
-
         // die;
 
         if ($picklist->num_rows()  < 1) {
@@ -100,20 +98,6 @@ class Outbound extends CI_Controller
             'created_by' => userId()
         ));
         $outbound_id = $this->db->insert_id();
-
-
-
-
-
-        // if (!isset($post['no_pl'])) {
-        //     $response = array(
-        //         'success' => false,
-        //         'message' => 'No PL is required'
-        //     );
-        //     echo json_encode($response);
-        //     return;
-        // }
-
 
 
 
@@ -171,16 +155,6 @@ class Outbound extends CI_Controller
 
         echo json_encode($response);
     }
-
-    // public function getPickingListByDest($dest, $activity_date)
-    // {
-    //     $result = $this->outbound_m->getPickingListByDest($dest, $activity_date);
-    //     $response = array(
-    //         'success' => true,
-    //         'picking_list' => $result->result()
-    //     );
-    //     echo json_encode($response);
-    // }
 
     public function getPickingListByDest()
     {
@@ -253,27 +227,6 @@ class Outbound extends CI_Controller
             }
         }
 
-        // $this->db->delete('pl_p', ['pl_id' => $post['no_pl'], 'sts' => 'picker']);
-
-        // foreach ($post['picker_id'] as $picker) {
-        //     $params = array(
-        //         'pl_id' => $post['no_pl'],
-        //         'user_id' => $picker,
-        //         'sts' => 'picker'
-        //     );
-        //     $this->db->insert('pl_p', $params);
-        // }
-
-        // $params = array(
-        //     'pintu_loading' => $post['pintu_loading'],
-        //     'remarks' => $post['remarks'],
-        //     'updated_at' => currentDateTime(),
-        //     'updated_by' => userId()
-        // );
-
-        // $this->db->where(['id' => $post['no_pl']]);
-        // $this->db->update('pl_h', $params);
-
         $this->db->trans_complete();
 
         // Memeriksa apakah transaksi berhasil atau tidak
@@ -301,15 +254,7 @@ class Outbound extends CI_Controller
     public function getAllRowTask()
     {
         $post = $this->input->post();
-
-        // var_dump($post);
-        // die;
-
         $task = $this->outbound_m->getTaskByUser($post);
-
-
-        // var_dump($task->result());
-        // die;
 
         $data = array(
             'task' => $task
@@ -347,9 +292,6 @@ class Outbound extends CI_Controller
                 $is_picker = true;
             }
         }
-
-        // var_dump($post);
-        // die;
 
         // Picking
         $pickingProccess = $outbound->picking_status;
@@ -432,9 +374,6 @@ class Outbound extends CI_Controller
             }
 
             if (isset($post['proses']) && $post['proses'] == 'start_checking') {
-                // var_dump($post);
-                // var_dump($pl_h->result());
-                // exit;
                 foreach ($pl_h->result() as $pl) {
                     $pl_id = $pl->id;
                     $params = array(
@@ -445,49 +384,6 @@ class Outbound extends CI_Controller
                     $this->db->insert('pl_p', $params);
                 }
             }
-
-            // var_dump($post);
-            // var_dump($pl_h->result());
-            // die;
-
-            // $sql = "SELECT TOP 1 stop_picking FROM tb_out_temp WHERE id = '$id' AND stop_picking IS NULL";
-            // $query = $this->db->query($sql);
-
-            // if ($query->num_rows() > 0) {
-            //     $response = array(
-            //         'success' => false,
-            //         'message' => "Can not to checking proccess, Finish picking proccess first"
-            //     );
-            //     echo json_encode($response);
-            //     exit;
-            // }
-
-            // $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
-            // $query = $this->db->query($sql);
-
-            // if ($query->num_rows() > 0) {
-            //     $response = array(
-            //         'success' => false,
-            //         'message' => 'This user is not allowed to checking proccess'
-            //     );
-            //     echo json_encode($response);
-            //     exit;
-            // }
-
-            // $sql = "SELECT TOP 1 * FROM pl_p WHERE sts = 'checker' and user_id = '$user_id' and pl_id = '$pl_id'";
-            // $query = $this->db->query($sql);
-
-
-
-
-            // if ($query->num_rows() < 1) {
-            //     $params = array(
-            //         'pl_id' => $pl_id,
-            //         'user_id' => $user_id,
-            //         'sts' => 'checker'
-            //     );
-            //     $this->db->insert('pl_p', $params);
-            // }
         }
 
         // Scanning
@@ -546,55 +442,9 @@ class Outbound extends CI_Controller
                     $this->db->insert('pl_p', $params);
                 }
             }
-
-
-            // $user_id = userId();
-            // $pl_id = $post['pl_id'];
-            // $id = $post['id'];
-
-            // $sql = "SELECT TOP 1 stop_checking FROM tb_out_temp WHERE id = '$id' AND stop_checking IS NULL";
-            // $query = $this->db->query($sql);
-
-            // if ($query->num_rows() > 0) {
-            //     $response = array(
-            //         'success' => false,
-            //         'message' => "Can not to scanning proccess, Finish checking proccess first"
-            //     );
-            //     echo json_encode($response);
-            //     exit;
-            // }
-
-            // $sql = "SELECT top 1 * FROM pl_p WHERE user_id = '$user_id' and sts = 'picker' and pl_id = '$pl_id'";
-            // $query = $this->db->query($sql);
-
-
-            // if ($query->num_rows() > 0) {
-            //     $response = array(
-            //         'success' => false,
-            //         'message' => 'This user is not allowed to scanning proccess'
-            //     );
-            //     echo json_encode($response);
-            //     exit;
-            // }
-
-            // $sql = "SELECT TOP 1 * FROM pl_p WHERE sts = 'scanner' and user_id = '$user_id' and pl_id = '$pl_id'";
-            // $query = $this->db->query($sql);
-
-            // if ($query->num_rows() < 1) {
-            //     $params = array(
-            //         'pl_id' => $pl_id,
-            //         'user_id' => $user_id,
-            //         'sts' => 'scanner'
-            //     );
-            //     $this->db->insert('pl_p', $params);
-            // }
         }
 
-        // var_dump($post);
-        // die;
-        // $id = $post['id'];
 
-        // die;
         $params = array(
             $post['proses'] => currentDateTime()
         );
@@ -679,7 +529,6 @@ class Outbound extends CI_Controller
         }
 
         echo json_encode($response);
-
     }
 
     public function report()
@@ -709,6 +558,57 @@ class Outbound extends CI_Controller
         }
 
         return $rows;
+    }
+
+    public function outboundList()
+    {
+        $data = array();
+        $this->render('outbound/outbound_list/index', $data);
+    }
+
+    public function editOutbound()
+    {
+        $post = $this->input->post();
+        $id = $post['editId'];
+        $data = array(
+            'remarks' => $post['editRemarks'],
+            'updated_at' => currentDateTime(),
+            'updated_by' => userId()
+        );
+        $this->db->where('id', $id);
+        $this->db->update('outbound_h', $data);
+        echo json_encode(array('success' => true));
+    }
+
+    public function getTableOutbound()
+    {
+        $post = $this->input->post();
+        $start_date = $post['start_date'];
+        $end_date = $post['end_date'];
+        $outbound = $this->db->order_by('activity_date', 'ASC')
+            ->get_where('outbound_h', array('is_active' => 'Y', 'activity_date >=' => $start_date, 'activity_date <=' => $end_date))
+            ->result();
+        $data = array(
+            'outbound' => $outbound
+        );
+        $response = array(
+            'success' => true,
+            'table' => $this->load->view('outbound/outbound_list/table_outbound', $data, true),
+        );
+        echo json_encode($response);
+    }
+
+    public function getDetailOutbound($id)
+    {
+        // $data = array(
+        //     'outbound' => $this->db->get_where('pl_h', array('outbound_id' => $id))->result(),
+        // );
+        $response = array(
+            'success' => true,
+            'data' => $this->db->get_where('pl_h', array('outbound_id' => $id))->result(),
+            // 'table' => $this->load->view('outbound/outbound_list/table_outbound_detail', $data, true),
+        );
+        echo json_encode($response);
     }
 
     public function getPickerOutbound($post)

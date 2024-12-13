@@ -169,9 +169,6 @@
                     <div class="card-header card-primary align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Inbound Detail</h4>
                         <div class="flex-shrink-0">
-                            <!-- <button type="button" class="btn btn-soft-info btn-sm">
-                        Today
-                    </button> -->
                         </div>
                     </div>
 
@@ -234,7 +231,6 @@
                         <div id="outboundMonthly" class="e-charts"></div>
                     </div>
                 </div>
-                <!-- end card -->
             </div>
         </div>
     </div>
@@ -261,9 +257,6 @@
             $('#' + tab).css('display', 'block');
 
             if (tab == "DashboardMonthly") {
-                // let xInboundData = ['2012', '2013', '2014', '2015', '2016'];
-                // let yInboundData = [1320, 1332, 1301, 1334, 1390];
-                // cartInboundMonthly(xInboundData, yInboundData);
                 getInboundMonthly();
                 getOutboundMonthly();
             }
@@ -319,30 +312,20 @@
 
             socket.onopen = function() {
                 $('#spConnect').html(`<span class="position-absolute mt-2 translate-middle badge border border-light rounded-circle bg-success p-2"><span class="visually-hidden">Connected</span></span>`);
-                // console.log('WebSocket connection opened');
             };
 
             socket.onmessage = function(event) {
                 getAllByDate();
-                // getAllProccessInbound();
-                // cartInbound();
-                // getAllProccessOutbound();
-                // cartOutbound();
-                // getUserProses();
-                // console.log('Received message: ' + event.data);
-                // Handle received message
             };
 
             socket.onclose = function(event) {
                 $('#spConnect').html(`<span class="position-absolute mt-2 translate-middle badge border border-light rounded-circle bg-danger p-2"><span class="visually-hidden">Not Connected</span></span>`);
-                // console.log('WebSocket connection closed');
-                // Try to re-initiate connection after a delay
-                setTimeout(initWebSocket, 5000); // Retry after 5 seconds
+
+                setTimeout(initWebSocket, 5000);
             };
 
             socket.onerror = function(error) {
                 console.error('WebSocket error : ' + error);
-                // Handle WebSocket error, if necessary
             };
         }
 
@@ -380,50 +363,6 @@
                 $('#sp_plan_inb').text(response.man_power.total_plan);
                 $('#sp_actual_inb').text(response.man_power.user_active);
 
-
-                // $('#cartInbound').empty();
-                // $('#cartInbound').html(`<div id="ctr" class="apex-charts"></div>`);
-
-                // var options = {
-                //     series: [presentase],
-                //     chart: {
-                //         type: "radialBar",
-                //         width: 105,
-                //         sparkline: {
-                //             enabled: true
-                //         }
-                //     },
-                //     dataLabels: {
-                //         enabled: false
-                //     },
-                //     plotOptions: {
-                //         radialBar: {
-                //             hollow: {
-                //                 margin: 0,
-                //                 size: "70%"
-                //             },
-                //             track: {
-                //                 margin: 1
-                //             },
-                //             dataLabels: {
-                //                 show: true,
-                //                 name: {
-                //                     show: false
-                //                 },
-                //                 value: {
-                //                     show: true,
-                //                     fontSize: "16px",
-                //                     fontWeight: 600,
-                //                     offsetY: 8
-                //                 }
-                //             }
-                //         }
-                //     },
-                //     colors: ['#0000FF'] // Gunakan warna-warna yang telah Anda definisikan
-                // };
-
-                // var chart = new ApexCharts(document.querySelector("#ctr"), options);
-                // chart.render();
             }, 'json');
         }
 

@@ -20,100 +20,8 @@
 
 
 <div class="row">
-    <div class="col-xl-4 col-md-6">
-        <div class="card card-animate">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <strong class="text-uppercase fs-16 text-bold mb-0">ON PICKING</strong>
-                    </div>
-                </div>
-                <div class="align-items-end justify-content-between mt-1 overflow-hidden">
-                    <?php foreach (getDestOnPick()->result() as $key => $dp) {
-                        if (($key + 1) % 5 == 0) {
-                            echo '<br/>';
-                        }
-                    ?>
-                        <span style="max-width: fit-content;" class="avatar-title bg-primary d-inline-block text-light rounded-2 fs-5 px-2 m-1"><?= $dp->dest ?></span>
-                    <?php } ?>
-                </div>
-            </div>
-        </div>
+    <div class="col-12" id="cardContainer">
     </div>
-
-    <div class="col-xl-4 col-md-6">
-        <div class="card card-animate">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <strong class="text-uppercase fs-16 text-bold mb-0">ON CHECKING</strong>
-                    </div>
-                </div>
-                <div class="align-items-end justify-content-between mt-1 overflow-hidden">
-                    <?php foreach (getDestOnCheck()->result() as $key => $dc) {
-                        if (($key + 1) % 5 == 0) {
-                            echo '<br/>';
-                        }
-                    ?>
-                        <span style="max-width: fit-content;" class="avatar-title bg-primary d-inline-block text-light rounded-2 fs-5 px-2 m-1"><?= $dc->dest ?></span>
-                    <?php } ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xl-4 col-md-6">
-        <div class="card card-animate">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <strong class="text-uppercase fs-16 text-bold mb-0">ON SCANNING</strong>
-                    </div>
-                </div>
-                <div class="align-items-end justify-content-between mt-1 overflow-hidden">
-                    <?php foreach (getDestOnScan()->result() as $key => $ds) {
-                        if (($key + 1) % 5 == 0) {
-                            echo '<br/>';
-                        }
-                    ?>
-                        <span style="max-width: fit-content;" class="avatar-title bg-primary d-inline-block text-light rounded-2 fs-5 px-2 m-1"><?= $ds->dest ?></span>
-                    <?php } ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- <div class="col-xl-3 col-md-6">
-        <div class="card card-animate">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <p class="text-uppercase fw-medium text-muted mb-0">Cancelled Invoices</p>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <h5 class="text-success fs-14 mb-0">
-                            <i class="ri-arrow-right-up-line fs-13 align-middle"></i> +7.55 %
-                        </h5>
-                    </div>
-                </div>
-                <div class="d-flex align-items-end justify-content-between mt-4">
-                    <div>
-                        <h4 class="fs-22 fw-semibold ff-secondary mb-4">$<span class="counter-value" data-target="84.20">84.2</span>k</h4>
-                        <span class="badge bg-warning me-1">502</span> <span class="text-muted">Cancelled by clients</span>
-                    </div>
-                    <div class="avatar-sm flex-shrink-0">
-                        <span class="avatar-title bg-light rounded fs-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-octagon text-success icon-dual-success">
-                                <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
-                                <line x1="15" y1="9" x2="9" y2="15"></line>
-                                <line x1="9" y1="9" x2="15" y2="15"></line>
-                            </svg>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
 </div>
 
 
@@ -149,7 +57,32 @@
 
 <script>
     $(document).ready(function() {
+        var socket;
+        initWebSocket();
         getRowComplete();
+
+
+        function initWebSocket() {
+            socket = new WebSocket(urlWebsocket);
+
+            socket.onopen = function() {
+                // $('#spConnect').html(`<span class="position-absolute mt-2 translate-middle badge border border-light rounded-circle bg-success p-2"><span class="visually-hidden">Connected</span></span>`);
+            };
+
+            socket.onmessage = function(event) {
+                // getAllByDate();
+                getRowComplete();
+            };
+
+            socket.onclose = function(event) {
+                // $('#spConnect').html(`<span class="position-absolute mt-2 translate-middle badge border border-light rounded-circle bg-danger p-2"><span class="visually-hidden">Not Connected</span></span>`);
+                setTimeout(initWebSocket, 5000);
+            };
+
+            socket.onerror = function(error) {
+                console.error('WebSocket error : ' + error);
+            };
+        }
 
         $('#sButton').on('click', function() {
             let checker = $('#sChecker').val().trim();
@@ -440,9 +373,7 @@
                 success: function(response) {
                     if (response.success == true) {
                         let divTable = $('#tablePlace');
-                        // let divPicker = $('#divPicker');
                         divTable.empty();
-                        // divPicker.empty();
 
                         divTable.html(response.summary);
                         $('#tableOutboundActivities').DataTable({
@@ -450,7 +381,14 @@
                             paginate: false
                         });
 
-                        // divPicker.html(response.picker);
+                        $.get(
+                            "cardHeader", {
+                                
+                            },
+                            function(data) {
+                                $('#cardContainer').html(data.html);
+                            },"JSON"
+                        );
                     }
                 }
             });

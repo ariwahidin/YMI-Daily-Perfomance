@@ -21,9 +21,7 @@
             $minute_picking = ($duration_picking != '') ? roundMinutes($duration_picking) : (($data->start_picking != null && $data->stop_picking == null) ? 'proccesing' : '');
             $minute_checking = ($duration_checking != '') ? roundMinutes($duration_checking) : (($data->start_checking != null && $data->stop_checking == null) ? 'proccesing' : '');
             $minute_scanning = ($duration_scanning != '') ? roundMinutes($duration_scanning) : (($data->start_scanning != null && $data->stop_scanning == null) ? 'proccesing' : '');
-            // $status = ($minute_picking != 'proccesing' && $minute_checking != 'proccesing' && $minute_scanning != 'proccesing') ? 'DONE' : '';
         ?>
-
             <tr>
                 <td><?= $no++ ?></td>
                 <td>

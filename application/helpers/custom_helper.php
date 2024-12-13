@@ -287,3 +287,14 @@ function getDestOnScan(){
     $query = $CI->db->query($sql);
     return $query;
 }
+
+function getDestOnLoad(){
+    $CI = &get_instance();
+    $sql = "SELECT dest
+            FROM outbound_h
+            WHERE is_active = 'Y'
+            AND start_loading is not null
+            AND finish_loading is null";
+    $query = $CI->db->query($sql);
+    return $query;
+}

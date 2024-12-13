@@ -296,7 +296,8 @@ class Outbound_m extends CI_Model
         // $sql .= " ORDER BY a.[ACTIVITY DATE] DESC";
 
         $sql .= ")
-        select *, b.pintu_loading as loading_gate, b.parking_time, b.start_loading, b.finish_loading
+        select *, b.pintu_loading as loading_gate, b.parking_time, b.start_loading, b.finish_loading,
+        b.picking_status, b.checking_status, b.scanning_status
         from tes a
         left join outbound_h b on a.outbound_id = b.id
         order by [ACTIVITY DATE] DESC";

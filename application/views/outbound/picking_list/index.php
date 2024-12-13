@@ -4,6 +4,10 @@
     .swal2-container {
         z-index: 9999;
     }
+
+    .modal-header {
+        cursor: move;
+    }
 </style>
 <div class="row">
     <div class="col col-md-12">
@@ -162,7 +166,7 @@
 
 
 
-                        
+
 
                     </div>
 
@@ -211,7 +215,7 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="name" class="form-label">Total Qty : </label>
-                                <input type="number" class="form-control" id="tot_qty" name="tot_qty" placeholder="">
+                                <input type="number" class="form-control" id="tot_qty" name="tot_qty" placeholder="" required>
                             </div>
                         </div>
                         <div class="col">
@@ -236,10 +240,79 @@
 </div>
 <script src="<?= base_url() ?>myassets/js/select2.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('modalForm');
+        const modalHeader = modal.querySelector('.modal-header');
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        modalHeader.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+
+        function dragStart(e) {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+
+            if (e.target === modalHeader) {
+                isDragging = true;
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+
+                xOffset = currentX;
+                yOffset = currentY;
+
+                setTranslate(currentX, currentY, modal);
+            }
+        }
+
+        function dragEnd(e) {
+            initialX = currentX;
+            initialY = currentY;
+
+            isDragging = false;
+        }
+
+        function setTranslate(xPos, yPos, el) {
+            el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+        }
+    });
+
+
+
     $(document).ready(function() {
 
         var socket;
         initWebSocket();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         function initWebSocket() {
             socket = new WebSocket(urlWebsocket);
