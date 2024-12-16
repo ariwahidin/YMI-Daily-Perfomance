@@ -88,7 +88,7 @@ class Dashboard_m extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
-    
+
 
     function getUserOutbound()
     {
@@ -133,6 +133,55 @@ class Dashboard_m extends CI_Model
         WHERE a.is_deleted <> 'Y' AND a.is_active = 'Y'
         AND convert(date, a.start_time) between '$start_date' and '$end_date'
         AND c.id = 1";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getCompletedActivity()
+    {
+        $startDate = $_POST['startDate'];
+        $endDate = $_POST['endDate'];
+
+        $sql = "with tes as (";
+
+        $sql .= "select * from
+        (select c.outbound_id, c.activity_date as [ACTIVITY DATE], CONVERT(DATE, a.created_date) as TANGGAL, c.pl_no AS [NO PL], c.sj_no AS [NO SJ], c.dest as TUJUAN, c.no_truck as [NO TRUCK], 
+        c.dealer_code as [KODE DEALER], d.name AS EXPEDISI, c.dock as [MD/DDS], c.tot_qty as QTY, c.pintu_loading as [PINTU LOADING],
+        c.pl_print_time as [JAM CETAK PL],
+        c.adm_pl_time as [JAM AMANO], 
+        a.start_picking as [MULAI DORONG], 
+        a.stop_picking as [SELESAI DORONG], a.start_checking as [MULAI CHECK], 
+        a.stop_checking as [SELESAI CHECK], a.start_scanning as [MULAI SCAN], 
+        a.stop_scanning as [SELESAI SCAN],
+        c.sj_time as [JAM TERIMA SJ],
+        c.remarks as [REMARKS] 
+        from tb_out a 
+        left join master_user b on a.checker_id = b.id 
+        left join pl_h c on c.id = a.pl_id 
+        left join master_ekspedisi d on c.expedisi = d.id  
+        where a.is_deleted <> 'Y'
+        union all
+        select b.outbound_id, b.activity_date as [ACTIVITY DATE], CONVERT(DATE, a.created_date) as [TANGGAL], b.pl_no as [NO PL], b.sj_no as [NO SJ], b.dest as [TUJUAN], b.no_truck as [NO TRUCK],b.dealer_code as [KODE DEALER],
+        c.name as [EXPEDISI], b.dock as [MD/DDS], b.tot_qty as [QTY],
+        b.pintu_loading as [PINTU LOADING], b.pl_print_time as [JAM CETAK PL], b.adm_pl_time as [JAM AMANO], a.start_picking as [MULAI DORONG], a.stop_picking as [SELESAI DORONG],
+        a.start_checking as [MULAI CHECK], a.stop_checking as [SELESAI CHECK], a.start_scanning as [MULAI SCAN], a.stop_scanning as [SELESAI SCAN], b.sj_time as [JAM TERIMA SJ], b.remarks as [REMARKS]
+        from tb_out_temp a
+        RIGHT JOIN pl_h b on a.no_pl = b.id
+        LEFT JOIN master_ekspedisi c on b.expedisi = c.id 
+        WHERE b.pl_no NOT IN (SELECT no_pl from tb_out WHERE activity_date between CONVERT(DATE, '$startDate') and CONVERT(DATE, '$endDate')))a";
+
+        $sql .= " WHERE a.[ACTIVITY DATE] between CONVERT(DATE, '$startDate')and CONVERT(DATE, '$endDate')";
+        // $sql .= " ORDER BY a.[ACTIVITY DATE] DESC";
+
+        $sql .= ")
+        select *, b.pintu_loading as loading_gate, b.parking_time, b.start_loading, b.finish_loading,
+        b.picking_status, b.checking_status, b.scanning_status
+        from tes a
+        left join outbound_h b on a.outbound_id = b.id
+        order by [ACTIVITY DATE] DESC";
+
+        // print_r($sql);
+        // die;
         $query = $this->db->query($sql);
         return $query;
     }

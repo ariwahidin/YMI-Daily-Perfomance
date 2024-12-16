@@ -92,7 +92,7 @@ class Dashboard extends CI_Controller
 
     public function getReportOutbound($post)
     {
-        $rows = $this->outbound_m->getCompletedActivity($post);
+        $rows = $this->dashboard_m->getCompletedActivity($post);
 
         foreach ($rows->result() as $data) {
             $data->{'DURASI DORONG'} = $data->{'SELESAI DORONG'} == null ? null : countDuration($data->{'MULAI DORONG'}, $data->{'SELESAI DORONG'});

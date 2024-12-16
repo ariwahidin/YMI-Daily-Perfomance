@@ -423,7 +423,11 @@
                 success: function(data) {
                     divTable.html(data);
                     $('#tableCompleteActivities').DataTable({
-                        sort: false
+                        sort: false,
+                        paginate: false,
+                        fixedHeader: true,
+                        scrollY: 400, // Tinggi area scrolling
+                        scrollCollapse: true
                     });
                 }
             });

@@ -377,17 +377,23 @@
 
                         divTable.html(response.summary);
                         $('#tableOutboundActivities').DataTable({
-                            sort: false,
-                            paginate: false
+                            // sort: false,
+                            order: [
+                                [12, 'asc']
+                            ],
+                            paginate: false,
+                            fixedHeader: true,
+                            scrollY: 400, // Tinggi area scrolling
+                            scrollCollapse: true
                         });
 
                         $.get(
                             "cardHeader", {
-                                
+
                             },
                             function(data) {
                                 $('#cardContainer').html(data.html);
-                            },"JSON"
+                            }, "JSON"
                         );
                     }
                 }

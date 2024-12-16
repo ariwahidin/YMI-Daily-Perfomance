@@ -376,7 +376,10 @@
                         divTable.html(response.summary);
                         $('#tableOutboundActivities').DataTable({
                             sort: false,
-                            paginate: false
+                            paginate: false,
+                            fixedHeader: true,
+                            scrollY: 400, // Tinggi area scrolling
+                            scrollCollapse: true
                         });
 
                         divPicker.html(response.picker);

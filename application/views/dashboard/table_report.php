@@ -23,8 +23,8 @@
             <!-- <th scope="col">START SCAN</th> -->
             <!-- <th scope="col">END SCAN</th> -->
             <!-- <th scope="col">TERIMA SJ</th> -->
-            <th scope="col">LOADING</th>
             <th scope="col">PARKING</th>
+            <th scope="col">LOADING</th>
             <th scope="col">GATE</th>
             <!-- <th scope="col">START LOAD</th> -->
             <!-- <th scope="col">FINISH LOAD</th> -->
@@ -65,8 +65,8 @@
                 <!-- <td><?= $data->{'MULAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'MULAI SCAN'})) ?></td> -->
                 <!-- <td><?= $data->{'SELESAI SCAN'} == null ? '' : date('H:i', strtotime($data->{'SELESAI SCAN'})) ?></td> -->
                 <!-- <td><?= $data->{'JAM TERIMA SJ'} == null ? '' : date('H:i', strtotime($data->{'JAM TERIMA SJ'})) ?></td> -->
-                <td><?= $data->{'start_loading'} != null && $data->{'finish_loading'} == null ? 'processing' : ($data->{'start_loading'} != null && $data->{'finish_loading'} != null ? date('H:i', strtotime($data->{'finish_loading'})) : '') ?></td>
                 <td><?= $data->{'parking_time'} == null ? '' : date('H:i', strtotime($data->{'parking_time'})) ?></td>
+                <td><?= $data->{'start_loading'} != null && $data->{'finish_loading'} == null ? 'processing' : ($data->{'start_loading'} != null && $data->{'finish_loading'} != null ? date('H:i', strtotime($data->{'finish_loading'})) : '') ?></td>
                 <td><?= $data->{'loading_gate'} ?></td>
                 <!-- <td><?= $data->{'DURASI DORONG'} ?></td>
                 <td><?= $data->{'LEAD TIME DURASI DORONG'} ?></td>
