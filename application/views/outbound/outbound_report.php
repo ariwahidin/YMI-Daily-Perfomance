@@ -372,14 +372,13 @@
                         let divPicker = $('#divPicker');
                         divTable.empty();
                         divPicker.empty();
-
                         divTable.html(response.summary);
                         $('#tableOutboundActivities').DataTable({
-                            sort: false,
+                            // sort: false,
                             paginate: false,
-                            fixedHeader: true,
-                            scrollY: 400, // Tinggi area scrolling
-                            scrollCollapse: true
+                            // fixedHeader: true,
+                            // scrollY: 400, // Tinggi area scrolling
+                            // scrollCollapse: true
                         });
 
                         divPicker.html(response.picker);

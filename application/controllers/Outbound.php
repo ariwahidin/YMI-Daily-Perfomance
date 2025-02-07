@@ -975,21 +975,56 @@ class Outbound extends CI_Controller
         echo json_encode($response);
     }
 
+    public function getPLWithDest()
+    {
+        $pl = $this->outbound_m->getPLWithDest();
+        $data = array(
+            'pl' => $pl
+        );
+
+        $response = array(
+            'success' => true,
+            'content' => $this->load->view('outbound/picking_list/tbl_pl_no_sj', $data, true),
+            'data' => $pl->result()
+        );
+        echo json_encode($response);
+    }
+
     public function addSJ()
     {
         $post = $this->input->post();
-        $id = explode(',', $post['id']);
+        $ids = $post['sj_in_pl_id'];
+        $sjs = $post['sj_in_sj_no'];
+        $times = $post['sj_in_sj_time'];
 
+        $count = array_count_values($sjs);
+
+
+        if (count($sjs) !== count(array_unique($sjs))) {
+            echo json_encode(array('success' => false, 'message' => 'SJ number must be unique'));
+            return;
+        }
+
+
+        foreach ($sjs as $key => $value) {
+            $check = $this->db->get_where('pl_h', ['sj_no' => $value]);
+            if ($check->num_rows() > 0) {
+                echo json_encode(array('success' => false, 'message' => 'SJ : ' . $value . ' already exist'));
+                return;
+            }
+        }
+
+        // update pl
         $edited = 0;
-        foreach ($id as $item) {
+        foreach ($sjs as $key => $item) {
             $params = array(
-                'sj_no' => $post['inSJ'],
-                'sj_time' => $post['inSJTime'] == '' ? null : $post['inSJTime'],
+                'sj_no' => $item,
+                'sj_time' => $times[$key],
                 'updated_at' => currentDateTime(),
                 'updated_by' => userId()
             );
 
-            $this->db->where(['id' => $item]);
+            $this->db->where(['id' => $ids[$key]]);
             $this->db->update('pl_h', $params);
 
             if ($this->db->affected_rows() > 0) {

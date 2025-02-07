@@ -52,23 +52,23 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-7">
-                        <span>Total PL : <span id="spanTotPL">0</span></span>
-                        <div id="mdCardNoPL" style="max-height:300px; overflow-y: auto;">
-                        </div>
+                <div class="col-6 d-flex">
+                    <div class="input-group mb-2">
+                        <input type="text" id="inSearchDestination" class="form-control-sm" placeholder="Search Destination">
+                        <button class="btn btn-sm btn-primary" id="btnSearchDest"><i class="ri-search-line"></i></button>
                     </div>
-                    <div class="col-md-5">
-                        <form action="" id="formInputSJ">
-                            <div class="form-group">
-                                <label for="">SJ No : </label>
-                                <input type="text" value="" class="form-control" name="inSJ" required autocomplete="off">
+                    <div class="input-group mb-2">
+                        <input type="time" class="form-control-sm" id="SJInTimeSeter">
+                        <button class="btn btn-sm btn-primary" id="btnSetSJTime"><i class="ri-check-line"></i></button>
+                    </div>
+                </div>
+                <span>Total PL : <span id="spanTotPL">0</span></span>
+                <div class="row">
+                    <div class="col-md-12 ">
+                        <form id="formInputSJ">
+                            <div id="mdCardNoPL" style="max-height:300px; overflow-y: auto;">
                             </div>
-                            <div class="form-group mt-1">
-                                <label for="">SJ Time : </label>
-                                <input type="time" value="" class="form-control" name="inSJTime" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary mt-3 float-end">Submit</button>
+                            <button type="submit" class="btn btn-primary float-end">Save</button>
                         </form>
                     </div>
                 </div>
@@ -296,21 +296,25 @@
         var socket;
         initWebSocket();
 
+        $("#btnSearchDest").on("click", function() {
+            let dest = $('#inSearchDestination').val();
+            let start_date = $('#sStartDate').val();
+            let end_date = $('#sEndDate').val();
+            $.post('getPLWithDest', {
+                start_date,
+                end_date,
+                dest
+            }, function(response) {
+                $('#mdCardNoPL').empty();
+                $('#spanTotPL').text(response.data.length);
+                $('#mdCardNoPL').html(response.content);
+            }, 'json');
+        })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        $("#btnSetSJTime").on("click", function() {
+            let time = $('#SJInTimeSeter').val();
+            $(".sj_in_sj_time").val(time);
+        })
 
 
 
@@ -464,56 +468,86 @@
             }
         });
 
+        $('#formInputSJ').on('click', '.btnDeleteRow', function() {
+            let row = $(this).closest('tr'); // Ambil baris terdekat (misalnya dalam tabel)
+            row.remove(); // Hapus baris tersebut dari DOM
+        });
+
         $('#formInputSJ').on('submit', function(e) {
             e.preventDefault();
+            let formData = $(this).serialize();
 
-            let idSelected = [];
-
-            $('.in_sj_id').each(function(index, item) {
-                if ($(this).prop('checked')) {
-                    console.log($(this).val());
-                    idSelected.push($(this).val());
+            $.post('addSJ', formData, function(response) {
+                if (response.success == true) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    }).then(function() {
+                        getTablePickingList();
+                    }).then(function() {
+                        stopLoading();
+                        $("#mdCardNoPL").empty();
+                    })
+                } else {
+                    stopLoading();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed',
+                        text: response.message
+                    });
                 }
-            });
+            }, 'json');
 
-            if (idSelected.length > 0) {
-                startLoading();
-                let formData = new FormData(this);
-                formData.append('id', idSelected);
+            // let idSelected = [];
 
-                $.ajax({
-                    url: 'addSJ',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        if (response.success == true) {
-                            Swal.fire({
-                                position: "top-end",
-                                icon: "success",
-                                title: response.message,
-                                showConfirmButton: false,
-                                timer: 1000
-                            }).then(function() {
-                                getTablePickingList();
-                            }).then(function() {
-                                $('#modalFormSJ').modal('hide');
-                                stopLoading();
-                            })
-                        } else {
-                            stopLoading();
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Failed',
-                                text: response.message
-                            });
-                        }
-                    },
-                    dataType: 'json'
-                });
+            // $('.in_sj_id').each(function(index, item) {
+            //     if ($(this).prop('checked')) {
+            //         console.log($(this).val());
+            //         idSelected.push($(this).val());
+            //     }
+            // });
 
-            }
+            // if (idSelected.length > 0) {
+            //     startLoading();
+            //     let formData = new FormData(this);
+            //     formData.append('id', idSelected);
+
+            //     $.ajax({
+            //         url: 'addSJ',
+            //         type: 'POST',
+            //         data: formData,
+            //         processData: false,
+            //         contentType: false,
+            //         success: function(response) {
+            //             if (response.success == true) {
+            //                 Swal.fire({
+            //                     position: "top-end",
+            //                     icon: "success",
+            //                     title: response.message,
+            //                     showConfirmButton: false,
+            //                     timer: 1000
+            //                 }).then(function() {
+            //                     getTablePickingList();
+            //                 }).then(function() {
+            //                     $('#modalFormSJ').modal('hide');
+            //                     stopLoading();
+            //                 })
+            //             } else {
+            //                 stopLoading();
+            //                 Swal.fire({
+            //                     icon: 'error',
+            //                     title: 'Failed',
+            //                     text: response.message
+            //                 });
+            //             }
+            //         },
+            //         dataType: 'json'
+            //     });
+
+            // }
 
         })
 

@@ -5,6 +5,8 @@
             <th>PL No</th>
             <th>Activity Date</th>
             <th>Dest</th>
+            <th class="text-center">SJ No</th>
+            <th class="text-center">SJ Time</th>
             <th class="text-center">Action</th>
         </tr>
     </thead>
@@ -18,8 +20,15 @@
                 <td><?= $data->pl_no ?></td>
                 <td><?= $data->activity_date ?></td>
                 <td><?= $data->dest ?></td>
+                <td>
+                    <input type="hidden" class="form-control form-control-sm sj_in_pl_id" name="sj_in_pl_id[]" required value="<?= $data->id ?>">
+                    <input type="text" maxlength="8" minlength="8" required class="form-control form-control-sm sj_in_sj_no" name="sj_in_sj_no[]" value="<?= $data->sj_no ?? '' ?>">
+                </td>
+                <td>
+                    <input type="time" class="form-control form-control-sm sj_in_sj_time" name="sj_in_sj_time[]" required value="<?= $data->sj_time ?? '' ?>">
+                </td>
                 <td class="text-center">
-                    <input type="checkbox" value="<?= $data->id ?>" class="in_sj_id" style="cursor:pointer">
+                    <button type="button" class="btn btn-sm btn-danger btnDeleteRow">x</button>
                 </td>
             </tr>
         <?php

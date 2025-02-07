@@ -584,4 +584,27 @@ class Outbound_m extends CI_Model
         $query = $this->db->query($sql);
         return $query;
     }
+
+    public function getPLWithDest()
+    {
+
+        $start_date = $_POST['start_date'];
+        $end_date = $_POST['end_date'];
+        $dest = $_POST['dest'];
+
+        $sql = "select id, pl_no, sj_no, sj_time, dest, activity_date
+        from pl_h 
+        WHERE sj_no = '' AND sj_time is null 
+        AND CONVERT(date, activity_date) between convert(date, '$start_date') and convert(date, '$end_date')";
+
+
+        if ($dest != "") {
+            $sql .= " AND dest = '$dest'";
+        }
+        
+        $sql .= " ORDER BY dest ASC";
+
+        $query = $this->db->query($sql);
+        return $query;
+    }
 }

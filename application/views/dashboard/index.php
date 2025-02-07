@@ -58,7 +58,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="card card-animate overflow-hidden">
                     <div class="card-header card-primary align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Inbound Summary </h4>
@@ -73,7 +73,7 @@
                                 <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_proses_in">0</span> <span class="fs-10 text-muted mb-0">Unit</span></p>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Complete Putaway</p>
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Complete <br> Putaway</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
                                     <span id="spInboundComplete">0</span><span class="fs-10 text-muted mb-0"> SJ</span>
                                 </h4>
@@ -89,9 +89,9 @@
                             <div class="flex-grow-1">
                                 <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Man Power </p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                                    <span id="sp_plan_inb">0</span><span class="fs-10 text-muted mb-0"> Alokasi Team</span>
+                                    <span id="sp_plan_inb">0</span><span class="fs-10 text-muted mb-0"> Plan</span>
                                 </h4>
-                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_actual_inb">0</span><span class="fs-10 text-muted mb-0"> Actual Alokasi Team</span></p>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_actual_inb">0</span><span class="fs-10 text-muted mb-0"> Actual</span></p>
                             </div>
                             <div class="flex-shrink-0">
                                 <div id="cartInbound"></div>
@@ -100,7 +100,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-8">
                 <div class="card card-animate overflow-hidden">
                     <div class="card-header card-success align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Outbound Summary</h4>
@@ -122,7 +122,7 @@
                                 <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_proses_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Complete</p>
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Complete <br> Loading</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
                                     <span id="spOutboundComplete">0</span><span class="fs-10 text-muted mb-0"> PL</span>
                                 </h4>
@@ -147,9 +147,9 @@
                             <div class="flex-grow-1">
                                 <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Man Power </p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
-                                    <span id="sp_plan">0</span><span class="fs-10 text-muted mb-0"> Total Alokasi MP</span>
+                                    <span id="sp_plan">0</span><span class="fs-10 text-muted mb-0"> Plan</span>
                                 </h4>
-                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_actual">0</span><span class="fs-10 text-muted mb-0"> Actual Alokasi MP</span></p>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_actual">0</span><span class="fs-10 text-muted mb-0"> Actual</span></p>
                             </div>
                             <div class="flex-shrink-0">
                                 <div id="cartOutbound"></div>
