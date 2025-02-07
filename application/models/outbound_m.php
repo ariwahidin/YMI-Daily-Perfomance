@@ -335,6 +335,18 @@ class Outbound_m extends CI_Model
             LEFT JOIN pl_h b ON a.no_pl = b.id 
             WHERE b.activity_date BETWEEN '$start_date' AND '$end_date'
         ),
+        ScanningComplete AS (
+            SELECT COUNT(*) AS scanning_complete,
+                COALESCE(SUM(CONVERT(INT, tot_qty)), 0) AS qty_scanning
+            FROM
+            (select no_pl as pl_id, start_scanning, stop_scanning, activity_date, b.tot_qty from tb_out_temp a
+            inner join pl_h b on a.no_pl = b.id
+            union all
+            select pl_id, start_scanning, stop_scanning, activity_date, b.tot_qty from tb_out a
+            inner join pl_h b on a.pl_id = b.id) sc
+            WHERE sc.activity_date BETWEEN '$start_date' AND '$end_date'
+            AND sc.stop_scanning is not null
+        ),
         OutboundComplete AS (
             SELECT COUNT(*) AS count_complete,
                 COALESCE(SUM(CONVERT(INT, tot_qty)), 0) AS qty_complete
@@ -363,13 +375,18 @@ class Outbound_m extends CI_Model
             ou.qty_unproses AS qty_unproses,
             op.count_proses AS outbound_proses,
             op.qty_proses AS qty_proses,
+            sc.scanning_complete,
+            sc.qty_scanning,
             oc.count_complete AS outbound_complete,
             oc.qty_complete AS qty_complete,
             isj.total_sj AS total_sj,
             isnull(isj.qty_item_sj, 0) as qty_item_sj,
             (op.count_proses + oc.count_complete + ou.count_unproses) AS total_pl,
             (op.qty_proses + oc.qty_complete + ou.qty_unproses) AS total_qty
-        FROM OutboundUnProses ou, OutboundProses op, OutboundComplete oc, InfoSuratJalan isj;";
+        FROM OutboundUnProses ou, OutboundProses op, ScanningComplete sc,OutboundComplete oc, InfoSuratJalan isj;";
+
+        // print_r($sql);
+        // die;
         $query = $this->db->query($sql);
         return $query;
     }

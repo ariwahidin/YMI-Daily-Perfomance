@@ -121,6 +121,15 @@
                                 </h4>
                                 <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_proses_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p>
                             </div>
+
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Complete <br> Scanning</p>
+                                <h4 class="fs-22 fw-semibold ff-secondary mb-0">
+                                    <span id="spScanningComplete">0</span><span class="fs-10 text-muted mb-0"> PL</span>
+                                </h4>
+                                <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_scanning_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p>
+                            </div>
+
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Complete <br> Loading</p>
                                 <h4 class="fs-22 fw-semibold ff-secondary mb-0">
@@ -128,6 +137,8 @@
                                 </h4>
                                 <p class="fs-18 fw-semibold ff-secondary mb-0"><span id="sp_qty_complete_out">0</span><span class="fs-10 text-muted mb-0"> Unit</span></p>
                             </div>
+
+                            
 
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="text-uppercase fs-10 fw-medium text-muted text-truncate mb-1"> Total SJ</p>
@@ -374,10 +385,12 @@
                 let presentase = Math.round(data.presentase);
                 $('#spOutboundUnproses').text(data.outbound_unproses);
                 $('#spOutboundProses').text(data.outbound_proses);
+                $('#spScanningComplete').text(data.scanning_complete);
                 $('#spOutboundComplete').text(data.outbound_complete);
                 $('#spOutboundTotal').text(data.total_pl);
                 $('#sp_qty_unproses_out').text(data.qty_unproses);
                 $('#sp_qty_proses_out').text(data.qty_proses);
+                $('#sp_qty_scanning_out').text(data.qty_scanning);
                 $('#sp_qty_complete_out').text(data.qty_complete);
                 $('#sp_qty_total_out').text(data.total_qty);
                 $('#sp_plan').text(response.man_power.total_plan);
