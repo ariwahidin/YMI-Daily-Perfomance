@@ -243,13 +243,16 @@ class Outbound_m extends CI_Model
 
     function getPickingListByDest($dest, $activity_date)
     {
-        $sql = "select a.id, a.pl_no, a.dest, activity_date 
-                from pl_h a where a.id not in(select pl_id from tb_out)
-                AND a.id not in (select no_pl from tb_out_temp)
+        $sql = "SELECT a.id, a.pl_no, a.dest, a.activity_date
+                FROM pl_h a
+                WHERE NOT EXISTS (SELECT 1 FROM tb_out b WHERE b.pl_id = a.id)
+                AND NOT EXISTS (SELECT 1 FROM tb_out_temp c WHERE c.no_pl = a.id)
                 AND a.activity_date = ?
                 AND a.dest = ?
-                ORDER BY a.dest ASC";
-        $query = $this->db->query($sql, [$activity_date, $dest]);
+                ORDER BY a.dest ASC;
+                ";
+                $query = $this->db->query($sql, [$activity_date, $dest]);
+            //    var_dump($this->db->last_query());
         return $query;
     }
 
