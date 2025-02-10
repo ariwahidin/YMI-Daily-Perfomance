@@ -359,9 +359,9 @@ $ws_first_path =  $ws_config->first_path;
         </div><!-- /.modal -->
 
         <!-- ========== App Menu ========== -->
-        <div class="app-menu navbar-menu">
+        <div style="background-color: #06183d;" class="app-menu navbar-menu">
             <!-- LOGO -->
-            <div class="navbar-brand-box">
+            <div style="background-color: #06183d;" class="navbar-brand-box">
                 <!-- Dark Logo-->
                 <a href="#" class="logo logo-dark">
                     <span class="logo-sm">
@@ -396,7 +396,7 @@ $ws_first_path =  $ws_config->first_path;
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#Dashboard" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="Dashboard">
-                                <i class="ri-pages-line"></i><span data-key="t-pagess">Dashboard</span>
+                                <i class="ri-dashboard-line"></i><span data-key="t-pagess">Dashboard</span>
                             </a>
                             <div class="collapse menu-dropdown show" id="Dashboard">
                                 <ul class="nav nav-sm flex-column">
@@ -414,7 +414,7 @@ $ws_first_path =  $ws_config->first_path;
                         ?>
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#<?= $parent->name; ?>" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="<?= $parent->name ?>">
-                                    <i class="ri-pages-line"></i> <span data-key="t-pages"><?= $parent->name; ?></span>
+                                    <i class="<?= $parent->icon; ?>"></i> <span data-key="t-pages"><?= $parent->name; ?></span>
                                 </a>
                                 <div class="collapse menu-dropdown show" id="<?= $parent->name ?>">
                                     <ul class="nav nav-sm flex-column">

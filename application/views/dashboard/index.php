@@ -177,7 +177,7 @@
         <div class="row project-wrapper">
             <div class="col-xl-6">
                 <div class="card">
-                    <div class="card-header card-primary align-items-center d-flex">
+                    <div style="background-color: #06183d;" class="card-header card-primary align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Inbound Detail</h4>
                         <div class="flex-shrink-0">
                         </div>
@@ -193,7 +193,7 @@
 
             <div class="col-xl-6">
                 <div class="card">
-                    <div class="card-header card-success align-items-center d-flex">
+                    <div style="background-color: #FF6D10;" class="card-header card-warning align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Outbound Detail</h4>
                         <div class="flex-shrink-0">
                         </div>
