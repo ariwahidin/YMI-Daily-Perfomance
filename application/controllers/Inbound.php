@@ -390,7 +390,7 @@ class Inbound extends CI_Controller
             'alloc_code' => $post['alocation'],
             'pintu_unloading' => $post['pintu_unloading'],
             'sj_send_date' => $post['send_date'],
-            'time_departure' => $post['tod'] == '' ? null : date('H:i:s', strtotime($post['tod'])),
+            // 'time_departure' => $post['tod'] == '' ? null : date('H:i:s', strtotime($post['tod'])),
             'time_arival' => $post['toa'] == '' ? null : date('H:i:s', strtotime($post['toa'])),
             'remarks' => $post['remarks'],
             'updated_by' => userId(),
