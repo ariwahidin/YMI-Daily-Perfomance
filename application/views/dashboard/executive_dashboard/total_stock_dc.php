@@ -64,7 +64,7 @@
                     </div><!-- end col -->
                     <div class="col">
                         <div class="mt-3 mt-lg-0 py-4 px-3">
-                            <h5 class="text-muted text-uppercase fs-13">STOCK TODAY <i class="ri-check-line text-success fs-18 float-end align-middle"></i></h5>
+                            <h5 class="text-muted text-uppercase fs-13">STOCK NOW <i class="ri-check-line text-success fs-18 float-end align-middle"></i></h5>
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <i class="ri-motorbike-fill display-6 text-muted"></i>
