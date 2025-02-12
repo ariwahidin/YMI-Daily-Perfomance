@@ -396,6 +396,18 @@ $ws_first_path =  $ws_config->first_path;
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#Dashboard" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="Dashboard">
+                                <i class="ri-dashboard-line"></i><span data-key="t-pagess">Executive Dashboard</span>
+                            </a>
+                            <div class="collapse menu-dropdown show" id="Dashboard">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="<?= base_url('dashboard/TotalStockDC') ?>" class="nav-link" data-key="t-starters">Total DC Stock </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#Dashboard" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="Dashboard">
                                 <i class="ri-dashboard-line"></i><span data-key="t-pagess">Dashboard</span>
                             </a>
                             <div class="collapse menu-dropdown show" id="Dashboard">

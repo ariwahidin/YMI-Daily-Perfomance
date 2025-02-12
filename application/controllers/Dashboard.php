@@ -6,7 +6,7 @@ class Dashboard extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        $this->load->model(['inbound_m', 'outbound_m', 'user_m', 'ekspedisi_m', 'factory_m', 'dashboard_m']);
+        $this->load->model(['inbound_m', 'outbound_m', 'user_m', 'ekspedisi_m', 'factory_m', 'dashboard_m', 'executive_m']);
         is_not_logged_in();
     }
 
@@ -290,6 +290,159 @@ class Dashboard extends CI_Controller
         GROUP BY activity_date
         ORDER BY activity_date ASC";
         $query = $this->db->query($sql, array($year, $month));
+        $result = $query->result_array();
+
+        foreach ($dates as $key => $val) {
+            $found = false;
+            foreach ($result as $k => $v) {
+                if ($v['activity_date'] == $val) {
+                    $dates[$key] = $v;
+                    $found = true;
+                    break; // Menghentikan loop jika ditemukan kecocokan untuk menghemat waktu
+                }
+            }
+
+            if (!$found) {
+                $dates[$key] = array(
+                    'total_qty' => 0,
+                    'formatted_date' => date('d-M', strtotime($val)),
+                    'activity_date' => $val
+                );
+            }
+        }
+
+        $response = array(
+            'success' => true,
+            'outbound' => $dates
+        );
+
+        echo json_encode($response);
+    }
+
+    function TotalStockDC()
+    {
+        $data = array(
+            'stock' => $this->executive_m->GetTotalStockDC()->row(),
+            'stock_detail' => $this->executive_m->GetTotalStockDCDetail()
+        );
+        $this->render('dashboard/executive_dashboard/total_stock_dc', $data);
+    }
+
+    public function getMonthlyInboundExecutive()
+    {
+        $monthYear = $this->input->post('month');
+        $dates = generateDates($monthYear);
+
+        $dateParts = explode('-', $monthYear);
+        $year = $dateParts[0];
+        $month = $dateParts[1];
+
+        // Query untuk mendapatkan total qty berdasarkan bulan dan tahun yang dipilih
+        $sql = "SELECT
+                a.formatted_date,
+                a.activity_date,
+                a.total_qty_in_dc_1,
+                isnull(b.total_qty_in_dc_2, 0) as total_qty_in_dc_2
+                FROM 
+                (SELECT 
+                    'DC_1' AS whs_code,
+                    SUM(qty) AS total_qty_in_dc_1,
+                    FORMAT(activity_date, 'd-MMM') AS formatted_date,
+                    CONVERT(date, activity_date) AS activity_date
+                FROM [YAMVAS_DC_1].[dbo].[tb_trans]
+                WHERE 
+                YEAR(activity_date) = ? AND
+                MONTH(activity_date) = ?
+                GROUP BY activity_date
+                -- ORDER BY activity_date ASC
+                ) a
+                LEFT JOIN
+                (SELECT 
+                    'DC_2' AS whs_code,
+                    SUM(qty) AS total_qty_in_dc_2,
+                    FORMAT(activity_date, 'd-MMM') AS formatted_date,
+                    CONVERT(date, activity_date) AS activity_date
+                FROM [YAMVAS_DC_2].[dbo].[tb_trans]
+                WHERE 
+                YEAR(activity_date) = ? AND
+                MONTH(activity_date) = ?
+                GROUP BY activity_date
+                -- ORDER BY activity_date ASC
+                ) b
+                ON a.formatted_date = b.formatted_date
+                ORDER BY a.activity_date ASC";
+        $query = $this->db->query($sql, array($year, $month, $year, $month));
+        $result = $query->result_array();
+
+        foreach ($dates as $key => $val) {
+            $found = false;
+            foreach ($result as $k => $v) {
+                if ($v['activity_date'] == $val) {
+                    $dates[$key] = $v;
+                    $found = true;
+                    break; // Menghentikan loop jika ditemukan kecocokan untuk menghemat waktu
+                }
+            }
+
+            if (!$found) {
+                $dates[$key] = array(
+                    'total_qty' => 0,
+                    'formatted_date' => date('d-M', strtotime($val)),
+                    'activity_date' => $val
+                );
+            }
+        }
+
+        $response = array(
+            'success' => true,
+            'inbound' => $dates
+        );
+
+        echo json_encode($response);
+    }
+
+    public function getMonthlyOutboundExecutive()
+    {
+        $monthYear = $this->input->post('month');
+        $dates = generateDates($monthYear);
+
+        $dateParts = explode('-', $monthYear);
+        $year = $dateParts[0];
+        $month = $dateParts[1];
+
+        // Query untuk mendapatkan total qty berdasarkan bulan dan tahun yang dipilih
+        $sql = "SELECT
+                a.formatted_date,
+                a.activity_date,
+                a.total_qty_out_dc_1,
+                isnull(b.total_qty_out_dc_2, 0) as total_qty_out_dc_2
+                FROM 
+                (SELECT 
+                    'DC_1' AS whs_code,
+                    SUM(CONVERT(int, tot_qty)) AS total_qty_out_dc_1,
+                    FORMAT(activity_date, 'd-MMM') AS formatted_date,
+                    CONVERT(date, activity_date) AS activity_date
+                FROM [YAMVAS_DC_1].[dbo].[pl_h]
+                WHERE 
+                YEAR(activity_date) = ? AND
+                MONTH(activity_date) = ?
+                GROUP BY activity_date
+                ) a
+                LEFT JOIN
+                (SELECT 
+                    'DC_2' AS whs_code,
+                    SUM(CONVERT(int, tot_qty)) AS total_qty_out_dc_2,
+                    FORMAT(activity_date, 'd-MMM') AS formatted_date,
+                    CONVERT(date, activity_date) AS activity_date
+                FROM [YAMVAS_DC_2].[dbo].[pl_h]
+                WHERE 
+                YEAR(activity_date) = ? AND
+                MONTH(activity_date) = ?
+                GROUP BY activity_date
+                ) b
+                ON a.formatted_date = b.formatted_date
+                ";
+        $query = $this->db->query($sql, array($year, $month, $year, $month));
         $result = $query->result_array();
 
         foreach ($dates as $key => $val) {
