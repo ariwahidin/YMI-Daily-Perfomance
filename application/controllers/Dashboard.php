@@ -328,6 +328,16 @@ class Dashboard extends CI_Controller
         $this->render('dashboard/executive_dashboard/total_stock_dc', $data);
     }
 
+    function getStockDetailDC()
+    {
+        $data = $this->executive_m->GetTotalStockDCDetail();
+        $response = array(
+            'success' => true,
+            'data' => $data
+        );
+        echo json_encode($response);
+    }
+
     public function getMonthlyInboundExecutive()
     {
         $monthYear = $this->input->post('month');
@@ -469,6 +479,38 @@ class Dashboard extends CI_Controller
             'outbound' => $dates
         );
 
+        echo json_encode($response);
+    }
+
+    public function getStockMonthly()
+    {
+        $monthYear = $this->input->post('month');
+        $dates = generateDates($monthYear);
+
+        $sql = "SELECT SUM(qty_in) - SUM(qty_out) AS stock
+                FROM [YAMVAS_DC_1].[dbo].[transaksi_view]
+                WHERE FORMAT(date, 'yyyy-MM-dd') <= ?";
+
+        $sql2 = "SELECT SUM(qty_in) - SUM(qty_out) AS stock
+                FROM [YAMVAS_DC_2].[dbo].[transaksi_view]
+                WHERE FORMAT(date, 'yyyy-MM-dd') <= ?";
+
+        $stock_dc = [];
+        foreach ($dates as $key => $val) {
+            $row = $this->db->query($sql, array($val))->row();
+            $row2 = $this->db->query($sql2, array($val))->row();
+            $stock_dc[$key] = array(
+                'formatted_date' => date('d-M', strtotime($val)),
+                'date' => $val,
+                'stock' => $val >= date('Y-m-d') ? '' : $row->stock,
+                'stock2' => $val >= date('Y-m-d') ? '' : $row2->stock,
+            );
+        }
+
+        $response = array(
+            'success' => true,
+            'stock_dc' => $stock_dc,
+        );
         echo json_encode($response);
     }
 }

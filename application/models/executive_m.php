@@ -58,7 +58,7 @@ class Executive_m extends CI_Model
 
 
     public function GetTotalStockDCDetail(){
-        $sql = "SELECT ibs.TOTAL_INBOUND,
+        $sql = "SELECT  ibs.WH_CODE,ibs.TOTAL_INBOUND,
                 obs.TOTAL_OUTBOUND,
                 ibs.TOTAL_INBOUND - obs.TOTAL_OUTBOUND AS STOCK_TODAY FROM
                 (SELECT WH_CODE, SUM(qty) AS TOTAL_INBOUND FROM
@@ -72,7 +72,8 @@ class Executive_m extends CI_Model
                 UNION ALL
                 SELECT 'DC_2' AS WH_CODE, CONVERT(int, tot_qty) as tot_qty FROM [YAMVAS_DC_2].[dbo].[pl_h]) ob
                 GROUP BY ob.WH_CODE) obs
-                ON ibs.WH_CODE = obs.WH_CODE";
+                ON ibs.WH_CODE = obs.WH_CODE
+				ORDER BY WH_CODE ASC";
         $query = $this->db->query($sql);
         return $query->result();
     }

@@ -84,6 +84,40 @@
 </div>
 
 <div class="row">
+    <div class="col-6 col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title mb-0">Occupancy DC 1</span>
+            </div>
+            <div class="card-body card-responsive">
+                <div id="occupDC1" class="e-charts"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title mb-0">Occupancy DC 2</span>
+            </div>
+            <div class="card-body card-responsive">
+                <div id="occupDC2" class="e-charts"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title mb-0">Monitoring Stock & Space Available DC 1 & DC 2</span>
+                <input type="month" class="form-control-sm float-end" id="inputMonthStock">
+            </div>
+            <div class="card-body card-responsive">
+                <div id="stockMonthly" class="e-charts"></div>
+            </div>
+        </div>
+    </div>
     <div class="col-12 col-xl-12">
         <div class="card">
             <div class="card-header">
@@ -119,18 +153,49 @@
         var year = date.getFullYear();
         if (month < 10) month = '0' + month; // Add leading zero to single digit months
         var currentMonth = year + '-' + month;
+        $('#inputMonthStock').val(currentMonth);
         $('#inputMonthInbound').val(currentMonth);
         $('#inputMonthOutbound').val(currentMonth);
 
+        getStockMonthly();
         getInboundMonthly();
         getOutboundMonthly();
 
+        $('#inputMonthStock').on('change', function() {
+            getStockMonthly();
+        })
+
+
         $('#inputMonthInbound').on('change', function() {
             getInboundMonthly();
+
         })
+
         $('#inputMonthOutbound').on('change', function() {
             getOutboundMonthly();
         })
+
+        function getStockMonthly() {
+            let month = $('#inputMonthStock').val();
+            let elementID = 'stockMonthly';
+            let colorData = 'rgb(64 81 137)';
+            let xInboundData = [];
+            let dc1_qty = [];
+            let dc2_qty = [];
+
+            $.post('getStockMonthly', {
+                month
+            }, function(response) {
+                let data = response.stock_dc;
+                $.each(data, function(index, obj) {
+                    xInboundData.push(obj.formatted_date);
+                    dc1_qty.push(obj.stock);
+                    dc2_qty.push(obj.stock2);
+                });
+
+                renderChartMonthlyStock(xInboundData, dc1_qty, dc2_qty, elementID, colorData);
+            }, 'json');
+        }
 
         function getInboundMonthly() {
             let month = $('#inputMonthInbound').val();
@@ -153,6 +218,7 @@
                 renderChartMonthly(xInboundData, dc1_qty, dc2_qty, elementID, colorData);
             }, 'json');
         }
+
 
         function getOutboundMonthly() {
             let month = $('#inputMonthOutbound').val();
@@ -348,6 +414,314 @@
                             focus: 'series'
                         },
                         data: dc2_qty
+                    },
+                ]
+            };
+
+            option && myChart.setOption(option);
+        }
+
+
+
+        getOccupancy()
+
+
+        function getOccupancy() {
+
+
+            let stock_dc_1 = 0;
+            let stock_dc_2 = 0;
+
+
+
+
+            $.ajax({
+                url: 'getStockDetailDC',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success == true) {
+
+                        let data_dc1 = {
+                            'stock': stock_dc_1,
+                            'capacity': 10500,
+                            'elementID': 'occupDC1',
+                            'title': 'Occupancy DC 1',
+                            'subtext': 'Monitoring Stock & Space Available DC 1'
+                        }
+
+                        let data_dc2 = {
+                            'stock': stock_dc_2,
+                            'capacity': 20000,
+                            'elementID': 'occupDC2',
+                            'title': 'Occupancy DC 2',
+                            'subtext': 'Monitoring Stock & Space Available DC 2'
+                        }
+
+                        data_dc1.stock = response.data[0].STOCK_TODAY
+                        data_dc2.stock = response.data[1].STOCK_TODAY
+
+                        renderOccupancyPie(data_dc1)
+                        renderOccupancyPie(data_dc2)
+                    }
+                }
+            })
+
+        }
+
+        function renderOccupancyPie(data) {
+            var chartDom = document.getElementById(data.elementID);
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            let qty_capacity = data.capacity
+            let qty_stock = data.stock
+
+            let qty_capacity_avail = qty_capacity - qty_stock
+            let percent_capacity_avail = (qty_capacity_avail / qty_capacity) * 100
+
+            let qty_capacty_usage = qty_stock
+            let percent_capacty_usage = (qty_capacty_usage / qty_capacity) * 100
+
+            option = {
+                title: {
+                    text: data.title,
+                    subtext: data.subtext,
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left'
+                },
+                series: [{
+                    name: 'Capacity : ' + qty_capacity,
+                    type: 'pie',
+                    radius: '50%',
+                    data: [{
+                            value: qty_capacty_usage,
+                            name: 'Space Usage ' + percent_capacty_usage.toFixed(2) + ' %'
+                        },
+                        {
+                            value: qty_capacity_avail,
+                            name: 'Space Available ' + percent_capacity_avail.toFixed(2) + ' %'
+                        }
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+            };
+
+            option && myChart.setOption(option);
+        }
+
+        function renderChartMonthlyStock(xData, dc1_qty, dc2_qty, elementID, colorData) {
+
+            console.log(xData)
+
+            var app = {};
+
+            var chartDom = document.getElementById(elementID);
+
+            // console.log(echarts);
+
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            const posList = [
+                'left',
+                'right',
+                'top',
+                'bottom',
+                'inside',
+                'insideTop',
+                'insideLeft',
+                'insideRight',
+                'insideBottom',
+                'insideTopLeft',
+                'insideTopRight',
+                'insideBottomLeft',
+                'insideBottomRight'
+            ];
+            app.configParameters = {
+                rotate: {
+                    min: -90,
+                    max: 90
+                },
+                align: {
+                    options: {
+                        left: 'left',
+                        center: 'center',
+                        right: 'right'
+                    }
+                },
+                verticalAlign: {
+                    options: {
+                        top: 'top',
+                        middle: 'middle',
+                        bottom: 'bottom'
+                    }
+                },
+                position: {
+                    options: posList.reduce(function(map, pos) {
+                        map[pos] = pos;
+                        return map;
+                    }, {})
+                },
+                distance: {
+                    min: 0,
+                    max: 100
+                }
+            };
+            app.config = {
+                rotate: 90,
+                align: 'left',
+                verticalAlign: 'middle',
+                position: 'insideBottom',
+                distance: 15,
+                onChange: function() {
+                    const labelOption = {
+                        rotate: app.config.rotate,
+                        align: app.config.align,
+                        verticalAlign: app.config.verticalAlign,
+                        position: app.config.position,
+                        distance: app.config.distance
+                    };
+                    myChart.setOption({
+                        series: [{
+                                label: labelOption
+                            },
+                            {
+                                label: labelOption
+                            },
+                            {
+                                label: labelOption
+                            },
+                            {
+                                label: labelOption
+                            }
+                        ]
+                    });
+                }
+            };
+            const labelOption = {
+                show: true,
+                position: app.config.position,
+                distance: app.config.distance,
+                align: app.config.align,
+                verticalAlign: app.config.verticalAlign,
+                rotate: app.config.rotate,
+                formatter: '{c}  {name|{a}}',
+                fontSize: 16,
+                rich: {
+                    name: {}
+                }
+            };
+            option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['DC 1', 'DC 2']
+                },
+                toolbox: {
+                    show: false,
+                    orient: 'vertical',
+                    left: 'right',
+                    top: 'center',
+                    feature: {
+                        mark: {
+                            show: true
+                        },
+                        dataView: {
+                            show: true,
+                            readOnly: false
+                        },
+                        magicType: {
+                            show: true,
+                            type: ['line', 'bar', 'stack']
+                        },
+                        restore: {
+                            show: true
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                xAxis: [{
+                    type: 'category',
+                    axisTick: {
+                        show: true
+                    },
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 30
+                    },
+                    data: xData,
+                }],
+                yAxis: [{
+                    type: 'value'
+                }],
+                series: [{
+                        name: 'DC 1',
+                        type: 'bar',
+                        color: 'rgb(6 24 61)',
+                        barGap: 0,
+                        label: labelOption,
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: dc1_qty,
+                        markLine: {
+                            data: [{
+                                yAxis: 10500,
+                                name: 'Threshold'
+                            }],
+                            lineStyle: {
+                                color: 'rgb(6 24 61)',
+                                type: 'dashed'
+                            },
+                            label: {
+                                position: 'end',
+                                formatter: 'DC 1 Capacity: 10,500'
+                            }
+                        }
+                    },
+                    {
+                        name: 'DC 2',
+                        type: 'bar',
+                        color: 'rgb(255 109 16)',
+                        barGap: 0,
+                        label: labelOption,
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: dc2_qty,
+                        markLine: {
+                            data: [{
+                                yAxis: 20000,
+                                name: 'Threshold'
+                            }],
+                            lineStyle: {
+                                color: 'rgb(255 109 16)',
+                                type: 'dashed'
+                            },
+                            label: {
+                                position: 'end',
+                                formatter: 'DC 1 Capacity: 20,000'
+                            }
+                        }
                     },
                 ]
             };
