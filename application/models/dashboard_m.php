@@ -58,17 +58,35 @@ class Dashboard_m extends CI_Model
         $post = $this->input->post();
         $start_date = $post['start_date'];
         $end_date = $post['end_date'];
+        // end_date di tambah 1 hari
+        $end_date = date('Y-m-d', strtotime($end_date . ' +1 day'));
 
-        $sql = "select distinct c.user_id, d.fullname, count(a.pl_id) as tot_pl, sum(CONVERT(int, b.tot_qty)) as tot_qty, 
-        convert(date, b.activity_date) as activity_date
-        from tb_out a
-        inner join pl_h b on a.pl_id = b.id
-        inner join pl_p c on c.pl_id = b.id
-        inner join master_user d on c.user_id = d.id
-        WHERE convert(date, b.activity_date) between CONVERT(date, '$start_date') and CONVERT(date, '$end_date')
-        group by d.fullname, c.user_id, CONVERT(date, b.activity_date)
-        order by fullname";
+        // $sql = "select distinct c.user_id, d.fullname, count(a.pl_id) as tot_pl, sum(CONVERT(int, b.tot_qty)) as tot_qty, 
+        // convert(date, b.activity_date) as activity_date
+        // from tb_out a
+        // inner join pl_h b on a.pl_id = b.id
+        // inner join pl_p c on c.pl_id = b.id
+        // inner join master_user d on c.user_id = d.id
+        // WHERE convert(date, b.activity_date) between CONVERT(date, '$start_date') and CONVERT(date, '$end_date')
+        // group by d.fullname, c.user_id, CONVERT(date, b.activity_date)
+        // order by fullname";
+        $sql = "SELECT 
+                    c.user_id, 
+                    d.fullname, 
+                    COUNT(a.pl_id) AS tot_pl, 
+                    SUM(b.tot_qty) AS tot_qty,           
+                    CAST(b.activity_date AS DATE) AS activity_date          
+                FROM tb_out a          
+                INNER JOIN pl_h b ON a.pl_id = b.id          
+                INNER JOIN pl_p c ON c.pl_id = b.id          
+                INNER JOIN master_user d ON c.user_id = d.id          
+                WHERE b.activity_date >= '$start_date' 
+                AND b.activity_date < '$end_date'
+                GROUP BY d.fullname, c.user_id, CAST(b.activity_date AS DATE)          
+                ORDER BY d.fullname";
         $query = $this->db->query($sql);
+
+        // var_dump($query->result());
         return $query;
     }
 
