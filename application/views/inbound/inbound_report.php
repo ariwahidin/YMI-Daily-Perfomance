@@ -425,8 +425,8 @@
                     $('#tableCompleteActivities').DataTable({
                         sort: false,
                         paginate: false,
-                        fixedHeader: true,
-                        scrollY: 400, // Tinggi area scrolling
+                        // fixedHeader: true,
+                        // scrollY: 400, // Tinggi area scrolling
                         scrollCollapse: true
                     });
                 }
