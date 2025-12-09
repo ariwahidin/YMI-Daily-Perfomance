@@ -7,7 +7,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6">
-                PT Yusen Logistics Puninar Indonesia
+                PT Yusen Logistics Interlink Indonesia
             </div>
         </div>
     </div>

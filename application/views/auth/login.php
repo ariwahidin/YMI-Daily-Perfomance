@@ -141,7 +141,7 @@
                                         </div>
 
                                         <div class="mt-5 text-center">
-                                            <p class="mb-0"> Powered by PT Yusen Logistics Puninar Indonesia <a href="auth-signup-cover.html" class="fw-semibold text-primary text-decoration-underline"></a> </p>
+                                            <p class="mb-0"> Powered by PT Yusen Logistics Interlink Indonesia <a href="auth-signup-cover.html" class="fw-semibold text-primary text-decoration-underline"></a> </p>
                                         </div>
                                     </div>
                                 </div>
