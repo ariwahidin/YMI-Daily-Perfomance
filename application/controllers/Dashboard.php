@@ -189,7 +189,6 @@ class Dashboard extends CI_Controller
         return $data;
     }
 
-
     public function getSummaryManPowerInbound()
     {
         $result = $this->dashboard_m->getUserInboundRangeDate();
@@ -511,6 +510,75 @@ class Dashboard extends CI_Controller
             'success' => true,
             'stock_dc' => $stock_dc,
         );
+        echo json_encode($response);
+    }
+
+
+    public function getSummaryTransactionMonthly()
+    {
+        $monthYear = $this->input->post('month');
+        // $dates = generateDates($monthYear);
+        $sql = "WITH allTransaction AS (
+			SELECT  ibs.WH_CODE,ibs.TOTAL_INBOUND,
+						obs.TOTAL_OUTBOUND,
+						ibs.TOTAL_INBOUND - obs.TOTAL_OUTBOUND AS STOCK_TODAY FROM
+						(SELECT WH_CODE, SUM(qty) AS TOTAL_INBOUND FROM
+						(SELECT 'DC_1' AS WH_CODE, qty FROM [YAMVAS_DC_1].[dbo].[tb_trans]
+						UNION ALL
+						SELECT 'DC_2' AS WH_CODE, qty FROM [YAMVAS_DC_2].[dbo].[tb_trans]) ib
+						GROUP BY ib.WH_CODE) ibs
+						INNER JOIN
+						(SELECT WH_CODE, SUM(tot_qty) AS TOTAL_OUTBOUND FROM
+						(SELECT 'DC_1' AS WH_CODE, CONVERT(int, tot_qty) as tot_qty FROM [YAMVAS_DC_1].[dbo].[pl_h]
+						UNION ALL
+						SELECT 'DC_2' AS WH_CODE, CONVERT(int, tot_qty) as tot_qty FROM [YAMVAS_DC_2].[dbo].[pl_h]) ob
+						GROUP BY ob.WH_CODE) obs
+						ON ibs.WH_CODE = obs.WH_CODE
+						--ORDER BY WH_CODE ASC
+				)				
+				SELECT  ibs.WH_CODE,ibs.TOTAL_INBOUND,
+                obs.TOTAL_OUTBOUND,
+                al.TOTAL_INBOUND - al.TOTAL_OUTBOUND AS STOCK_TODAY 
+				FROM
+                (SELECT WH_CODE, SUM(qty) AS TOTAL_INBOUND FROM
+					(
+					SELECT 'DC_1' AS WH_CODE, qty,
+					activity_date, FORMAT(activity_date, 'yyyy-MM') AS formatted_date
+					FROM [YAMVAS_DC_1].[dbo].[tb_trans] 
+					WHERE FORMAT(activity_date, 'yyyy-MM') = ?
+					UNION ALL
+					SELECT 'DC_2' AS WH_CODE, qty,
+					activity_date, FORMAT(activity_date, 'yyyy-MM') AS formatted_date
+					FROM [YAMVAS_DC_2].[dbo].[tb_trans]
+					WHERE FORMAT(activity_date, 'yyyy-MM') = ?
+					) ib
+					GROUP BY ib.WH_CODE) ibs
+                INNER JOIN
+					(SELECT WH_CODE, SUM(tot_qty) AS TOTAL_OUTBOUND FROM
+					(SELECT 'DC_1' AS WH_CODE, 
+					CONVERT(int, tot_qty) as tot_qty, 
+					a.activity_date, FORMAT(activity_date, 'yyyy-MM') AS formatted_date
+					FROM [YAMVAS_DC_1].[dbo].[pl_h] a
+					WHERE FORMAT(activity_date, 'yyyy-MM') = ?
+					UNION ALL
+					SELECT 'DC_2' AS WH_CODE, 
+					CONVERT(int, tot_qty) as tot_qty, 
+					a.activity_date, FORMAT(activity_date, 'yyyy-MM') AS formatted_date
+					FROM [YAMVAS_DC_2].[dbo].[pl_h] a
+					WHERE FORMAT(activity_date, 'yyyy-MM') = ?) as ob
+					GROUP BY ob.WH_CODE) obs
+                ON ibs.WH_CODE = obs.WH_CODE
+				INNER JOIN allTransaction al ON ibs.WH_CODE = al.WH_CODE
+				ORDER BY WH_CODE ASC";
+
+        $query = $this->db->query($sql, array($monthYear, $monthYear, $monthYear, $monthYear));
+        $result = $query->result_array();
+
+        $response = array(
+            'success' => true,
+            'summary' => $result
+        );
+
         echo json_encode($response);
     }
 }
