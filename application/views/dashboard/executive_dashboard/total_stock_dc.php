@@ -163,6 +163,7 @@
         $('#inputMonthOutbound').val(currentMonth);
         $('#inputDateSummaryTransaction').val(currentMonth);
 
+        getTransactionMonthly();
         getStockMonthly();
         getInboundMonthly();
         getOutboundMonthly();
