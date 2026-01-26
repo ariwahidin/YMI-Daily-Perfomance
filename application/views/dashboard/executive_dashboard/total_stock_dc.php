@@ -48,8 +48,8 @@
                                     <h2 class="mb-0"><span id="totalInboundDC1DC2"><?= number_format($stock->TOTAL_INBOUND); ?></span></h2>
                                 </div>
                             </div>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 1 : <span id="totalInboundDC1"><?= number_format($stock_detail[0]->TOTAL_INBOUND); ?></span></span>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 2 : <span id="totalInboundDC2"><?= number_format($stock_detail[1]->TOTAL_INBOUND); ?></span></span>
+                            <span class="badge bg-primary-subtle text-primary fs-16 mb-1">DC 1 : <span id="totalInboundDC1"><?= number_format($stock_detail[0]->TOTAL_INBOUND); ?></span></span><br>
+                            <span class="badge bg-primary-subtle text-primary fs-16 mb-1">DC 2 : <span id="totalInboundDC2"><?= number_format($stock_detail[1]->TOTAL_INBOUND); ?></span></span>
                         </div>
                     </div><!-- end col -->
                     <div class="col">
@@ -63,8 +63,8 @@
                                     <h2 class="mb-0"><span id="totalOutboundDC1DC2"><?= number_format($stock->TOTAL_OUTBOUND); ?></span></h2>
                                 </div>
                             </div>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 1 :  <span id="totalOutboundDC1"><?= number_format($stock_detail[0]->TOTAL_OUTBOUND); ?></span></span>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 2 : <span id="totalOutboundDC2"><?= number_format($stock_detail[1]->TOTAL_OUTBOUND); ?></span></span>
+                            <span class="badge bg-primary-subtle text-primary fs-16 mb-1">DC 1 :  <span id="totalOutboundDC1"><?= number_format($stock_detail[0]->TOTAL_OUTBOUND); ?></span></span> <br>
+                            <span class="badge bg-primary-subtle text-primary fs-16 mb-1">DC 2 : <span id="totalOutboundDC2"><?= number_format($stock_detail[1]->TOTAL_OUTBOUND); ?></span></span>
                         </div>
                     </div><!-- end col -->
                     <div class="col">
@@ -78,8 +78,8 @@
                                     <h2 class="mb-0"><span><?= number_format($stock->STOCK_TODAY); ?></span></h2>
                                 </div>
                             </div>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 1 : <?= number_format($stock_detail[0]->STOCK_TODAY); ?></span>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 2 : <?= number_format($stock_detail[1]->STOCK_TODAY); ?></span>
+                            <span class="badge bg-primary-subtle text-primary fs-16 mb-1">DC 1 : <?= number_format($stock_detail[0]->STOCK_TODAY); ?></span><br>
+                            <span class="badge bg-primary-subtle text-primary fs-16">DC 2 : <?= number_format($stock_detail[1]->STOCK_TODAY); ?></span>
                         </div>
                     </div>
                 </div><!-- end row -->
