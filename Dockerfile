@@ -37,6 +37,10 @@ RUN a2enmod rewrite
 # Copy source code
 COPY . /var/www/html/
 
+RUN mkdir -p /var/www/html/application/cache/sessions \
+ && chown -R www-data:www-data /var/www/html/application \
+ && chmod -R 755 /var/www/html/application
+
 WORKDIR /var/www/html
 
 EXPOSE 80
