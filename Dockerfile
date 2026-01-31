@@ -5,15 +5,14 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     ca-certificates \
-    apt-transport-https \
-    unixodbc-dev \
-    libgssapi-krb5-2 \
-    && rm -rf /var/lib/apt/lists/*
+    apt-transport-https
 
-# Tambah Microsoft repo
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
- && curl https://packages.microsoft.com/config/debian/11/prod.list \
-    > /etc/apt/sources.list.d/mssql-release.list
+RUN curl https://packages.microsoft.com/keys/microsoft.asc \
+ | gpg --dearmor \
+ | tee /usr/share/keyrings/microsoft.gpg > /dev/null
+
+RUN echo "deb [signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/debian/11/prod bullseye main" \
+ > /etc/apt/sources.list.d/mssql-release.list
 
 # Install SQL Server Driver
 RUN apt-get update && ACCEPT_EULA=Y apt-get install -y \
