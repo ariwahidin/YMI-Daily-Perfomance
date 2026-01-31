@@ -1,11 +1,19 @@
 FROM php:8.1-apache
 
-# Install dependency dasar
+# Tools dasar
 RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     ca-certificates \
     apt-transport-https
+
+# Tools build untuk pecl
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    autoconf \
+    pkg-config \
+    unixodbc-dev
+
 
 RUN curl https://packages.microsoft.com/keys/microsoft.asc \
  | gpg --dearmor \
