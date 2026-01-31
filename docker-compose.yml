@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   yamvas_dc1:
-    build: ./docker/php
+    build: .
     container_name: yamvas_dc1
     volumes:
       - ./:/var/www/html
