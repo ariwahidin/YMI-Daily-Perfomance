@@ -100,7 +100,8 @@ RUN curl -sS https://getcomposer.org/installer | php \
 # Copy source
 COPY . /var/www/html/
 
-RUN composer install --no-dev --optimize-autoloader
+# Install composer dependencies
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Permission
 RUN mkdir -p /var/www/html/application/cache/sessions \
