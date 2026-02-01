@@ -1,9 +1,7 @@
 version: "3.9"
 services:
   yamvas_dc1:
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile
+    build: .
     container_name: yamvas_dc1
     ports:
       - "8080:80"
