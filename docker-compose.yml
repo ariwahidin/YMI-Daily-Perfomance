@@ -1,19 +1,11 @@
 version: "3.9"
 services:
   yamvas_dc1:
-    build: ./docker/php
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
     container_name: yamvas_dc1
-    volumes:
-      - ./:/var/www/html
     ports:
       - "8080:80"
-    restart: unless-stopped
-  websocket_dc1:
-    build: ./docker/php
-    container_name: ci3-ws
-    volumes:
-      - ./:/var/www/html
-    command: php server.php
-    ports:
       - "8001:8001"
     restart: unless-stopped
