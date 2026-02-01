@@ -99,7 +99,7 @@ RUN mkdir -p /var/www/html/application/cache/sessions \
  && chmod -R 755 /var/www/html/application
 
 # Copy supervisor config
-COPY docker/php/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR /var/www/html
 
