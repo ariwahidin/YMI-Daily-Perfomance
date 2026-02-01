@@ -84,16 +84,18 @@ RUN pecl install sqlsrv pdo_sqlsrv \
 RUN a2enmod rewrite
 
 
+# Install tools
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
-    libzip-dev \
- && docker-php-ext-install zip
+    libzip-dev
 
-# Install Composer
+RUN docker-php-ext-install zip
+
+# Install composer
 RUN curl -sS https://getcomposer.org/installer | php \
-    -- --install-dir=/usr/local/bin --filename=composer
+    && mv composer.phar /usr/local/bin/composer
 
 # Copy source
 COPY . /var/www/html/
