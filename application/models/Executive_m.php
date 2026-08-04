@@ -24,7 +24,8 @@ class Executive_m extends CI_Model
         return $query;
     }
 
-    public function GetMonthlyStockDC(){
+    public function GetMonthlyStockDC()
+    {
         $sql = "SELECT * FROM 
                 (SELECT 
                     'DC_1' AS whs_code,
@@ -56,8 +57,8 @@ class Executive_m extends CI_Model
         $query = $this->db->query($sql);
     }
 
-
-    public function GetTotalStockDCDetail(){
+    public function GetTotalStockDCDetail()
+    {
         $sql = "SELECT  ibs.WH_CODE,ibs.TOTAL_INBOUND,
                 obs.TOTAL_OUTBOUND,
                 ibs.TOTAL_INBOUND - obs.TOTAL_OUTBOUND AS STOCK_TODAY FROM

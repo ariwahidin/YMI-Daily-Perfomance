@@ -16,7 +16,12 @@
 
 <div class="row">
     <div class="col-xl-12">
+
         <div class="card crm-widget">
+            <div class="card-header">
+                <span class="card-title mb-0">Monthly Transaction DC 1 & DC 2</span>
+                <input type="month" class="form-control-sm float-end" id="inputDateSummaryTransaction">
+            </div>
             <div class="card-body p-0">
                 <div class="row row-cols-xxl-4 row-cols-md-4 row-cols-1 g-0">
                     <div class="col">
@@ -34,32 +39,32 @@
                     </div><!-- end col -->
                     <div class="col">
                         <div class="mt-3 mt-md-0 py-4 px-3">
-                            <h5 class="text-muted text-uppercase fs-13">TOTAL IN <i class="ri-arrow-down-circle-line text-success fs-18 float-end align-middle"></i></h5>
+                            <h5 class="text-muted text-uppercase fs-13">TOTAL IN <span id="totalInDate" class="text-muted text-sm"></span> <i class="ri-arrow-down-circle-line text-success fs-18 float-end align-middle"></i></h5>
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <i class="ri-inbox-archive-fill display-6 text-muted"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h2 class="mb-0"><span><?= number_format($stock->TOTAL_INBOUND); ?></span></h2>
+                                    <h2 class="mb-0"><span id="totalInboundDC1DC2"><?= number_format($stock->TOTAL_INBOUND); ?></span></h2>
                                 </div>
                             </div>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 1 : <?= number_format($stock_detail[0]->TOTAL_INBOUND); ?></span>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 2 : <?= number_format($stock_detail[1]->TOTAL_INBOUND); ?></span>
+                            <span class="badge bg-primary-subtle text-primary fs-16 mb-1">DC 1 : <span id="totalInboundDC1"><?= number_format($stock_detail[0]->TOTAL_INBOUND); ?></span></span><br>
+                            <span class="badge bg-primary-subtle text-primary fs-16 mb-1">DC 2 : <span id="totalInboundDC2"><?= number_format($stock_detail[1]->TOTAL_INBOUND); ?></span></span>
                         </div>
                     </div><!-- end col -->
                     <div class="col">
                         <div class="mt-3 mt-md-0 py-4 px-3">
-                            <h5 class="text-muted text-uppercase fs-13">TOTAL OUT <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i></h5>
+                            <h5 class="text-muted text-uppercase fs-13">TOTAL OUT <span id="totalOutDate" class="text-muted text-sm"></span> <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i></h5>
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <i class="ri-inbox-unarchive-fill display-6 text-muted"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h2 class="mb-0"><span><?= number_format($stock->TOTAL_OUTBOUND); ?></span></h2>
+                                    <h2 class="mb-0"><span id="totalOutboundDC1DC2"><?= number_format($stock->TOTAL_OUTBOUND); ?></span></h2>
                                 </div>
                             </div>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 1 : <?= number_format($stock_detail[0]->TOTAL_OUTBOUND); ?></span>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 2 : <?= number_format($stock_detail[1]->TOTAL_OUTBOUND); ?></span>
+                            <span class="badge bg-primary-subtle text-primary fs-16 mb-1">DC 1 :  <span id="totalOutboundDC1"><?= number_format($stock_detail[0]->TOTAL_OUTBOUND); ?></span></span> <br>
+                            <span class="badge bg-primary-subtle text-primary fs-16 mb-1">DC 2 : <span id="totalOutboundDC2"><?= number_format($stock_detail[1]->TOTAL_OUTBOUND); ?></span></span>
                         </div>
                     </div><!-- end col -->
                     <div class="col">
@@ -73,14 +78,14 @@
                                     <h2 class="mb-0"><span><?= number_format($stock->STOCK_TODAY); ?></span></h2>
                                 </div>
                             </div>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 1 : <?= number_format($stock_detail[0]->STOCK_TODAY); ?></span>
-                            <span class="badge bg-danger-subtle text-danger fs-12">DC 2 : <?= number_format($stock_detail[1]->STOCK_TODAY); ?></span>
+                            <span class="badge bg-primary-subtle text-primary fs-16 mb-1">DC 1 : <?= number_format($stock_detail[0]->STOCK_TODAY); ?></span><br>
+                            <span class="badge bg-primary-subtle text-primary fs-16">DC 2 : <?= number_format($stock_detail[1]->STOCK_TODAY); ?></span>
                         </div>
                     </div>
                 </div><!-- end row -->
             </div><!-- end card body -->
         </div><!-- end card -->
-    </div><!-- end col -->
+    </div>
 </div>
 
 <div class="row">
@@ -156,10 +161,17 @@
         $('#inputMonthStock').val(currentMonth);
         $('#inputMonthInbound').val(currentMonth);
         $('#inputMonthOutbound').val(currentMonth);
+        $('#inputDateSummaryTransaction').val(currentMonth);
 
+        getTransactionMonthly();
         getStockMonthly();
         getInboundMonthly();
         getOutboundMonthly();
+
+
+        $('#inputDateSummaryTransaction').on('change', function() {
+            getTransactionMonthly();
+        })
 
         $('#inputMonthStock').on('change', function() {
             getStockMonthly();
@@ -174,6 +186,48 @@
         $('#inputMonthOutbound').on('change', function() {
             getOutboundMonthly();
         })
+
+        function getTransactionMonthly() {
+            let month = $('#inputDateSummaryTransaction').val();
+            let date = new Date(month);
+            let dateFormat = date.toLocaleString('default', {
+                month: 'long',
+                year: 'numeric'
+            });
+            console.log("Get Transaction : ", month);
+
+
+            $.post('getSummaryTransactionMonthly', {
+                month
+            }, function(response) {
+                // let data = response.inbound;
+                // $.each(data, function(index, obj) {
+                //     xInboundData.push(obj.formatted_date);
+                //     dc1_qty.push(obj.total_qty_in_dc_1);
+                //     dc2_qty.push(obj.total_qty_in_dc_2);
+                // });
+
+                // renderChartMonthly(xInboundData, dc1_qty, dc2_qty, elementID, colorData);
+
+                if (response.success == true) {
+                    var totalInboundDC1DC2 = response.summary[0].TOTAL_INBOUND + response.summary[1].TOTAL_INBOUND
+                    $('#totalInDate').text('(' + dateFormat + ')');
+                    $('#totalInboundDC1').text(response.summary[0].TOTAL_INBOUND.toLocaleString());
+                    $('#totalInboundDC2').text(response.summary[1].TOTAL_INBOUND.toLocaleString());
+                    $('#totalInboundDC1DC2').text(totalInboundDC1DC2.toLocaleString());
+
+
+                    var totalOutboundDC1DC2 = response.summary[0].TOTAL_OUTBOUND + response.summary[1].TOTAL_OUTBOUND
+                    $('#totalOutDate').text('(' + dateFormat + ')');
+                    $('#totalOutboundDC1').text(response.summary[0].TOTAL_OUTBOUND.toLocaleString());
+                    $('#totalOutboundDC2').text(response.summary[1].TOTAL_OUTBOUND.toLocaleString());
+                    $('#totalOutboundDC1DC2').text(totalOutboundDC1DC2.toLocaleString());
+                }
+
+
+            }, 'json');
+
+        }
 
         function getStockMonthly() {
             let month = $('#inputMonthStock').val();

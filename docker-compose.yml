@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  yamvas_dc1:
+    build: .
+    container_name: yamvas_dc1
+    ports:
+      - "8080:80"
+      - "8001:8001"
+    restart: unless-stopped
