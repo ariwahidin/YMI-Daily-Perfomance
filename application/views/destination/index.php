@@ -31,7 +31,7 @@
                 <button class="btn btn-info" id="btnAdd">Add new destination</button>
             </div>
             <div class="card-body">
-                <table id="user-table" class="display table table-sm table-bordered display compact" style="width:100%">
+                <table id="dest-table" class="display table table-sm table-bordered display compact" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -103,6 +103,7 @@
 
 <script>
     $(document).ready(function() {
+        $('#dest-table').DataTable();
         $('#ekpsedisiForm').on('submit', function(e) {
             e.preventDefault();
             let formUser = new FormData(this);
@@ -167,7 +168,7 @@
             }
         });
 
-        $('#user-table').DataTable();
+        $('#dest-table').DataTable();
 
         $('#btnAdd').on('click', function() {
             $('#headerForm').text('Add new destination');
@@ -175,7 +176,7 @@
             $('#modalForm').modal('show');
         })
 
-        $('.btnEdit').on('click', function() {
+        $('#dest-table').on('click', '.btnEdit', function() {
             $('#headerForm').text('Edit destination');
             $('#form_proses').val('edit');
             $('#eks_id').val($(this).data('id'));
@@ -184,7 +185,7 @@
             $('#modalForm').modal('show');
         })
 
-        $('.btnDelete').on('click', function() {
+        $('#dest-table').on('click', '.btnDelete', function() {
             let id = $(this).data('id');
             $.post('deletedestination', {
                 id: id
