@@ -31,7 +31,7 @@
                 <button class="btn btn-primary" id="btnAdd">Add new dealer</button>
             </div>
             <div class="card-body">
-                <table id="user-table" class="display table table-bordered compact" style="width:100%">
+                <table id="dealer-table" class="display table table-bordered compact" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -167,7 +167,7 @@
             }
         });
 
-        $('#user-table').DataTable();
+        $('#dealer-table').DataTable();
 
         $('#btnAdd').on('click', function() {
             $('#headerForm').text('Add new dealer');
@@ -175,7 +175,7 @@
             $('#modalForm').modal('show');
         })
 
-        $('.btnEdit').on('click', function() {
+        $('#dealer-table').on('click', '.btnEdit',  function() {
             $('#headerForm').text('Edit dealer');
             $('#form_proses').val('edit');
             $('#eks_id').val($(this).data('id'));
@@ -184,7 +184,7 @@
             $('#modalForm').modal('show');
         })
 
-        $('.btnDelete').on('click', function() {
+        $('#dealer-table').on('click', '.btnDelete', function() {
             let id = $(this).data('id');
             $.post('deletedealer', {
                 id: id
