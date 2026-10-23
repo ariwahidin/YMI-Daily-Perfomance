@@ -10,7 +10,7 @@ class Ekspedisi extends CI_Controller
         $this->load->model(['user_m', 'role_m', 'ekspedisi_m', 'ekspedisi_model']);
     }
 
-    public function render($view, array $data = null)
+    public function render($view, ?array $data = null)
     {
         $this->load->view('template/header');
         $this->load->view($view, $data);

@@ -10,7 +10,7 @@ class DashboardAll extends CI_Controller
         is_not_logged_in();
     }
 
-    public function render($view, array $data = null)
+    public function render($view, ?array $data = null)
     {
         $this->load->view('template/header');
         $this->load->view($view, $data);

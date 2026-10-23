@@ -10,7 +10,7 @@ class Master extends CI_Controller
         $this->load->model(['master_m', 'customer_m', 'item_m', 'top_m', 'user_m', 'employee']);
     }
 
-    public function render($view, array $data = null)
+    public function render($view, ?array $data = null)
     {
         $this->load->view('template/header');
         $this->load->view($view, $data);

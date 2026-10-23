@@ -10,7 +10,7 @@ class WorkSchedule extends CI_Controller
         $this->load->model(['user_m', 'role_m', 'work_schedule_m']);
     }
 
-    public function render($view, array $data = null)
+    public function render($view, ?array $data = null)
     {
         $this->load->view('template/header');
         $this->load->view($view, $data);
